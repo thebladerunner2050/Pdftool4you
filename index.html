@@ -3,119 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDFTool4You - Free Online AI Utility Tools</title>
-    <!-- Premium Tailwind CSS Library -->
-    <link href="https://jsdelivr.net" rel="stylesheet">
-    <!-- FontAwesome for Beautiful Icons -->
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <title>PDFTool4You - Advanced Premium Web Tools</title>
+    
+    <!-- Deep Professional Custom CSS Setup -->
     <style>
-        .ad-placeholder { background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); border: 2px dashed #cbd5e1; border-radius: 1rem; text-align: center; color: #64748b; padding: 24px; margin: 24px 0; font-weight: 500; font-size: 0.875rem; letter-spacing: 0.05em; }
-        .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%); }
-        .tool-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .tool-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        /* Modern Fonts & CSS Reset */
+        @import url('https://googleapis.com');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            overflow-x: hidden;
+        }
+
+        /* Core Global Containers */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Ultra Premium Premium Navbar Styles */
+        .navbar {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 16px 0;
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-logo span {
+            color: #3b82f6;
+        }
+
+        /* Hero Banner Block Layout */
+        .hero {
+            background: radial-gradient(circle at top right, #1e3a8a, #0f172a);
+            color: #ffffff;
+            padding: 90px 0 80px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: 0.7;
+        }
+
+        .hero-tag {
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 6px 16px;
+            border-radius: 100px;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            display: inline-block;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+            position: relative;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            font-weight: 400;
+        }
+
+        /* Grid Framework for Dynamic Sections */
+        .main-content {
+            padding: 60px 0;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 36px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 16px;
+        }
+
+        .section-header.image-dept {
+            border-bottom-color: #3b82f6;
+        }
+
+        .section-header class-icon {
+            font-size: 28px;
+        }
+
+        .section-header h2 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1e293b;
+            letter-spacing: -0.5px;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 32px;
+            margin-bottom: 60px;
+        }
+
+        /* Advanced Custom CSS Animated Tool Cards */
+        .card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: #6366f1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card.image-card::before {
+            background: #3b82f6;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: #cbd5e1;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-badge {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6366f1;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+
+        .image-card .card-badge {
+            color: #3b82f6;
+        }
+
+        .card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
+        }
+
+        .card p {
+            font-size: 14px;
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+
+        /* Luxury Clean CSS Buttons */
+        .btn {
+            display: block;
+            text-align: center;
+            background: #6366f1;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 15px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .btn-blue {
+            background: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .btn:hover {
+            background: #4f46e5;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-blue:hover {
+            background: #2563eb;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Structural Ad Space Design Layout */
+        .ad-row {
+            background: #f1f5f9;
+            border: 2px dashed #cbd5e1;
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            color: #64748b;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin: 40px 0;
+        }
+
+        /* Footer Alignment */
+        footer {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 40px 0;
+            text-align: center;
+            border-top: 1px solid #334155;
+            font-size: 14px;
+        }
+
+        footer p strong {
+            color: #f1f5f9;
+        }
+
+        footer .notice {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 8px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Full Structural Responsiveness Control */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 32px; }
+            .hero p { font-size: 15px; }
+            .tools-grid { grid-template-columns: 1fr; gap: 24px; }
+        }
     </style>
 </head>
-<body class="bg-gray-50 font-sans antialiased text-gray-900">
+<body>
 
-    <!-- Premium Header Navbar -->
-    <nav class="gradient-bg text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-black tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-bolt text-yellow-400"></i> PDFTool<span class="text-blue-400">4You</span>
-            </a>
-            <div class="hidden md:flex space-x-6 font-medium text-sm tracking-wide">
-                <a href="#pdf-section" class="hover:text-blue-300 transition-colors flex items-center gap-1"><i class="fa-solid fa-file-pdf"></i> PDF Tools</a>
-                <a href="#image-section" class="hover:text-blue-300 transition-colors flex items-center gap-1"><i class="fa-solid fa-image"></i> Image Tools</a>
-            </div>
+    <!-- Executive Custom Sticky Nav -->
+    <nav class="navbar">
+        <div class="container nav-wrapper">
+            <a href="index.html" class="brand-logo">⚡ PDFTool<span>4You</span></a>
         </div>
     </nav>
 
-    <!-- Super Premium Hero Banner Section -->
-    <header class="gradient-bg text-white text-center py-20 px-4 relative overflow-hidden">
-        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
-        <div class="max-w-3xl mx-auto relative z-10">
-            <span class="bg-blue-500 bg-opacity-30 text-blue-300 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full border border-blue-400 border-opacity-30">100% Secure & Fast</span>
-            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mt-4 mb-4 leading-tight">Smart Online Utility Tools</h1>
-            <p class="text-lg text-blue-100 max-w-xl mx-auto font-light">Bina upload kiye, apne browser mein files ko compress aur convert karein. Safe, secure aur lifetime free.</p>
+    <!-- Canvas Background Hero Grid Banner -->
+    <header class="hero">
+        <div class="container">
+            <span class="hero-tag">Secure Client-Side AI Ecosystem</span>
+            <h1>Smart Online Utility Tools</h1>
+            <p>Bina kisi delay ke apne web browser mein documents compress aur convert karein. Apka data 100% safe aur secure rehta hai.</p>
         </div>
     </header>
 
-    <!-- Main Dynamic Content Wrapper -->
-    <main class="max-w-6xl mx-auto px-4 py-10">
+    <!-- Primary UI Workspace -->
+    <main class="container main-content">
         
-        <!-- Top Banner Advert Space -->
-        <div class="ad-placeholder shadow-sm"><i class="fa-solid fa-rectangle-ad mr-2 text-gray-400"></i> [ AdSense Top Horizontal Banner Ad Here ]</div>
+        <div class="ad-row">[ AdSense Top Leaderboard Performance Ad Area ]</div>
 
-        <!-- 📄 CORE FEATURE: PDF TOOLS SECTION -->
-        <section id="pdf-section" class="mb-14 scroll-mt-20">
-            <div class="flex items-center gap-3 mb-8 border-b-2 border-indigo-500 pb-3">
-                <div class="p-2 bg-indigo-100 text-indigo-600 rounded-lg"><i class="fa-solid fa-file-pdf text-2xl"></i></div>
-                <h2 class="text-2xl font-black text-gray-800 tracking-tight">PDF & Document Tools</h2>
+        <!-- 📄 REGION 1: PDF PROCESSING SECTION -->
+        <section id="pdf-section">
+            <div class="section-header">
+                <span class="class-icon">📄</span>
+                <h2>PDF & Document Architecture</h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- Tool Card: PDF Compressor -->
-                <div class="tool-card bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between">
+            
+            <div class="tools-grid">
+                <!-- Tool Instance: PDF Compressor -->
+                <div class="card">
                     <div>
-                        <div class="text-indigo-500 text-sm font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="fa-solid fa-compress"></i> Popular</div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">Online PDF Compressor</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed mb-6">Apne PDF file ka size bina quality kharab kiye kam karein. Forms bharne ke liye sabse best tool.</p>
+                        <span class="card-badge">Core Engine</span>
+                        <h3>Online PDF Compressor</h3>
+                        <p>Apne bhari PDF files ka size bina graphics ya rendering loose kiye instantly chota karein. Govt form submission ke liye optimized layout.</p>
                     </div>
-                    <a href="pdf-compressor.html" class="block text-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-sm tracking-wide">
-                        Open Tool <i class="fa-solid fa-arrow-right text-xs ml-1"></i>
-                    </a>
+                    <a href="pdf-compressor.html" class="btn">Open Compressor Engine</a>
                 </div>
-
             </div>
         </section>
 
-        <!-- Mid Content In-Article Advert Space -->
-        <div class="ad-placeholder shadow-sm"><i class="fa-solid fa-rectangle-ad mr-2 text-gray-400"></i> [ AdSense Mid In-Article Native Ad Here ]</div>
+        <div class="ad-row">[ AdSense In-Article Dynamic Banner Ad Area ]</div>
 
-        <!-- 🖼️ EXPANSION: IMAGE TOOLS SECTION -->
-        <section id="image-section" class="mb-14 scroll-mt-20">
-            <div class="flex items-center gap-3 mb-8 border-b-2 border-blue-500 pb-3">
-                <div class="p-2 bg-blue-100 text-blue-600 rounded-lg"><i class="fa-solid fa-image text-2xl"></i></div>
-                <h2 class="text-2xl font-black text-gray-800 tracking-tight">Image & Photo Management</h2>
+        <!-- 🖼️ REGION 2: IMAGE METADATA PROCESSING -->
+        <section id="image-section">
+            <div class="section-header image-dept">
+                <span class="class-icon">🖼️</span>
+                <h2>Image Format & Photo Utilities</h2>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                
-                <!-- Tool Card: PNG to JPG Converter -->
-                <div class="tool-card bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between">
-                    <div>
-                        <div class="text-blue-500 text-sm font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="fa-solid fa-shuffle"></i> Image Format</div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">PNG to JPG Converter</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed mb-6">Apni PNG images ya screenshots ko high-quality JPG format mein instantly convert karein.</p>
-                    </div>
-                    <a href="jpg-to-png.html" class="block text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-sm tracking-wide">
-                        Open Tool <i class="fa-solid fa-arrow-right text-xs ml-1"></i>
-                    </a>
-                </div>
-
-                <!-- Tool Card: Passport Photo Maker -->
-                <div class="tool-card bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col justify-between">
-                    <div>
-                        <div class="text-blue-500 text-sm font-bold uppercase tracking-wider mb-2 flex items-center gap-1.5"><i class="fa-solid fa-camera"></i> Job Utility</div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2">Passport Photo Maker</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed mb-6">Kisi bhi photo ko crop karke standard 3.5x4.5 cm passport layout banayein, print karne ke liye ready.</p>
-                    </div>
-                    <a href="passport-photo.html" class="block text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-sm tracking-wide">
-                        Open Tool <i class="fa-solid fa-arrow-right text-xs ml-1"></i>
-                    </a>
-                </div>
-
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Professional Footer Area -->
-    <footer class="bg-gray-900 text-gray-400 text-center py-8 border-t border-gray-800 tracking-wide">
-        <div class="max-w-6xl mx-auto px-4 text-sm space-y-2">
-            <p class="font-semibold text-gray-300">&copy; 2026 PDFTool4You. All Rights Reserved.</p>
-            <p class="text-xs text-gray-500 max-w-md mx-auto">Privacy Notice: Safe processing! Aapka sensitive data humare server par kabhi save nahi hota, sab kuch aapke browser mein process hota hai.</p>
-        </div>
-    </footer>
-
-</body>
-</html>
+            
+            <div class="tools-grid">
