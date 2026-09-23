@@ -39,6 +39,31 @@ app.get('/image-to-pdf', (req, res) => {
   res.sendFile(path.join(__dirname, 'image-to-pdf.html'));
 });
 
+// Important pages for Google AdSense compliance & T&C
+app.get(['/privacy-policy', '/privacy'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'privacy-policy.html'));
+});
+
+app.get(['/terms-and-conditions', '/terms', '/tnc'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'terms-and-conditions.html'));
+});
+
+app.get(['/about-us', '/about'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'about-us.html'));
+});
+
+app.get(['/contact-us', '/contact'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'contact-us.html'));
+});
+
+app.get(['/disclaimer'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'disclaimer.html'));
+});
+
+app.get(['/cookie-policy', '/cookies'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'cookie-policy.html'));
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });

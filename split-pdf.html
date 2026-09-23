@@ -9,6 +9,30 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'system';
+            const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <script src="theme.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.9/dist/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
@@ -17,10 +41,23 @@
             background-color: #fafbfc;
             color: #09090b;
         }
+        html.dark {
+            color-scheme: dark;
+        }
+        html.dark body {
+            background-color: #09090b;
+            color: #f4f4f5;
+        }
         .page-chip.selected {
-            border-color: #2563eb;
-            background-color: #eff6ff;
-            color: #1d4ed8;
+            border-color: #ea580c;
+            background-color: #fff7ed;
+            color: #c2410c;
+            font-weight: 700;
+        }
+        html.dark .page-chip.selected {
+            border-color: #ea580c;
+            background-color: rgba(154, 52, 18, 0.35);
+            color: #fdba74;
             font-weight: 700;
         }
     </style>
@@ -28,20 +65,53 @@
 <body class="min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
 
     <!-- Minimal Header -->
-    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-zinc-200/80">
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/80 dark:border-zinc-800 transition-colors">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-2.5">
-                <div class="w-8 h-8 rounded-xl bg-zinc-900 text-white flex items-center justify-center text-sm font-bold shadow-sm">
+                <div class="w-8 h-8 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center text-sm font-bold shadow-sm">
                     ⚡
                 </div>
-                <span class="font-bold text-base text-zinc-900 tracking-tight">PDFTool<span class="text-blue-600">4You</span></span>
+                <span class="font-bold text-base text-zinc-900 dark:text-white tracking-tight">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
             </a>
-            <a href="index.html" class="inline-flex items-center gap-1 text-xs font-semibold text-zinc-600 hover:text-zinc-900 px-3 py-1.5 rounded-lg hover:bg-zinc-100 transition-colors">
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-                <span>Back to Tools</span>
-            </a>
+            <div class="flex items-center gap-2.5">
+                <!-- Theme Toggle Dropdown -->
+                <div class="relative" data-theme-menu-container>
+                    <button type="button" data-theme-trigger aria-label="Toggle color theme" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none">
+                        <svg class="theme-icon-system w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        <svg class="theme-icon-light hidden w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <svg class="theme-icon-dark hidden w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                        <span class="theme-label hidden sm:inline text-xs font-semibold">Theme</span>
+                    </button>
+                    <div data-theme-menu class="hidden absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1.5 z-50 text-xs">
+                        <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Appearance</div>
+                        <button type="button" data-theme-value="system" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span>System default</span>
+                            <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        </button>
+                        <button type="button" data-theme-value="light" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span>Light</span>
+                            <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        </button>
+                        <button type="button" data-theme-value="dark" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span>Dark</span>
+                            <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <a href="index.html" class="inline-flex items-center gap-1 text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-3 py-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span>Back to Tools</span>
+                </a>
+            </div>
         </div>
     </header>
 
@@ -50,21 +120,21 @@
         
         <!-- Header Info -->
         <div class="text-center mb-8">
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 border border-orange-200/60 text-orange-700 text-xs font-semibold mb-3">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 dark:bg-orange-950/40 border border-orange-200/60 dark:border-orange-800/60 text-orange-700 dark:text-orange-300 text-xs font-semibold mb-3">
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11l2 2-2 2m-8-4l-2 2 2 2"/>
                 </svg>
                 <span>Client-Side PDF Splitter</span>
             </div>
-            <h1 class="text-3xl font-extrabold tracking-tight text-zinc-900 mb-2">Split PDF Document</h1>
-            <p class="text-sm text-zinc-600">Extract individual pages, custom page ranges, or separate every page into distinct files.</p>
+            <h1 class="text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-2">Split PDF Document</h1>
+            <p class="text-sm text-zinc-600 dark:text-zinc-400">Extract individual pages, custom page ranges, or separate every page into distinct files.</p>
         </div>
 
-        <div class="bg-white rounded-2xl border border-zinc-200/80 p-6 sm:p-8 shadow-sm">
+        <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 sm:p-8 shadow-sm transition-colors">
             
             <!-- Error Alert -->
-            <div id="error-msg" class="hidden mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-xs font-medium text-red-700 flex items-start gap-2.5">
+            <div id="error-msg" class="hidden mb-6 p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-xl text-xs font-medium text-red-700 dark:text-red-300 flex items-start gap-2.5">
                 <svg class="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
@@ -72,29 +142,29 @@
             </div>
 
             <!-- Drag & Drop Zone -->
-            <div id="drop-zone" class="group border-2 border-dashed border-zinc-200 rounded-2xl p-8 sm:p-10 text-center cursor-pointer hover:border-orange-500 hover:bg-orange-50/20 transition-all">
+            <div id="drop-zone" class="group border-2 border-dashed border-zinc-200 dark:border-zinc-700 rounded-2xl p-8 sm:p-10 text-center cursor-pointer hover:border-orange-500 hover:bg-orange-50/20 dark:hover:bg-orange-950/20 transition-all">
                 <input type="file" id="file-input" accept=".pdf,application/pdf" class="hidden">
-                <div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-400 group-hover:scale-110 group-hover:border-orange-300 group-hover:text-orange-600 transition-all">
+                <div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 flex items-center justify-center text-zinc-400 dark:text-zinc-500 group-hover:scale-110 group-hover:border-orange-300 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-all">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                 </div>
-                <p class="text-sm font-bold text-zinc-900 mb-1">Click to select PDF or drag and drop here</p>
-                <p class="text-xs text-zinc-400">PDF pages are analyzed and separated entirely on your device</p>
+                <p class="text-sm font-bold text-zinc-900 dark:text-white mb-1">Click to select PDF or drag and drop here</p>
+                <p class="text-xs text-zinc-400 dark:text-zinc-500">PDF pages are analyzed and separated entirely on your device</p>
             </div>
 
             <!-- File Selected Meta Card -->
-            <div id="file-info" class="hidden mt-6 p-4 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-between">
+            <div id="file-info" class="hidden mt-6 p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/70 border border-zinc-200 dark:border-zinc-700 flex items-center justify-between">
                 <div class="flex items-center gap-3 overflow-hidden">
-                    <div class="w-9 h-9 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-xs shrink-0">
+                    <div class="w-9 h-9 rounded-lg bg-orange-100 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold text-xs shrink-0">
                         PDF
                     </div>
                     <div class="truncate">
-                        <p id="file-name" class="text-xs font-bold text-zinc-900 truncate max-w-xs"></p>
-                        <p id="file-size" class="text-[11px] text-zinc-500 font-medium"></p>
+                        <p id="file-name" class="text-xs font-bold text-zinc-900 dark:text-white truncate max-w-xs"></p>
+                        <p id="file-size" class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium"></p>
                     </div>
                 </div>
-                <button type="button" id="change-file-btn" class="text-xs text-zinc-400 hover:text-red-600 p-1 font-medium transition-colors">
+                <button type="button" id="change-file-btn" class="text-xs text-zinc-400 hover:text-red-600 dark:hover:text-red-400 p-1 font-medium transition-colors">
                     Change file
                 </button>
             </div>
@@ -104,32 +174,32 @@
                 
                 <!-- Mode Selection -->
                 <div>
-                    <label class="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-2.5">Splitting Mode</label>
+                    <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider mb-2.5">Splitting Mode</label>
                     <div class="grid grid-cols-2 gap-3">
-                        <label class="cursor-pointer border border-zinc-200 rounded-xl p-3 text-center transition-all bg-zinc-50 hover:bg-white has-[:checked]:border-orange-600 has-[:checked]:bg-orange-50/50 has-[:checked]:ring-1 has-[:checked]:ring-orange-600">
+                        <label class="cursor-pointer border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 text-center transition-all bg-zinc-50 dark:bg-zinc-850 hover:bg-white dark:hover:bg-zinc-800 has-[:checked]:border-orange-600 has-[:checked]:bg-orange-50/50 dark:has-[:checked]:bg-orange-950/30 has-[:checked]:ring-1 has-[:checked]:ring-orange-600">
                             <input type="radio" name="split-mode" value="range" class="sr-only" checked>
-                            <div class="font-bold text-xs text-zinc-900">Extract Range / Pages</div>
-                            <div class="text-[10px] text-zinc-500 mt-0.5">Select specific pages</div>
+                            <div class="font-bold text-xs text-zinc-900 dark:text-white">Extract Range / Pages</div>
+                            <div class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Select specific pages</div>
                         </label>
-                        <label class="cursor-pointer border border-zinc-200 rounded-xl p-3 text-center transition-all bg-zinc-50 hover:bg-white has-[:checked]:border-orange-600 has-[:checked]:bg-orange-50/50 has-[:checked]:ring-1 has-[:checked]:ring-orange-600">
+                        <label class="cursor-pointer border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 text-center transition-all bg-zinc-50 dark:bg-zinc-850 hover:bg-white dark:hover:bg-zinc-800 has-[:checked]:border-orange-600 has-[:checked]:bg-orange-50/50 dark:has-[:checked]:bg-orange-950/30 has-[:checked]:ring-1 has-[:checked]:ring-orange-600">
                             <input type="radio" name="split-mode" value="all" class="sr-only">
-                            <div class="font-bold text-xs text-zinc-900">Extract Every Page</div>
-                            <div class="text-[10px] text-zinc-500 mt-0.5">Separate into individual PDFs</div>
+                            <div class="font-bold text-xs text-zinc-900 dark:text-white">Extract Every Page</div>
+                            <div class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Separate into individual PDFs</div>
                         </label>
                     </div>
                 </div>
 
                 <!-- Range Configuration (Visible in Range mode) -->
-                <div id="range-config-box" class="space-y-4 bg-zinc-50/80 border border-zinc-200 p-4 rounded-xl">
+                <div id="range-config-box" class="space-y-4 bg-zinc-50/80 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 p-4 rounded-xl">
                     <div>
                         <div class="flex items-center justify-between mb-1.5">
-                            <label for="range-input" class="text-xs font-bold text-zinc-700">Page Range or Numbers</label>
-                            <span class="text-[11px] text-zinc-400">e.g. 1-3, 5, 7-9</span>
+                            <label for="range-input" class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Page Range or Numbers</label>
+                            <span class="text-[11px] text-zinc-400 dark:text-zinc-500">e.g. 1-3, 5, 7-9</span>
                         </div>
                         <input 
                             type="text" 
                             id="range-input" 
-                            class="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs font-medium text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
+                            class="w-full px-3 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg text-xs font-medium text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
                             placeholder="Enter page range (e.g. 1-2, 4)"
                         >
                     </div>
@@ -137,60 +207,60 @@
                     <!-- Quick Select Helpers -->
                     <div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-[11px] font-semibold text-zinc-500">Or click pages to toggle:</span>
+                            <span class="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">Or click pages to toggle:</span>
                             <div class="flex items-center gap-2 text-[11px]">
-                                <button type="button" id="btn-select-all" class="text-orange-600 hover:text-orange-800 font-medium">All</button>
-                                <span class="text-zinc-300">·</span>
-                                <button type="button" id="btn-select-odd" class="text-zinc-600 hover:text-zinc-900 font-medium">Odd</button>
-                                <span class="text-zinc-300">·</span>
-                                <button type="button" id="btn-select-even" class="text-zinc-600 hover:text-zinc-900 font-medium">Even</button>
-                                <span class="text-zinc-300">·</span>
-                                <button type="button" id="btn-clear-selection" class="text-zinc-400 hover:text-red-600 font-medium">Clear</button>
+                                <button type="button" id="btn-select-all" class="text-orange-600 dark:text-orange-400 hover:text-orange-800 font-medium">All</button>
+                                <span class="text-zinc-300 dark:text-zinc-700">·</span>
+                                <button type="button" id="btn-select-odd" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white font-medium">Odd</button>
+                                <span class="text-zinc-300 dark:text-zinc-700">·</span>
+                                <button type="button" id="btn-select-even" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white font-medium">Even</button>
+                                <span class="text-zinc-300 dark:text-zinc-700">·</span>
+                                <button type="button" id="btn-clear-selection" class="text-zinc-400 hover:text-red-600 dark:hover:text-red-400 font-medium">Clear</button>
                             </div>
                         </div>
 
                         <!-- Page Chips Container -->
-                        <div id="pages-grid" class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto p-1 bg-white rounded-lg border border-zinc-200">
+                        <div id="pages-grid" class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto p-1 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700">
                             <!-- Populated with page chips -->
                         </div>
                     </div>
 
                     <!-- Output Format for Range -->
-                    <div class="pt-2 border-t border-zinc-200/60">
-                        <label class="block text-xs font-bold text-zinc-700 mb-2">Save Selected Pages As:</label>
+                    <div class="pt-2 border-t border-zinc-200/60 dark:border-zinc-700">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">Save Selected Pages As:</label>
                         <div class="grid grid-cols-2 gap-2 text-xs">
-                            <label class="flex items-center gap-2 p-2 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-zinc-300">
+                            <label class="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg cursor-pointer hover:border-zinc-300 dark:hover:border-zinc-600">
                                 <input type="radio" name="range-output-type" value="single" checked class="text-orange-600 focus:ring-orange-500">
-                                <span class="font-medium text-zinc-800">1 Combined PDF</span>
+                                <span class="font-medium text-zinc-800 dark:text-zinc-200">1 Combined PDF</span>
                             </label>
-                            <label class="flex items-center gap-2 p-2 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-zinc-300">
+                            <label class="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg cursor-pointer hover:border-zinc-300 dark:hover:border-zinc-600">
                                 <input type="radio" name="range-output-type" value="separate" class="text-orange-600 focus:ring-orange-500">
-                                <span class="font-medium text-zinc-800">Separate PDF files</span>
+                                <span class="font-medium text-zinc-800 dark:text-zinc-200">Separate PDF files</span>
                             </label>
                         </div>
                     </div>
                 </div>
 
                 <!-- All Pages Mode Note (Visible in All Pages mode) -->
-                <div id="all-config-box" class="hidden p-4 bg-orange-50 border border-orange-200 rounded-xl text-xs text-orange-900">
+                <div id="all-config-box" class="hidden p-4 bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 rounded-xl text-xs text-orange-900 dark:text-orange-200">
                     <p class="font-bold mb-1">Split all pages individually</p>
-                    <p class="text-orange-700 leading-relaxed">
+                    <p class="text-orange-700 dark:text-orange-300 leading-relaxed">
                         Each page will be extracted into its own standalone PDF document. You will be able to download individual pages or a combined ZIP archive.
                     </p>
                 </div>
 
                 <!-- Progress Bar -->
                 <div id="progress-container" class="hidden space-y-2">
-                    <div class="flex justify-between text-xs font-semibold text-zinc-600">
+                    <div class="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-300">
                         <span id="progress-text">Extracting pages...</span>
                         <span id="progress-percent">0%</span>
                     </div>
-                    <div class="w-full bg-zinc-100 rounded-full h-2 overflow-hidden">
+                    <div class="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden">
                         <div id="progress-bar" class="bg-orange-600 h-2 rounded-full transition-all duration-200" style="width: 0%"></div>
                     </div>
                 </div>
 
-                <button id="split-btn" class="w-full py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm text-white bg-zinc-900 hover:bg-zinc-800 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                <button id="split-btn" class="w-full py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
                     <span>Split & Extract PDF</span>
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
@@ -200,9 +270,9 @@
 
             <!-- Download Results Section -->
             <div id="download-section" class="hidden mt-6 space-y-4">
-                <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-center">
+                <div class="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl text-emerald-900 dark:text-emerald-200 text-center">
                     <p class="font-bold text-sm">✓ PDF Successfully Split!</p>
-                    <p id="result-summary" class="text-xs text-emerald-700 mt-1 font-medium"></p>
+                    <p id="result-summary" class="text-xs text-emerald-700 dark:text-emerald-300 mt-1 font-medium"></p>
                 </div>
 
                 <!-- Single File Download Action -->
@@ -225,7 +295,7 @@
                     </button>
 
                     <div class="pt-2">
-                        <p class="text-xs font-bold text-zinc-700 mb-2">Or download individual pages:</p>
+                        <p class="text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">Or download individual pages:</p>
                         <div id="extracted-files-list" class="space-y-1.5 max-h-52 overflow-y-auto pr-1">
                             <!-- Populated with page download items -->
                         </div>
@@ -233,7 +303,7 @@
                 </div>
 
                 <div class="text-center pt-2">
-                    <button id="split-another-btn" class="text-xs font-semibold text-zinc-500 hover:text-zinc-900 transition-colors">
+                    <button id="split-another-btn" class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
                         ← Split another PDF document
                     </button>
                 </div>
@@ -247,6 +317,60 @@
         </div>
 
     </main>
+
+    <!-- Global Footer -->
+    <footer class="mt-20 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-colors">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+                <div class="md:col-span-1 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center text-xs font-bold shadow-xs">⚡</div>
+                        <span class="font-bold text-base text-zinc-900 dark:text-white">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                    </div>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        High-performance in-browser PDF & image suite. Compress, merge, split, watermark, and convert without uploading files.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white mb-3">PDF Tools</h4>
+                    <ul class="space-y-2 text-xs text-zinc-500 dark:text-zinc-400">
+                        <li><a href="pdf-compressor.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PDF Compressor (KB/MB)</a></li>
+                        <li><a href="merge-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Merge PDF Files</a></li>
+                        <li><a href="split-pdf.html" class="text-blue-600 dark:text-blue-400 font-semibold">Split PDF Pages</a></li>
+                        <li><a href="pdf-watermarker.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PDF Watermarker</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white mb-3">Image Tools</h4>
+                    <ul class="space-y-2 text-xs text-zinc-500 dark:text-zinc-400">
+                        <li><a href="image-to-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Images to PDF</a></li>
+                        <li><a href="png-to-jpg.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PNG to JPG Converter</a></li>
+                        <li><a href="jpg-to-png.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">JPG to PNG Converter</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white mb-3">Company & Legal</h4>
+                    <ul class="space-y-2 text-xs text-zinc-500 dark:text-zinc-400">
+                        <li><a href="privacy-policy.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy Policy</a></li>
+                        <li><a href="terms-and-conditions.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms & Conditions</a></li>
+                        <li><a href="about-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About Us</a></li>
+                        <li><a href="contact-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Us</a></li>
+                        <li><a href="disclaimer.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Disclaimer</a></li>
+                        <li><a href="cookie-policy.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400 dark:text-zinc-500">
+                <p>© 2026 PDFTool4You. All rights reserved. 100% Client-Side Processing.</p>
+                <div class="flex items-center gap-4">
+                    <a href="privacy-policy.html" class="hover:underline">Privacy</a>
+                    <a href="terms-and-conditions.html" class="hover:underline">Terms</a>
+                    <a href="cookie-policy.html" class="hover:underline">Cookies</a>
+                    <a href="contact-us.html" class="hover:underline">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const dropZone = document.getElementById('drop-zone');
@@ -367,7 +491,7 @@
                 chip.type = 'button';
                 const isSelected = selectedPageNumbers.has(i);
                 chip.className = `page-chip text-xs px-2.5 py-1 rounded-md border text-center transition-all ${
-                    isSelected ? 'selected border-blue-600 bg-blue-50 text-blue-700 font-bold' : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300'
+                    isSelected ? 'selected border-orange-600 bg-orange-50 dark:bg-orange-950/40 text-orange-700 dark:text-orange-300 font-bold' : 'border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-600'
                 }`;
                 chip.textContent = i;
                 chip.addEventListener('click', () => {
@@ -556,13 +680,13 @@
 
                         // Add to download list
                         const itemRow = document.createElement('div');
-                        itemRow.className = 'flex items-center justify-between p-2 rounded-lg bg-zinc-50 border border-zinc-200 text-xs';
+                        itemRow.className = 'flex items-center justify-between p-2 rounded-lg bg-zinc-50 dark:bg-zinc-800/70 border border-zinc-200 dark:border-zinc-700 text-xs';
                         itemRow.innerHTML = `
                             <div class="truncate mr-2">
-                                <span class="font-bold text-zinc-900">${fileName}</span>
-                                <span class="text-zinc-400 ml-1">(${formatBytes(bytes.byteLength)})</span>
+                                <span class="font-bold text-zinc-900 dark:text-white">${fileName}</span>
+                                <span class="text-zinc-400 dark:text-zinc-500 ml-1">(${formatBytes(bytes.byteLength)})</span>
                             </div>
-                            <a href="${URL.createObjectURL(blob)}" download="${fileName}" class="px-2.5 py-1 text-[11px] font-semibold text-blue-600 hover:text-blue-800 bg-white border border-zinc-200 rounded-md shrink-0">
+                            <a href="${URL.createObjectURL(blob)}" download="${fileName}" class="px-2.5 py-1 text-[11px] font-semibold text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md shrink-0 transition-colors">
                                 Download
                             </a>
                         `;

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy – PDFTool4You</title>
+    <meta name="description" content="Privacy Policy for PDFTool4You. Learn how we handle privacy, local client-side processing, cookies, and Google AdSense compliance.">
+    <link rel="canonical" href="https://pdftool4you.com/privacy-policy.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Privacy Policy – PDFTool4You">
+    <meta property="og:description" content="Transparent privacy terms for PDFTool4You: zero file uploads, local in-browser processing, and Google AdSense cookie disclosures.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'system';
+            const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <script src="theme.js"></script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: #fafbfc;
+            color: #09090b;
+        }
+        html.dark {
+            color-scheme: dark;
+        }
+        html.dark body {
+            background-color: #09090b;
+            color: #f4f4f5;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/80 dark:border-zinc-800 transition-colors">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center text-sm font-bold shadow-sm">
+                    ⚡
+                </div>
+                <span class="font-bold text-base text-zinc-900 dark:text-white tracking-tight">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <nav class="hidden md:flex items-center gap-5 text-xs font-semibold text-zinc-600 dark:text-zinc-300 mr-2">
+                    <a href="index.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Tools</a>
+                    <a href="about-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About Us</a>
+                    <a href="contact-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact</a>
+                </nav>
+
+                <!-- Theme Toggle Dropdown -->
+                <div class="relative" data-theme-menu-container>
+                    <button type="button" data-theme-trigger aria-label="Toggle color theme" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none">
+                        <svg class="theme-icon-system w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        <svg class="theme-icon-light hidden w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <svg class="theme-icon-dark hidden w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                        <span class="theme-label hidden sm:inline text-xs font-semibold">Theme</span>
+                    </button>
+                    <div data-theme-menu class="hidden absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1.5 z-50 text-xs">
+                        <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Appearance</div>
+                        <button type="button" data-theme-value="system" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span>System default</span>
+                            <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        </button>
+                        <button type="button" data-theme-value="light" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span>Light</span>
+                            <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        </button>
+                        <button type="button" data-theme-value="dark" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span>Dark</span>
+                            <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <a href="index.html" class="inline-flex items-center gap-1 text-xs font-semibold text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white px-3 py-1.5 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span>Home</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-12 w-full">
+        
+        <!-- Header Title -->
+        <div class="mb-10 pb-6 border-b border-zinc-200 dark:border-zinc-800">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200/60 dark:border-blue-800/60 text-blue-700 dark:text-blue-300 text-xs font-semibold mb-3">
+                <span>Legal & Trust Documentation</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-3">Privacy Policy</h1>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400">
+                Last updated: <strong>September 23, 2026</strong> · Effective immediately across all PDFTool4You services.
+            </p>
+        </div>
+
+        <!-- Privacy Policy Body -->
+        <article class="prose prose-zinc dark:prose-invert max-w-none space-y-8 text-sm sm:text-base leading-relaxed text-zinc-700 dark:text-zinc-300">
+            
+            <div class="p-4 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-950 dark:text-emerald-200">
+                <h3 class="font-bold text-sm sm:text-base text-emerald-900 dark:text-emerald-300 mb-1 flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                    <span>Our Core Privacy Principle: Zero Server File Uploads</span>
+                </h3>
+                <p class="text-xs sm:text-sm text-emerald-800 dark:text-emerald-300/90 leading-relaxed">
+                    Unlike traditional file conversion websites, PDFTool4You performs all PDF and image transformations (compressing, merging, splitting, watermarking, format conversion) <strong>100% locally in your web browser</strong>. Your confidential files, photos, legal contracts, and sensitive personal records are never uploaded to, transmitted across, or stored on our servers.
+                </p>
+            </div>
+
+            <!-- Section 1 -->
+            <section class="space-y-3">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white">1. Introduction & Overview</h2>
+                <p>
+                    Welcome to PDFTool4You ("we", "us", "our", or "the Service"). We are committed to safeguarding the digital privacy and personal data of every individual who accesses our website at <a href="index.html" class="text-blue-600 dark:text-blue-400 underline font-medium">pdftool4you.com</a>. This Privacy Policy clarifies how information is gathered, utilized, disclosed, and protected when you interact with our suite of client-side document utilities.
+                </p>
+                <p>
+                    By accessing or using PDFTool4You, you acknowledge that you have read, understood, and agreed to the practices outlined in this Privacy Policy. If you disagree with any segment of this policy, we advise you to discontinue use of the site.
+                </p>
+            </section>
+
+            <!-- Section 2 -->
+            <section class="space-y-3">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white">2. File Data & Local Browser Architecture</h2>
+                <p>
+                    The cornerstone of PDFTool4You is privacy by design:
+                </p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>No Server Upload:</strong> When you select a file (PDF, JPG, PNG) using our file drop areas, the file is read into your browser's private local memory (HTML5 File API, JavaScript ArrayBuffer, and HTML Canvas).</li>
+                    <li><strong>Local Processing:</strong> All compression algorithms, page merging logic, page splitting, and watermarking execute solely on your device CPU/GPU.</li>
+                    <li><strong>Immediate Disposal:</strong> Once you close the tab or reload the window, all file data held in volatile browser memory is immediately freed by your browser's garbage collector.</li>
+                </ul>
+            </section>
+
+            <!-- Section 3: Google AdSense Compliance -->
+            <section class="space-y-3 bg-zinc-50 dark:bg-zinc-900/60 p-5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white flex items-center gap-2">
+                    <span>3. Google AdSense & Third-Party Advertising Disclosure</span>
+                </h2>
+                <p>
+                    To keep our online utility tools free for all users worldwide, we display contextual and personalized advertisements provided by <strong>Google AdSense</strong> and affiliated third-party advertising networks.
+                </p>
+                <p class="font-semibold text-zinc-900 dark:text-zinc-100">
+                    Important Disclosures required by Google AdSense & Publisher Policies:
+                </p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Third-Party Vendors & Cookies:</strong> Third-party vendors, including Google, use cookies and web beacons to serve advertisements based on your prior visits to our website or other websites on the Internet.</li>
+                    <li><strong>Google Advertising Cookies:</strong> Google's use of advertising cookies (including the DoubleClick cookie) enables it and its partners to serve ads to users based on their visit to PDFTool4You and/or other sites across the World Wide Web.</li>
+                    <li><strong>Opting Out of Personalized Ads:</strong> You may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 underline font-medium">Google Ads Settings (https://www.google.com/settings/ads)</a>.</li>
+                    <li><strong>Third-Party Opt-Out Portals:</strong> Alternatively, you can opt out of third-party vendor cookies for personalized advertising by visiting the Network Advertising Initiative opt-out page at <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 underline font-medium">www.aboutads.info</a> or the European Interactive Digital Advertising Alliance at <a href="https://www.youronlinechoices.eu/" target="_blank" rel="noopener noreferrer" class="text-blue-600 dark:text-blue-400 underline font-medium">www.youronlinechoices.eu</a>.</li>
+                </ul>
+            </section>
+
+            <!-- Section 4: Cookies & Local Storage -->
+            <section class="space-y-3">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white">4. Cookies & Web Storage Technologies</h2>
+                <p>
+                    Cookies are minute text files placed on your computer or mobile device when you browse websites. PDFTool4You uses cookies and browser local storage strictly for functional and advertising purposes:
+                </p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Functional Local Storage:</strong> We use your browser's <code class="px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-xs font-mono">localStorage</code> to remember your theme choice (System Default, Light, or Dark mode) and your cookie preferences. No personal identity is stored.</li>
+                    <li><strong>Advertising & Analytics Cookies:</strong> Third-party partners like Google AdSense set cookies to deliver relevant advertisements, track campaign effectiveness, and prevent fraudulent impressions or click spam.</li>
+                </ul>
+                <p>
+                    You can instruct your web browser to refuse all cookies or to alert you when a cookie is being transmitted. However, certain advertising preference options or UI settings may not persist if cookies and web storage are completely blocked.
+                </p>
+            </section>
+
+            <!-- Section 5: Log Files -->
+            <section class="space-y-3">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white">5. Log Files & Diagnostic Data</h2>
+                <p>
+                    Like standard web hosting environments, our web servers may automatically log standard request metadata when your browser requests website assets (such as HTML, CSS, JavaScript files, or fonts). These server logs may include:
+                </p>
+                <ul class="list-disc pl-5 space-y-1">
+                    <li>Internet Protocol (IP) addresses</li>
+                    <li>Browser model and version</li>
+                    <li>Operating system type</li>
+                    <li>Referring and exit web pages</li>
+                    <li>Date and time stamps of requests</li>
+                </ul>
+                <p>
+                    This standard diagnostic data is utilized exclusively for server performance monitoring, DDoS mitigation, network security, and infrastructure administration. It is never associated with any user document content.
+                </p>
+            </section>
+
+            <!-- Section 6: GDPR Compliance -->
+            <section class="space-y-3">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white">6. European General Data Protection Regulation (GDPR) Compliance</h2>
+                <p>
+                    For visitors residing in the European Economic Area (EEA), the United Kingdom, or Switzerland, you possess distinct legal rights regarding personal data under the GDPR:
+                </p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Right of Access:</strong> You have the right to request copies of any personal information we maintain.</li>
+                    <li><strong>Right to Rectification:</strong> You may request corrections to any information you believe is inaccurate.</li>
+                    <li><strong>Right to Erasure:</strong> You may request the deletion of your personal contact data or communication history under applicable legal conditions.</li>
+                    <li><strong>Right to Restrict or Object to Processing:</strong> You may object to or restrict processing of your data, including personalized advertising cookies.</li>
+                    <li><strong>Right to Withdraw Consent:</strong> Where data processing is rooted in consent (such as personalized advertising cookies), you retain the right to revoke consent at any moment via our Cookie Settings.</li>
+                </ul>
+                <p>
+                    Because we do not store your documents, files, or user accounts, there is zero persistent file data held by PDFTool4You.
+                </p>
+            </section>
+
+            <!-- Section 7: CCPA / CPRA Compliance -->
+            <section class="space-y-3">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white">7. California Consumer Privacy Act (CCPA / CPRA)</h2>
+                <p>
+                    For California residents, the California Consumer Privacy Act provides specific rights regarding personal information:
+                </p>
+                <ul class="list-disc pl-5 space-y-2">
+                    <li><strong>Notice of Collection:</strong> We do not collect names, addresses, Social Security numbers, or file contents. We only process technical internet identifiers (IP address, device identifiers) through third-party advertising partners.</li>
+                    <li><strong>Right to Opt Out of the Sale or Sharing of Personal Information:</strong> We do not sell your personal information or document contents to third parties. Under California law, the use of third-party advertising cookies may constitute "sharing" of personal information for cross-context behavioral advertising. You can opt out via Google Ads Settings or by blocking third-party advertising cookies in your browser.</li>
+                    <li><strong>Non-Discrimination:</strong> We will never discriminate against you for exercising any of your CCPA/CPRA rights.</li>
+                </ul>
+            </section>
+
+            <!-- Section 8: Indian Law & DPDP Act 2023 Compliance -->
+            <section class="space-y-3">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white">8. Compliance with Indian Laws (DPDP Act 2023 & IT Act 2000)</h2>
+                <p>
+                    PDFTool4You is operated from India. We are committed to adhering to all applicable Indian laws regarding data privacy and electronic communications, notably the <strong>Digital Personal Data Protection Act, 2023 (DPDP Act, 2023)</strong> and the <strong>Information Technology Act, 2000 (IT Act, 2000)</strong> along with the <strong>Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021</strong>.
+                </p>
+                <div class="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-2">
+                    <p class="font-bold text-zinc-900 dark:text-white">Rights of Data Principals in India:</p>
+                    <ul class="list-disc pl-5 space-y-1 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+                        <li><strong>Right to Access Information:</strong> Inquire about personal data summary and processing activities (limited to diagnostic logs and ad cookies).</li>
+                        <li><strong>Right to Correction & Erasure:</strong> Request the correction, completion, or deletion of personal data provided through contact or support requests.</li>
+                        <li><strong>Right to Grievance Redressal:</strong> Dedicated, expedited grievance resolution via our designated Indian Grievance Officer.</li>
+                        <li><strong>Zero Cross-Border Document Transfers:</strong> Because all PDF and image processing occurs 100% locally within your device's web browser, no sensitive personal documents or files are transferred across national borders or stored on remote cloud infrastructure.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Section 9: Children's Privacy -->
+            <section class="space-y-3">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white">9. Children's Online Privacy Protection (COPPA & DPDP Section 9)</h2>
+                <p>
+                    Protecting the privacy of minors is of paramount importance. In accordance with COPPA and Section 9 of the Indian DPDP Act 2023, PDFTool4You does not knowingly track or process personal data of children under the age of 18 without verifiable parental consent. If you believe a minor has submitted personal contact details, please notify our Grievance Officer immediately for expedited removal.
+                </p>
+            </section>
+
+            <!-- Section 10: Security -->
+            <section class="space-y-3">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white">10. Data Security & Technical Safeguards</h2>
+                <p>
+                    In accordance with Reasonable Security Practices under Rule 3 of the IT (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011, we implement strict HTTPS/TLS cryptographic transport security across our entire domain, protecting users against eavesdropping and data manipulation.
+                </p>
+            </section>
+
+            <!-- Section 11: Grievance Officer & Contact -->
+            <section class="space-y-3 p-6 rounded-2xl bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/60 text-blue-800 dark:text-blue-200">Rule 3(2) IT Rules 2021 & DPDP Act</span>
+                    <h2 class="text-lg font-bold text-zinc-900 dark:text-white">11. Designated Grievance Officer (India)</h2>
+                </div>
+                <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+                    In compliance with the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021, and the Digital Personal Data Protection Act, 2023, the details of our official Grievance Officer are provided below:
+                </p>
+                <div class="mt-3 space-y-1.5 text-xs sm:text-sm">
+                    <p><strong>Grievance Officer:</strong> Pratap Ahirwar</p>
+                    <p><strong>Designation:</strong> Data Protection & Grievance Redressal Officer</p>
+                    <p><strong>Jurisdiction & Country of Operation:</strong> India</p>
+                    <p><strong>Official Email:</strong> <a href="mailto:ahirwarpratap003@gmail.com" class="text-blue-600 dark:text-blue-400 font-semibold underline">ahirwarpratap003@gmail.com</a></p>
+                    <p><strong>Website:</strong> <a href="index.html" class="text-blue-600 dark:text-blue-400 underline font-medium">pdftool4you.com</a></p>
+                    <p><strong>Redressal Timelines:</strong> Acknowledgment within <strong>24 to 48 hours</strong>; complete resolution within <strong>15 days</strong> of receipt as mandated by Indian law.</p>
+                </div>
+            </section>
+
+        </article>
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="mt-20 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-colors">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+                
+                <!-- Brand Info -->
+                <div class="md:col-span-1 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center text-xs font-bold shadow-xs">⚡</div>
+                        <span class="font-bold text-base text-zinc-900 dark:text-white">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                    </div>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        High-performance in-browser PDF & image suite. Compress, merge, split, watermark, and convert without uploading files.
+                    </p>
+                </div>
+
+                <!-- PDF Tools -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white mb-3">PDF Tools</h4>
+                    <ul class="space-y-2 text-xs text-zinc-500 dark:text-zinc-400">
+                        <li><a href="pdf-compressor.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PDF Compressor (KB/MB)</a></li>
+                        <li><a href="merge-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Merge PDF Files</a></li>
+                        <li><a href="split-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Split PDF Pages</a></li>
+                        <li><a href="pdf-watermarker.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PDF Watermarker</a></li>
+                    </ul>
+                </div>
+
+                <!-- Image Tools -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white mb-3">Image Tools</h4>
+                    <ul class="space-y-2 text-xs text-zinc-500 dark:text-zinc-400">
+                        <li><a href="image-to-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Images to PDF</a></li>
+                        <li><a href="png-to-jpg.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PNG to JPG Converter</a></li>
+                        <li><a href="jpg-to-png.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">JPG to PNG Converter</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal & Trust (Essential for AdSense) -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white mb-3">Company & Legal</h4>
+                    <ul class="space-y-2 text-xs text-zinc-500 dark:text-zinc-400">
+                        <li><a href="privacy-policy.html" class="text-blue-600 dark:text-blue-400 font-semibold">Privacy Policy</a></li>
+                        <li><a href="terms-and-conditions.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms & Conditions</a></li>
+                        <li><a href="about-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About Us</a></li>
+                        <li><a href="contact-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Us</a></li>
+                        <li><a href="disclaimer.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Disclaimer</a></li>
+                        <li><a href="cookie-policy.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Cookie Policy</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Disclaimer & Copyright -->
+            <div class="pt-8 border-t border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400 dark:text-zinc-500">
+                <p>© 2026 PDFTool4You. All rights reserved. 100% Client-Side Processing.</p>
+                <div class="flex items-center gap-4">
+                    <a href="privacy-policy.html" class="hover:underline">Privacy</a>
+                    <a href="terms-and-conditions.html" class="hover:underline">Terms</a>
+                    <a href="cookie-policy.html" class="hover:underline">Cookies</a>
+                    <a href="contact-us.html" class="hover:underline">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

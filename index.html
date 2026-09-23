@@ -5,14 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PDFTool4You — Minimal & Private PDF & Image Tools</title>
     <meta name="description" content="Free, fast, client-side PDF and image utility tools. Compress PDFs and convert images directly in your browser with zero server uploads.">
+    <link rel="canonical" href="https://pdftool4you.com/">
+    <meta property="og:type" content="website">
     <meta property="og:title" content="PDFTool4You — Minimal & Private PDF & Image Tools">
     <meta property="og:description" content="Free, fast, client-side PDF and image utility tools. 100% private in-browser processing.">
+    <meta property="og:url" content="https://pdftool4you.com/">
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PDFTool4You",
+      "url": "https://pdftool4you.com",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "All",
+      "description": "Free, fast, client-side PDF and image utility tools. Compress PDFs to target KB/MB sizes, merge, split, watermark, and convert without server uploads.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PDFTool4You",
+        "url": "https://pdftool4you.com",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "ahirwarpratap003@gmail.com",
+          "contactType": "customer service"
+        }
+      }
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
@@ -32,62 +64,148 @@
             }
         }
     </script>
+    <script>
+        // Immediate execution to prevent flash of wrong theme (FOUC)
+        (function() {
+            const theme = localStorage.getItem('theme') || 'system';
+            const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <script src="theme.js"></script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
             background-color: #fafbfc;
             color: #09090b;
         }
+        html.dark {
+            color-scheme: dark;
+        }
+        html.dark body {
+            background-color: #09090b;
+            color: #f4f4f5;
+        }
         .mesh-bg {
             background-image: 
                 radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
                 radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%);
+        }
+        .dark .mesh-bg {
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%);
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
 
     <!-- Minimal Sticky Navigation -->
-    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-zinc-200/80">
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/80 dark:border-zinc-800 transition-colors">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-2.5 group">
-                <div class="w-9 h-9 rounded-xl bg-zinc-900 text-white flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
-                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="w-9 h-9 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
+                    <svg class="w-5 h-5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                     </svg>
                 </div>
                 <div class="flex items-baseline gap-1">
-                    <span class="font-bold text-lg text-zinc-900 tracking-tight">PDFTool<span class="text-blue-600">4You</span></span>
+                    <span class="font-bold text-lg text-zinc-900 dark:text-white tracking-tight">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
                 </div>
             </a>
 
-            <!-- Right Nav Links & Privacy Indicator -->
-            <div class="flex items-center gap-4 sm:gap-6">
-                <nav class="hidden md:flex items-center gap-5 text-sm font-medium text-zinc-600">
-                    <a href="#tools-section" class="hover:text-zinc-900 transition-colors">Tools</a>
-                    <a href="#privacy-section" class="hover:text-zinc-900 transition-colors">Privacy</a>
-                    <a href="#faq-section" class="hover:text-zinc-900 transition-colors">FAQ</a>
+            <!-- Right Nav Links & Controls -->
+            <div class="flex items-center gap-3 sm:gap-4">
+                <nav class="hidden md:flex items-center gap-5 text-sm font-medium text-zinc-600 dark:text-zinc-300">
+                    <a href="#tools-section" class="hover:text-zinc-900 dark:hover:text-white transition-colors">Tools</a>
+                    <a href="about-us.html" class="hover:text-zinc-900 dark:hover:text-white transition-colors">About Us</a>
+                    <a href="contact-us.html" class="hover:text-zinc-900 dark:hover:text-white transition-colors">Contact</a>
+                    <a href="privacy-policy.html" class="hover:text-zinc-900 dark:hover:text-white transition-colors">Privacy</a>
                 </nav>
-                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-800 text-xs font-semibold">
+
+                <!-- In-Browser Badge -->
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs font-semibold">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span>100% In-Browser</span>
+                </div>
+
+                <!-- Light / Dark / System Mode Toggle Dropdown -->
+                <div class="relative" data-theme-menu-container>
+                    <button type="button" data-theme-trigger aria-label="Toggle color theme" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        <!-- System Icon -->
+                        <svg class="theme-icon-system w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        <!-- Light Icon -->
+                        <svg class="theme-icon-light hidden w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <!-- Dark Icon -->
+                        <svg class="theme-icon-dark hidden w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                        <span class="theme-label hidden md:inline text-xs font-semibold">Theme</span>
+                        <svg class="w-3 h-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div data-theme-menu class="hidden absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1.5 z-50 text-xs">
+                        <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Appearance</div>
+                        <button type="button" data-theme-value="system" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                </svg>
+                                <span>System default</span>
+                            </span>
+                            <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </button>
+                        <button type="button" data-theme-value="light" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                                </svg>
+                                <span>Light</span>
+                            </span>
+                            <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </button>
+                        <button type="button" data-theme-value="dark" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span class="flex items-center gap-2">
+                                <svg class="w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                                </svg>
+                                <span>Dark</span>
+                            </span>
+                            <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </header>
 
     <!-- Hero Section -->
-    <section class="mesh-bg pt-14 pb-12 sm:pt-20 sm:pb-16 border-b border-zinc-100">
+    <section class="mesh-bg pt-14 pb-12 sm:pt-20 sm:pb-16 border-b border-zinc-100 dark:border-zinc-800/80 transition-colors">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-semibold mb-6">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200/60 dark:border-blue-800/60 text-blue-700 dark:text-blue-300 text-xs font-semibold mb-6">
                 <span>⚡ Private & Fast</span>
-                <span class="text-blue-300">·</span>
+                <span class="text-blue-300 dark:text-blue-500">·</span>
                 <span>Zero Server Uploads</span>
             </div>
-            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-zinc-900 mb-5 leading-[1.15]">
+            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-5 leading-[1.15]">
                 Minimal, instant utility tools<br class="hidden sm:inline"/> for PDFs and images.
             </h1>
-            <p class="text-base sm:text-lg text-zinc-600 max-w-2xl mx-auto leading-relaxed">
+            <p class="text-base sm:text-lg text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
                 Compress, convert, and format your files safely on your own computer. Your sensitive files never leave your browser memory.
             </p>
         </div>
@@ -97,12 +215,12 @@
     <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-10 w-full" id="tools-section">
 
         <!-- Search Bar & Filters -->
-        <div class="mb-10 bg-white rounded-2xl border border-zinc-200/80 p-4 sm:p-5 shadow-sm">
+        <div class="mb-10 bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-4 sm:p-5 shadow-sm transition-colors">
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
                 
                 <!-- Search Input Field -->
                 <div class="relative flex-1">
-                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400 dark:text-zinc-500">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
@@ -110,51 +228,51 @@
                     <input 
                         type="text" 
                         id="tool-search-input" 
-                        class="w-full pl-10 pr-20 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                        class="w-full pl-10 pr-20 py-2.5 bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm font-medium text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                         placeholder="Filter tools by keyword (e.g., compress, jpg, png)..."
                         autocomplete="off"
                         spellcheck="false"
                     >
                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center gap-1.5 pointer-events-none">
-                        <button type="button" id="search-clear-btn" class="hidden pointer-events-auto text-zinc-400 hover:text-zinc-600 p-0.5" aria-label="Clear search">
+                        <button type="button" id="search-clear-btn" class="hidden pointer-events-auto text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 p-0.5" aria-label="Clear search">
                             <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
                             </svg>
                         </button>
-                        <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[11px] font-mono text-zinc-400 bg-white border border-zinc-200 rounded shadow-2xs">/</kbd>
+                        <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[11px] font-mono text-zinc-400 dark:text-zinc-500 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded shadow-2xs">/</kbd>
                     </div>
                 </div>
 
                 <!-- Category Segmented Buttons -->
-                <div class="flex items-center gap-1.5 p-1 bg-zinc-100 rounded-xl overflow-x-auto" role="tablist">
-                    <button class="filter-tab active px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all bg-white text-zinc-900 shadow-2xs whitespace-nowrap" data-category="all">
+                <div class="flex items-center gap-1.5 p-1 bg-zinc-100 dark:bg-zinc-800/80 rounded-xl overflow-x-auto" role="tablist">
+                    <button class="filter-tab active px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-2xs whitespace-nowrap" data-category="all">
                         All Tools
                     </button>
-                    <button class="filter-tab px-3.5 py-1.5 text-xs font-medium rounded-lg text-zinc-600 hover:text-zinc-900 transition-all whitespace-nowrap" data-category="pdf">
+                    <button class="filter-tab px-3.5 py-1.5 text-xs font-medium rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all whitespace-nowrap" data-category="pdf">
                         PDF Tools
                     </button>
-                    <button class="filter-tab px-3.5 py-1.5 text-xs font-medium rounded-lg text-zinc-600 hover:text-zinc-900 transition-all whitespace-nowrap" data-category="image">
+                    <button class="filter-tab px-3.5 py-1.5 text-xs font-medium rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all whitespace-nowrap" data-category="image">
                         Image Tools
                     </button>
                 </div>
             </div>
 
-            <div class="mt-3 flex items-center justify-between text-xs text-zinc-500 pt-2.5 border-t border-zinc-100">
+            <div class="mt-3 flex items-center justify-between text-xs text-zinc-500 dark:text-zinc-400 pt-2.5 border-t border-zinc-100 dark:border-zinc-800">
                 <span id="search-counter">Showing 7 tools</span>
-                <span class="text-zinc-400">All tools execute 100% on-device</span>
+                <span class="text-zinc-400 dark:text-zinc-500">All tools execute 100% on-device</span>
             </div>
         </div>
 
         <!-- Empty Results State -->
-        <div id="no-results" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-zinc-200">
-            <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-400">
+        <div id="no-results" class="hidden text-center py-16 bg-white dark:bg-zinc-900 rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800">
+            <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-400 dark:text-zinc-500">
                 <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
             </div>
-            <h3 class="text-base font-semibold text-zinc-900 mb-1">No tools matched your search</h3>
-            <p id="no-results-desc" class="text-sm text-zinc-500 max-w-sm mx-auto mb-4">Try searching for keywords like "compress", "merge", "split", "watermark", "jpg", or "pdf".</p>
-            <button type="button" id="reset-search-btn" class="px-4 py-2 text-xs font-semibold bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg transition-colors">
+            <h3 class="text-base font-semibold text-zinc-900 dark:text-white mb-1">No tools matched your search</h3>
+            <p id="no-results-desc" class="text-sm text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto mb-4">Try searching for keywords like "compress", "merge", "split", "watermark", "jpg", or "pdf".</p>
+            <button type="button" id="reset-search-btn" class="px-4 py-2 text-xs font-semibold bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 rounded-lg transition-colors">
                 Reset filters
             </button>
         </div>
@@ -164,39 +282,39 @@
 
             <!-- 1. PDF Tools Section -->
             <div id="section-pdf" class="tool-section">
-                <div class="flex items-center gap-2 mb-4 pb-2 border-b border-zinc-200/80">
-                    <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="flex items-center gap-2 mb-4 pb-2 border-b border-zinc-200/80 dark:border-zinc-800">
+                    <svg class="w-5 h-5 text-red-600 dark:text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
-                    <h2 class="text-base font-bold text-zinc-900 tracking-tight">PDF Document Tools</h2>
-                    <span class="text-xs text-zinc-400 font-medium">· Local processing</span>
+                    <h2 class="text-base font-bold text-zinc-900 dark:text-white tracking-tight">PDF Document Tools</h2>
+                    <span class="text-xs text-zinc-400 dark:text-zinc-500 font-medium">· Local processing</span>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
                     
                     <!-- Tool: PDF Compressor -->
-                    <div class="tool-card group bg-white rounded-2xl border border-zinc-200/80 p-6 flex flex-col justify-between hover:border-zinc-300 hover:shadow-md transition-all" data-category="pdf" data-keywords="pdf compressor compress document reduce file size optimize shrink mb kb target portal 100kb 200kb 500kb 1mb">
+                    <div class="tool-card group bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md transition-all" data-category="pdf" data-keywords="pdf compressor compress document reduce file size optimize shrink mb kb target portal 100kb 200kb 500kb 1mb">
                         <div>
                             <div class="flex items-start justify-between mb-4">
-                                <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-sm">
+                                <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 flex items-center justify-center font-bold text-sm">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
                                     </svg>
                                 </div>
-                                <span class="text-xs font-semibold text-zinc-400 group-hover:text-zinc-600 transition-colors">Target KB / MB</span>
+                                <span class="text-xs font-semibold text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">Target KB / MB</span>
                             </div>
-                            <h3 class="text-lg font-bold text-zinc-900 mb-2 group-hover:text-blue-600 transition-colors">Online PDF Compressor</h3>
-                            <p class="text-sm text-zinc-600 leading-relaxed mb-6">
+                            <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Online PDF Compressor</h3>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
                                 Compress PDF to an exact target size in KB or MB (e.g. ≤ 100 KB, 200 KB, 500 KB, 1 MB) or choose quality presets for online upload portals.
                             </p>
                         </div>
-                        <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
-                            <div class="text-xs text-zinc-400">
+                        <div class="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                            <div class="text-xs text-zinc-400 dark:text-zinc-500">
                                 <span>Target KB / MB</span>
                                 <span class="mx-1">·</span>
                                 <span>Fast</span>
                             </div>
-                            <a href="pdf-compressor.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 bg-zinc-100 group-hover:bg-blue-600 group-hover:text-white rounded-lg transition-all">
+                            <a href="pdf-compressor.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 group-hover:text-white dark:group-hover:text-white rounded-lg transition-all">
                                 <span>Open Tool</span>
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -206,28 +324,28 @@
                     </div>
 
                     <!-- Tool: Merge PDF -->
-                    <div class="tool-card group bg-white rounded-2xl border border-zinc-200/80 p-6 flex flex-col justify-between hover:border-zinc-300 hover:shadow-md transition-all" data-category="pdf" data-keywords="merge pdf combine documents join multiple pdfs binder unite files order pages">
+                    <div class="tool-card group bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md transition-all" data-category="pdf" data-keywords="merge pdf combine documents join multiple pdfs binder unite files order pages">
                         <div>
                             <div class="flex items-start justify-between mb-4">
-                                <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-sm">
+                                <div class="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-sm">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
                                     </svg>
                                 </div>
-                                <span class="text-xs font-semibold text-zinc-400 group-hover:text-zinc-600 transition-colors">Multi-file</span>
+                                <span class="text-xs font-semibold text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">Multi-file</span>
                             </div>
-                            <h3 class="text-lg font-bold text-zinc-900 mb-2 group-hover:text-blue-600 transition-colors">Merge PDF Files</h3>
-                            <p class="text-sm text-zinc-600 leading-relaxed mb-6">
+                            <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Merge PDF Files</h3>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
                                 Combine multiple PDF documents into a single file in any order you choose. Fast, drag-and-drop reordering with zero file uploads.
                             </p>
                         </div>
-                        <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
-                            <div class="text-xs text-zinc-400">
+                        <div class="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                            <div class="text-xs text-zinc-400 dark:text-zinc-500">
                                 <span>Reorder pages</span>
                                 <span class="mx-1">·</span>
                                 <span>Uncapped</span>
                             </div>
-                            <a href="merge-pdf.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 bg-zinc-100 group-hover:bg-blue-600 group-hover:text-white rounded-lg transition-all">
+                            <a href="merge-pdf.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 group-hover:text-white dark:group-hover:text-white rounded-lg transition-all">
                                 <span>Open Tool</span>
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -237,29 +355,29 @@
                     </div>
 
                     <!-- Tool: Split PDF -->
-                    <div class="tool-card group bg-white rounded-2xl border border-zinc-200/80 p-6 flex flex-col justify-between hover:border-zinc-300 hover:shadow-md transition-all" data-category="pdf" data-keywords="split pdf extract separate pages range divide cut document individual zip">
+                    <div class="tool-card group bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md transition-all" data-category="pdf" data-keywords="split pdf extract separate pages range divide cut document individual zip">
                         <div>
                             <div class="flex items-start justify-between mb-4">
-                                <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center font-bold text-sm">
+                                <div class="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 flex items-center justify-center font-bold text-sm">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2"/>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11l2 2-2 2m-8-4l-2 2 2 2"/>
                                     </svg>
                                 </div>
-                                <span class="text-xs font-semibold text-zinc-400 group-hover:text-zinc-600 transition-colors">Range & single</span>
+                                <span class="text-xs font-semibold text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">Range & single</span>
                             </div>
-                            <h3 class="text-lg font-bold text-zinc-900 mb-2 group-hover:text-blue-600 transition-colors">Split PDF Document</h3>
-                            <p class="text-sm text-zinc-600 leading-relaxed mb-6">
+                            <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Split PDF Document</h3>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
                                 Extract individual pages, custom page ranges (e.g. 1-3, 5), or separate all pages into individual files. Download singly or as ZIP.
                             </p>
                         </div>
-                        <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
-                            <div class="text-xs text-zinc-400">
+                        <div class="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                            <div class="text-xs text-zinc-400 dark:text-zinc-500">
                                 <span>Visual selector</span>
                                 <span class="mx-1">·</span>
                                 <span>ZIP export</span>
                             </div>
-                            <a href="split-pdf.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 bg-zinc-100 group-hover:bg-blue-600 group-hover:text-white rounded-lg transition-all">
+                            <a href="split-pdf.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 group-hover:text-white dark:group-hover:text-white rounded-lg transition-all">
                                 <span>Open Tool</span>
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -269,29 +387,29 @@
                     </div>
 
                     <!-- Tool: PDF Watermarker -->
-                    <div class="tool-card group bg-white rounded-2xl border border-zinc-200/80 p-6 flex flex-col justify-between hover:border-zinc-300 hover:shadow-md transition-all" data-category="pdf" data-keywords="pdf watermarker watermark stamp text logo image transparency rotation confidential copyright brand protect opacity angle">
+                    <div class="tool-card group bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md transition-all" data-category="pdf" data-keywords="pdf watermarker watermark stamp text logo image transparency rotation confidential copyright brand protect opacity angle">
                         <div>
                             <div class="flex items-start justify-between mb-4">
-                                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-sm">
+                                <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-sm">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6"/>
                                     </svg>
                                 </div>
-                                <span class="text-xs font-semibold text-zinc-400 group-hover:text-zinc-600 transition-colors">Custom stamp</span>
+                                <span class="text-xs font-semibold text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">Custom stamp</span>
                             </div>
-                            <h3 class="text-lg font-bold text-zinc-900 mb-2 group-hover:text-blue-600 transition-colors">PDF Watermarker</h3>
-                            <p class="text-sm text-zinc-600 leading-relaxed mb-6">
+                            <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">PDF Watermarker</h3>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
                                 Stamp text or image logos across PDF pages. Full control over opacity, rotation, preset positions, or tiled security patterns with real-time preview.
                             </p>
                         </div>
-                        <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
-                            <div class="text-xs text-zinc-400">
+                        <div class="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                            <div class="text-xs text-zinc-400 dark:text-zinc-500">
                                 <span>Live canvas preview</span>
                                 <span class="mx-1">·</span>
                                 <span>Logo support</span>
                             </div>
-                            <a href="pdf-watermarker.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 bg-zinc-100 group-hover:bg-blue-600 group-hover:text-white rounded-lg transition-all">
+                            <a href="pdf-watermarker.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 group-hover:text-white dark:group-hover:text-white rounded-lg transition-all">
                                 <span>Open Tool</span>
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -301,28 +419,28 @@
                     </div>
 
                     <!-- Tool: Image to PDF -->
-                    <div class="tool-card group bg-white rounded-2xl border border-zinc-200/80 p-6 flex flex-col justify-between hover:border-zinc-300 hover:shadow-md transition-all" data-category="pdf" data-keywords="image to pdf convert photos jpg png combine merge document">
+                    <div class="tool-card group bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md transition-all" data-category="pdf" data-keywords="image to pdf convert photos jpg png combine merge document">
                         <div>
                             <div class="flex items-start justify-between mb-4">
-                                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-sm">
+                                <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold text-sm">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
                                 </div>
-                                <span class="text-xs font-semibold text-zinc-400 group-hover:text-zinc-600 transition-colors">Instant</span>
+                                <span class="text-xs font-semibold text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">Instant</span>
                             </div>
-                            <h3 class="text-lg font-bold text-zinc-900 mb-2 group-hover:text-blue-600 transition-colors">Image to PDF Converter</h3>
-                            <p class="text-sm text-zinc-600 leading-relaxed mb-6">
+                            <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Image to PDF Converter</h3>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
                                 Package your JPG or PNG image directly into a clean, standard PDF document. Perfect for receipts, IDs, certificates, and job applications.
                             </p>
                         </div>
-                        <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
-                            <div class="text-xs text-zinc-400">
+                        <div class="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                            <div class="text-xs text-zinc-400 dark:text-zinc-500">
                                 <span>Multi-format</span>
                                 <span class="mx-1">·</span>
                                 <span>No watermark</span>
                             </div>
-                            <a href="image-to-pdf.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 bg-zinc-100 group-hover:bg-blue-600 group-hover:text-white rounded-lg transition-all">
+                            <a href="image-to-pdf.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 group-hover:text-white dark:group-hover:text-white rounded-lg transition-all">
                                 <span>Open Tool</span>
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -336,39 +454,39 @@
 
             <!-- 2. Image Tools Section -->
             <div id="section-image" class="tool-section">
-                <div class="flex items-center gap-2 mb-4 pb-2 border-b border-zinc-200/80">
-                    <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="flex items-center gap-2 mb-4 pb-2 border-b border-zinc-200/80 dark:border-zinc-800">
+                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
-                    <h2 class="text-base font-bold text-zinc-900 tracking-tight">Image Conversion Utilities</h2>
-                    <span class="text-xs text-zinc-400 font-medium">· High resolution</span>
+                    <h2 class="text-base font-bold text-zinc-900 dark:text-white tracking-tight">Image Conversion Utilities</h2>
+                    <span class="text-xs text-zinc-400 dark:text-zinc-500 font-medium">· High resolution</span>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     
                     <!-- Tool: PNG to JPG -->
-                    <div class="tool-card group bg-white rounded-2xl border border-zinc-200/80 p-6 flex flex-col justify-between hover:border-zinc-300 hover:shadow-md transition-all" data-category="image" data-keywords="png to jpg convert picture photo format graphics jpeg image">
+                    <div class="tool-card group bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md transition-all" data-category="image" data-keywords="png to jpg convert picture photo format graphics jpeg image">
                         <div>
                             <div class="flex items-start justify-between mb-4">
-                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">
+                                <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-sm">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                                     </svg>
                                 </div>
-                                <span class="text-xs font-semibold text-zinc-400 group-hover:text-zinc-600 transition-colors">Lossless logic</span>
+                                <span class="text-xs font-semibold text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">Lossless logic</span>
                             </div>
-                            <h3 class="text-lg font-bold text-zinc-900 mb-2 group-hover:text-blue-600 transition-colors">PNG to JPG Converter</h3>
-                            <p class="text-sm text-zinc-600 leading-relaxed mb-6">
+                            <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">PNG to JPG Converter</h3>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
                                 Transform PNG images and transparent graphics into clean, high-quality JPG files. Adjust quality level and download immediately.
                             </p>
                         </div>
-                        <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
-                            <div class="text-xs text-zinc-400">
+                        <div class="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                            <div class="text-xs text-zinc-400 dark:text-zinc-500">
                                 <span>Fast canvas engine</span>
                                 <span class="mx-1">·</span>
                                 <span>No file caps</span>
                             </div>
-                            <a href="png-to-jpg.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 bg-zinc-100 group-hover:bg-blue-600 group-hover:text-white rounded-lg transition-all">
+                            <a href="png-to-jpg.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 group-hover:text-white dark:group-hover:text-white rounded-lg transition-all">
                                 <span>Open Tool</span>
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -378,28 +496,28 @@
                     </div>
 
                     <!-- Tool: JPG to PNG -->
-                    <div class="tool-card group bg-white rounded-2xl border border-zinc-200/80 p-6 flex flex-col justify-between hover:border-zinc-300 hover:shadow-md transition-all" data-category="image" data-keywords="jpg to png convert photo jpeg picture lossless graphic">
+                    <div class="tool-card group bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 flex flex-col justify-between hover:border-zinc-300 dark:hover:border-zinc-700 hover:shadow-md transition-all" data-category="image" data-keywords="jpg to png convert photo jpeg picture lossless graphic">
                         <div>
                             <div class="flex items-start justify-between mb-4">
-                                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-sm">
+                                <div class="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-sm">
                                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                     </svg>
                                 </div>
-                                <span class="text-xs font-semibold text-zinc-400 group-hover:text-zinc-600 transition-colors">Crisp output</span>
+                                <span class="text-xs font-semibold text-zinc-400 dark:text-zinc-500 group-hover:text-zinc-600 dark:group-hover:text-zinc-300 transition-colors">Crisp output</span>
                             </div>
-                            <h3 class="text-lg font-bold text-zinc-900 mb-2 group-hover:text-blue-600 transition-colors">JPG to PNG Converter</h3>
-                            <p class="text-sm text-zinc-600 leading-relaxed mb-6">
+                            <h3 class="text-lg font-bold text-zinc-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">JPG to PNG Converter</h3>
+                            <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
                                 Convert standard JPG photos to uncompressed PNG format for crystal-clear clarity, web design assets, and print materials.
                             </p>
                         </div>
-                        <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
-                            <div class="text-xs text-zinc-400">
+                        <div class="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+                            <div class="text-xs text-zinc-400 dark:text-zinc-500">
                                 <span>Zero quality loss</span>
                                 <span class="mx-1">·</span>
                                 <span>Instant</span>
                             </div>
-                            <a href="jpg-to-png.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 bg-zinc-100 group-hover:bg-blue-600 group-hover:text-white rounded-lg transition-all">
+                            <a href="jpg-to-png.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-800 group-hover:bg-blue-600 dark:group-hover:bg-blue-600 group-hover:text-white dark:group-hover:text-white rounded-lg transition-all">
                                 <span>Open Tool</span>
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -414,53 +532,53 @@
         </div>
 
         <!-- Privacy & Architecture Section -->
-        <section id="privacy-section" class="mt-20 pt-12 border-t border-zinc-200/80">
+        <section id="privacy-section" class="mt-20 pt-12 border-t border-zinc-200/80 dark:border-zinc-800">
             <div class="text-center max-w-2xl mx-auto mb-10">
-                <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60 mb-3">
+                <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-full border border-emerald-200/60 dark:border-emerald-800/60 mb-3">
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                     </svg>
                     <span>Browser-Native Execution</span>
                 </div>
-                <h2 class="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight mb-3">Engineered for total privacy.</h2>
-                <p class="text-sm sm:text-base text-zinc-600">
+                <h2 class="text-2xl sm:text-3xl font-bold text-zinc-900 dark:text-white tracking-tight mb-3">Engineered for total privacy.</h2>
+                <p class="text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
                     Unlike traditional file converters that upload your PDFs and photos to third-party cloud servers, PDFTool4You processes everything locally in browser memory.
                 </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="bg-white rounded-2xl border border-zinc-200/80 p-6 shadow-2xs">
-                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
+                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 shadow-2xs">
+                    <div class="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-4">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
                         </svg>
                     </div>
-                    <h3 class="text-base font-bold text-zinc-900 mb-1.5">Zero Remote Storage</h3>
-                    <p class="text-sm text-zinc-600 leading-relaxed">
+                    <h3 class="text-base font-bold text-zinc-900 dark:text-white mb-1.5">Zero Remote Storage</h3>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                         Files never transit across the internet. Bank statements, IDs, and tax documents remain strictly on your hardware.
                     </p>
                 </div>
 
-                <div class="bg-white rounded-2xl border border-zinc-200/80 p-6 shadow-2xs">
-                    <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
+                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 shadow-2xs">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                     </div>
-                    <h3 class="text-base font-bold text-zinc-900 mb-1.5">Instant Latency</h3>
-                    <p class="text-sm text-zinc-600 leading-relaxed">
+                    <h3 class="text-base font-bold text-zinc-900 dark:text-white mb-1.5">Instant Latency</h3>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                         No queuing or waiting for remote server clusters to pick up your job. WebAssembly and HTML5 Canvas run instantly.
                     </p>
                 </div>
 
-                <div class="bg-white rounded-2xl border border-zinc-200/80 p-6 shadow-2xs">
-                    <div class="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4">
+                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 shadow-2xs">
+                    <div class="w-9 h-9 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4">
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
-                    <h3 class="text-base font-bold text-zinc-900 mb-1.5">Always Free & Uncapped</h3>
-                    <p class="text-sm text-zinc-600 leading-relaxed">
+                    <h3 class="text-base font-bold text-zinc-900 dark:text-white mb-1.5">Always Free & Uncapped</h3>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                         No sign-ups, subscriptions, or intrusive watermarks slapped onto your downloaded documents.
                     </p>
                 </div>
@@ -468,30 +586,30 @@
         </section>
 
         <!-- FAQ Section -->
-        <section id="faq-section" class="mt-20 pt-12 border-t border-zinc-200/80">
+        <section id="faq-section" class="mt-20 pt-12 border-t border-zinc-200/80 dark:border-zinc-800">
             <div class="text-center max-w-xl mx-auto mb-10">
-                <h2 class="text-2xl font-bold text-zinc-900 tracking-tight mb-2">Frequently Asked Questions</h2>
-                <p class="text-sm text-zinc-600">Quick answers about how our client-side tools work.</p>
+                <h2 class="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight mb-2">Frequently Asked Questions</h2>
+                <p class="text-sm text-zinc-600 dark:text-zinc-400">Quick answers about how our client-side tools work.</p>
             </div>
 
             <div class="max-w-3xl mx-auto space-y-4">
-                <div class="bg-white rounded-xl border border-zinc-200/80 p-5">
-                    <h3 class="text-sm font-bold text-zinc-900 mb-1">Are my files uploaded to your servers?</h3>
-                    <p class="text-sm text-zinc-600 leading-relaxed">
+                <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200/80 dark:border-zinc-800 p-5">
+                    <h3 class="text-sm font-bold text-zinc-900 dark:text-white mb-1">Are my files uploaded to your servers?</h3>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                         No. Every single operation is computed completely inside your browser using client-side JavaScript, PDF.js, and HTML Canvas. We do not have any database or storage server holding your files.
                     </p>
                 </div>
 
-                <div class="bg-white rounded-xl border border-zinc-200/80 p-5">
-                    <h3 class="text-sm font-bold text-zinc-900 mb-1">Is there a maximum file size limit?</h3>
-                    <p class="text-sm text-zinc-600 leading-relaxed">
+                <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200/80 dark:border-zinc-800 p-5">
+                    <h3 class="text-sm font-bold text-zinc-900 dark:text-white mb-1">Is there a maximum file size limit?</h3>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                         There is no artificial limit imposed by us. The only limit is your device's available browser memory. Documents and images of typical sizes (under 100 MB) convert swiftly.
                     </p>
                 </div>
 
-                <div class="bg-white rounded-xl border border-zinc-200/80 p-5">
-                    <h3 class="text-sm font-bold text-zinc-900 mb-1">Does the PDF Compressor add watermarks?</h3>
-                    <p class="text-sm text-zinc-600 leading-relaxed">
+                <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200/80 dark:border-zinc-800 p-5">
+                    <h3 class="text-sm font-bold text-zinc-900 dark:text-white mb-1">Does the PDF Compressor add watermarks?</h3>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                         Never. Your output documents remain 100% clean and watermark-free, fully compliant for government, job, or academic portals.
                     </p>
                 </div>
@@ -500,16 +618,71 @@
 
     </main>
 
-    <!-- Minimal Clean Footer -->
-    <footer class="mt-20 border-t border-zinc-200 bg-white">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-2">
-                <div class="w-6 h-6 rounded-lg bg-zinc-900 text-white flex items-center justify-center text-xs font-bold">⚡</div>
-                <span class="font-bold text-sm text-zinc-900">PDFTool4You</span>
-                <span class="text-xs text-zinc-400">· Fast in-browser utilities</span>
+    <!-- Global Footer -->
+    <footer class="mt-20 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-colors">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+                
+                <!-- Brand Info -->
+                <div class="md:col-span-1 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center text-xs font-bold shadow-xs">⚡</div>
+                        <span class="font-bold text-base text-zinc-900 dark:text-white">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                    </div>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        High-performance in-browser PDF & image suite. Compress, merge, split, watermark, and convert without uploading files.
+                    </p>
+                    <div class="pt-1 flex items-center gap-2 text-[11px] text-zinc-400 dark:text-zinc-500">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span>100% In-Browser Memory</span>
+                    </div>
+                </div>
+
+                <!-- PDF Tools -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white mb-3">PDF Tools</h4>
+                    <ul class="space-y-2 text-xs text-zinc-500 dark:text-zinc-400">
+                        <li><a href="pdf-compressor.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PDF Compressor (KB/MB)</a></li>
+                        <li><a href="merge-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Merge PDF Files</a></li>
+                        <li><a href="split-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Split PDF Pages</a></li>
+                        <li><a href="pdf-watermarker.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PDF Watermarker</a></li>
+                    </ul>
+                </div>
+
+                <!-- Image Tools -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white mb-3">Image Tools</h4>
+                    <ul class="space-y-2 text-xs text-zinc-500 dark:text-zinc-400">
+                        <li><a href="image-to-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Images to PDF</a></li>
+                        <li><a href="png-to-jpg.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PNG to JPG Converter</a></li>
+                        <li><a href="jpg-to-png.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">JPG to PNG Converter</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal & Trust (Essential for AdSense) -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white mb-3">Company & Legal</h4>
+                    <ul class="space-y-2 text-xs text-zinc-500 dark:text-zinc-400">
+                        <li><a href="privacy-policy.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy Policy</a></li>
+                        <li><a href="terms-and-conditions.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms & Conditions</a></li>
+                        <li><a href="about-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About Us</a></li>
+                        <li><a href="contact-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Us</a></li>
+                        <li><a href="disclaimer.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Disclaimer</a></li>
+                        <li><a href="cookie-policy.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Cookie Policy</a></li>
+                    </ul>
+                </div>
+
             </div>
-            <div class="text-xs text-zinc-500 text-center sm:text-right">
-                <span>© 2026 PDFTool4You. Built with privacy and speed first.</span>
+
+            <!-- Bottom Disclaimer & Copyright -->
+            <div class="pt-8 border-t border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400 dark:text-zinc-500">
+                <p>© 2026 PDFTool4You. All rights reserved. 100% Client-Side Processing.</p>
+                <div class="flex items-center gap-4">
+                    <a href="privacy-policy.html" class="hover:underline">Privacy</a>
+                    <a href="terms-and-conditions.html" class="hover:underline">Terms</a>
+                    <a href="cookie-policy.html" class="hover:underline">Cookies</a>
+                    <a href="contact-us.html" class="hover:underline">Contact</a>
+                </div>
             </div>
         </div>
     </footer>
@@ -596,9 +769,12 @@
                     const isActive = tab.dataset.category === 'all';
                     tab.classList.toggle('active', isActive);
                     tab.classList.toggle('bg-white', isActive);
+                    tab.classList.toggle('dark:bg-zinc-700', isActive);
                     tab.classList.toggle('text-zinc-900', isActive);
+                    tab.classList.toggle('dark:text-white', isActive);
                     tab.classList.toggle('shadow-2xs', isActive);
                     tab.classList.toggle('text-zinc-600', !isActive);
+                    tab.classList.toggle('dark:text-zinc-400', !isActive);
                 });
                 searchInput.focus();
                 filterTools();
@@ -607,11 +783,11 @@
             filterTabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     filterTabs.forEach(t => {
-                        t.classList.remove('active', 'bg-white', 'text-zinc-900', 'shadow-2xs');
-                        t.classList.add('text-zinc-600');
+                        t.classList.remove('active', 'bg-white', 'dark:bg-zinc-700', 'text-zinc-900', 'dark:text-white', 'shadow-2xs');
+                        t.classList.add('text-zinc-600', 'dark:text-zinc-400');
                     });
-                    tab.classList.add('active', 'bg-white', 'text-zinc-900', 'shadow-2xs');
-                    tab.classList.remove('text-zinc-600');
+                    tab.classList.add('active', 'bg-white', 'dark:bg-zinc-700', 'text-zinc-900', 'dark:text-white', 'shadow-2xs');
+                    tab.classList.remove('text-zinc-600', 'dark:text-zinc-400');
                     activeCategory = tab.dataset.category;
                     filterTools();
                 });
@@ -635,6 +811,64 @@
 
             filterTools();
         });
+    </script>
+
+    <!-- Google AdSense & GDPR Cookie Consent Banner -->
+    <div id="cookie-consent-banner" class="hidden fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:max-w-md z-50 p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl transition-all duration-300">
+        <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 text-base">
+                🍪
+            </div>
+            <div class="space-y-1.5 flex-1">
+                <h4 class="text-xs font-bold text-zinc-900 dark:text-white">Cookie & Advertising Privacy</h4>
+                <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    We and third-party partners (such as Google AdSense) use cookies to serve personalized advertisements and maintain user preferences. All your PDF & image files are processed 100% locally in your browser.
+                </p>
+                <div class="pt-2 flex flex-wrap items-center gap-2">
+                    <button type="button" id="cookie-accept-all" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition-colors shadow-2xs">
+                        Accept All
+                    </button>
+                    <button type="button" id="cookie-reject" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 transition-colors">
+                        Reject Non-Essential
+                    </button>
+                    <a href="cookie-policy.html" class="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 underline font-medium ml-1">
+                        Preferences
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const consentBanner = document.getElementById('cookie-consent-banner');
+            const acceptBtn = document.getElementById('cookie-accept-all');
+            const rejectBtn = document.getElementById('cookie-reject');
+
+            const hasConsent = localStorage.getItem('cookie_consent_decision');
+            if (!hasConsent) {
+                // Show banner after brief delay
+                setTimeout(() => {
+                    consentBanner.classList.remove('hidden');
+                }, 800);
+            }
+
+            if (acceptBtn) {
+                acceptBtn.addEventListener('click', () => {
+                    localStorage.setItem('cookie_consent_decision', 'accepted');
+                    localStorage.setItem('ads_cookie_consent', 'true');
+                    consentBanner.classList.add('hidden');
+                });
+            }
+
+            if (rejectBtn) {
+                rejectBtn.addEventListener('click', () => {
+                    localStorage.setItem('cookie_consent_decision', 'rejected');
+                    localStorage.setItem('ads_cookie_consent', 'false');
+                    consentBanner.classList.add('hidden');
+                });
+            }
+        })();
     </script>
 </body>
 </html>
