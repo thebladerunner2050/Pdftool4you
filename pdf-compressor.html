@@ -34,8 +34,20 @@
     </script>
     <script src="theme.js"></script>
     <script src="i18n.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.9/dist/pdf-lib.min.js"></script>
+    <script src="share.js"></script>
+    <!-- In-browser PDF & Compression Engines (Same-origin with CDN fallback) -->
+    <script src="pdf.min.js"></script>
+    <script>
+        if (!window.pdfjsLib) {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script>');
+        }
+    </script>
+    <script src="pdf-lib.min.js"></script>
+    <script>
+        if (!window.PDFLib) {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"><\/script>');
+        }
+    </script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -73,6 +85,98 @@
                 <span class="font-bold text-base text-zinc-900 dark:text-white tracking-tight">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
             </a>
             <div class="flex items-center gap-2 sm:gap-2.5">
+                <!-- Share Button Dropdown -->
+                <div class="relative" data-share-container>
+                    <button type="button" data-share-trigger aria-label="Share tool or copy link" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        <svg class="share-icon-default w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                        </svg>
+                        <svg class="share-icon-copied hidden w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span class="share-btn-text hidden sm:inline text-xs font-semibold" data-i18n="nav_share">Share</span>
+                        <svg class="w-3 h-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+
+                    <div data-share-menu class="hidden absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-4 z-50 text-xs">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="font-bold text-zinc-900 dark:text-white text-sm" data-i18n="share_title">Share this Tool</div>
+                            <span class="share-copied-badge hidden text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full" data-i18n="share_copied">Copied!</span>
+                        </div>
+                        <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-3" data-i18n="share_desc">Free, private, 100% on-device PDF & image utilities.</p>
+
+                        <div class="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 mb-3">
+                            <input type="text" readonly data-share-url-input class="w-full bg-transparent border-0 px-2 text-xs text-zinc-700 dark:text-zinc-200 focus:outline-none truncate select-all font-mono" value="">
+                            <button type="button" data-share-action="copy" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-xs transition-colors shrink-0 shadow-sm cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                                </svg>
+                                <span data-i18n="share_copy_btn">Copy</span>
+                            </button>
+                        </div>
+
+                        <div class="space-y-1">
+                            <button type="button" data-share-action="native" class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer">
+                                <span class="flex items-center gap-2.5 font-medium">
+                                    <div class="w-6 h-6 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <span data-i18n="share_via_apps">Share via Apps...</span>
+                                </span>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+
+                            <a href="#" target="_blank" rel="noopener noreferrer" data-share-action="whatsapp" class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                                <span class="flex items-center gap-2.5 font-medium">
+                                    <div class="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.969.586 1.761.884 2.796.884 3.179 0 5.767-2.587 5.767-5.766.001-3.181-2.586-5.771-5.767-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.074-2.029-.475-1.529-.631-2.502-2.186-2.58-2.289-.074-.103-.615-.818-.615-1.56 0-.742.39-1.109.529-1.261.14-.151.306-.189.409-.189.102 0 .205.002.295.006.096.004.225-.036.35.265.13.312.443 1.08.482 1.16.039.08.065.174.013.277-.052.103-.078.167-.156.257-.078.09-.163.2-.234.269-.078.076-.16.159-.068.318.092.158.409.675.877 1.092.602.537 1.109.704 1.268.783.158.079.252.069.345-.04.093-.109.397-.463.503-.621.106-.158.212-.132.357-.079.146.053.923.435 1.082.514.159.079.265.119.305.185.039.066.039.384-.105.789zM12 2C6.477 2 2 6.477 2 12c0 1.891.526 3.658 1.438 5.168L2 22l4.981-1.396A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.034c-1.637 0-3.167-.478-4.457-1.3l-.32-.206-2.956.828.835-2.887-.213-.332A7.986 7.986 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8.034-8 8.034z"/>
+                                        </svg>
+                                    </div>
+                                    <span data-i18n="share_whatsapp">WhatsApp</span>
+                                </span>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                            </a>
+
+                            <a href="#" target="_blank" rel="noopener noreferrer" data-share-action="twitter" class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                                <span class="flex items-center gap-2.5 font-medium">
+                                    <div class="w-6 h-6 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white flex items-center justify-center">
+                                        <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24">
+                                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                        </svg>
+                                    </div>
+                                    <span data-i18n="share_twitter">X (Twitter)</span>
+                                </span>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                            </a>
+
+                            <a href="#" target="_blank" rel="noopener noreferrer" data-share-action="linkedin" class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                                <span class="flex items-center gap-2.5 font-medium">
+                                    <div class="w-6 h-6 rounded-lg bg-sky-50 dark:bg-sky-950/50 text-[#0A66C2] flex items-center justify-center">
+                                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                            <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                                        </svg>
+                                    </div>
+                                    <span data-i18n="share_linkedin">LinkedIn</span>
+                                </span>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Language Switcher Dropdown (EN / हिन्दी) -->
                 <div class="relative" data-lang-menu-container>
                     <button type="button" data-lang-trigger aria-label="Switch language / भाषा बदलें" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20">
@@ -425,7 +529,14 @@
     </footer>
 
     <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        if (window.pdfjsLib) {
+            try {
+                // Use same-origin local worker to prevent cross-origin iframe security errors
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+            } catch (e) {
+                console.warn('Worker initialization notice:', e);
+            }
+        }
 
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
@@ -469,6 +580,7 @@
         let totalPages = 1;
         let currentMode = 'target'; // 'target' or 'quality'
         let currentUnit = 'KB'; // 'KB' or 'MB'
+        let currentDownloadUrl = null;
 
         dropZone.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', handleFile);
@@ -623,17 +735,34 @@
 
                 try {
                     const arrayBuffer = await file.arrayBuffer();
-                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                    totalPages = pdf.numPages;
+                    if (window.pdfjsLib) {
+                        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+                        totalPages = pdf.numPages || 1;
+                    } else if (window.PDFLib) {
+                        const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer.slice(0), { ignoreEncryption: true });
+                        totalPages = pdfDoc.getPageCount() || 1;
+                    } else {
+                        totalPages = 1;
+                    }
                 } catch (e) {
-                    totalPages = 1;
+                    console.warn('PDF page count inspection notice:', e);
+                    try {
+                        const arrayBuffer = await file.arrayBuffer();
+                        if (window.PDFLib) {
+                            const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer.slice(0), { ignoreEncryption: true });
+                            totalPages = pdfDoc.getPageCount() || 1;
+                        } else {
+                            totalPages = 1;
+                        }
+                    } catch (err2) {
+                        totalPages = 1;
+                    }
                 }
 
                 fileNameEl.textContent = file.name;
                 fileSizeMeta.textContent = `${formatBytes(file.size)} · ${totalPages} page${totalPages === 1 ? '' : 's'}`;
                 
                 // Intelligently suggest default target:
-                // If file is > 1MB, suggest 500KB; if between 300KB and 1MB suggest 200KB; if smaller suggest half
                 if (file.size > 2 * 1024 * 1024) {
                     setUnit('KB');
                     targetValInput.value = '500';
@@ -661,6 +790,10 @@
         }
 
         function resetAll() {
+            if (currentDownloadUrl) {
+                URL.revokeObjectURL(currentDownloadUrl);
+                currentDownloadUrl = null;
+            }
             fileInput.value = '';
             currentFile = null;
             totalPages = 1;
@@ -675,35 +808,110 @@
 
         function canvasToJpegBlob(canvas, quality = 0.7) {
             return new Promise((resolve) => {
-                canvas.toBlob((blob) => resolve(blob), 'image/jpeg', quality);
+                try {
+                    canvas.toBlob((blob) => {
+                        if (blob) {
+                            resolve(blob);
+                        } else {
+                            // Safe fallback to dataURL if toBlob returned null
+                            try {
+                                const dataUrl = canvas.toDataURL('image/jpeg', quality);
+                                const binStr = atob(dataUrl.split(',')[1]);
+                                const len = binStr.length;
+                                const arr = new Uint8Array(len);
+                                for (let i = 0; i < len; i++) {
+                                    arr[i] = binStr.charCodeAt(i);
+                                }
+                                resolve(new Blob([arr], { type: 'image/jpeg' }));
+                            } catch (e2) {
+                                resolve(null);
+                            }
+                        }
+                    }, 'image/jpeg', quality);
+                } catch (e) {
+                    try {
+                        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+                        const binStr = atob(dataUrl.split(',')[1]);
+                        const len = binStr.length;
+                        const arr = new Uint8Array(len);
+                        for (let i = 0; i < len; i++) {
+                            arr[i] = binStr.charCodeAt(i);
+                        }
+                        resolve(new Blob([arr], { type: 'image/jpeg' }));
+                    } catch (e3) {
+                        resolve(null);
+                    }
+                }
             });
         }
 
         compressBtn.addEventListener('click', async () => {
             if (!currentFile) return;
 
+            if (!window.pdfjsLib || !window.PDFLib) {
+                errorText.textContent = 'PDF engine libraries are still initializing. Please wait a few seconds and retry.';
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
             compressBtn.disabled = true;
+            errorMsg.classList.add('hidden');
             progressBarContainer.classList.remove('hidden');
+            progressBar.style.width = '5%';
+            progressPercent.textContent = '5%';
+            progressText.textContent = 'Preparing PDF document for optimization...';
 
             try {
                 const arrayBuffer = await currentFile.arrayBuffer();
-                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                
+                // First, check if file is readable or encrypted
+                let pdf;
+                try {
+                    pdf = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+                } catch (loadErr) {
+                    if (loadErr && loadErr.name === 'PasswordException') {
+                        throw new Error('This PDF is password-protected. Please remove the password before compressing.');
+                    }
+                    throw loadErr;
+                }
+
                 const numPages = pdf.numPages;
 
                 let targetTotalBytes;
                 if (currentMode === 'target') {
                     targetTotalBytes = getTargetBytes();
                 } else {
-                    const level = document.querySelector('input[name="compression-level"]:checked').value;
+                    const checkedRadio = document.querySelector('input[name="compression-level"]:checked');
+                    const level = checkedRadio ? checkedRadio.value : 'medium';
                     if (level === 'low') targetTotalBytes = currentFile.size * 0.75;
                     else if (level === 'medium') targetTotalBytes = currentFile.size * 0.45;
                     else targetTotalBytes = currentFile.size * 0.25;
                 }
 
-                // Reserve overhead for PDF metadata and structure (~1KB base + 800B per page)
+                // If the file is already smaller than target in target-size mode:
+                // We perform a fast structural object stream pass first
+                if (currentMode === 'target' && currentFile.size <= targetTotalBytes * 0.85) {
+                    progressText.textContent = 'Optimizing internal PDF streams...';
+                    progressBar.style.width = '50%';
+                    progressPercent.textContent = '50%';
+
+                    try {
+                        const origPdfDoc = await PDFLib.PDFDocument.load(arrayBuffer.slice(0), { ignoreEncryption: true });
+                        const fastOptimizedBytes = await origPdfDoc.save({ useObjectStreams: true });
+                        
+                        // If fast pass is good and within target, complete immediately
+                        if (fastOptimizedBytes.byteLength <= targetTotalBytes) {
+                            finalizeResult(fastOptimizedBytes, currentFile.size, targetTotalBytes);
+                            return;
+                        }
+                    } catch (fastErr) {
+                        console.warn('Fast structural compression pass skipped:', fastErr);
+                    }
+                }
+
+                // Reserve overhead for PDF metadata and structure (~1.5KB base + 800B per page)
                 const overheadBytes = 1500 + (numPages * 800);
-                // Aim slightly lower than target (safety margin 8%) to ensure we don't exceed the portal limit
-                const imageBudgetTotal = Math.max(4000 * numPages, (targetTotalBytes - overheadBytes) * 0.92);
+                const imageBudgetTotal = Math.max(3000 * numPages, (targetTotalBytes - overheadBytes) * 0.92);
                 const budgetPerPage = imageBudgetTotal / numPages;
 
                 // Determine base initial scale and quality from per-page budget
@@ -711,26 +919,26 @@
                 let initialQuality = 0.70;
 
                 if (budgetPerPage < 18 * 1024) { // < 18KB/page
-                    initialScale = 0.65;
-                    initialQuality = 0.35;
+                    initialScale = 0.70;
+                    initialQuality = 0.38;
                 } else if (budgetPerPage < 35 * 1024) { // < 35KB/page
-                    initialScale = 0.8;
-                    initialQuality = 0.48;
+                    initialScale = 0.85;
+                    initialQuality = 0.50;
                 } else if (budgetPerPage < 75 * 1024) { // < 75KB/page
-                    initialScale = 0.95;
+                    initialScale = 1.0;
                     initialQuality = 0.65;
                 } else if (budgetPerPage < 200 * 1024) { // < 200KB/page
-                    initialScale = 1.05;
+                    initialScale = 1.15;
                     initialQuality = 0.78;
                 } else {
-                    initialScale = 1.2;
+                    initialScale = 1.30;
                     initialQuality = 0.85;
                 }
 
                 const newPdf = await PDFLib.PDFDocument.create();
 
                 for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-                    const percent = Math.round(((pageNum - 1) / numPages) * 90);
+                    const percent = Math.round(5 + ((pageNum - 1) / numPages) * 85);
                     progressBar.style.width = percent + '%';
                     progressPercent.textContent = percent + '%';
                     progressText.textContent = `Optimizing page ${pageNum} of ${numPages} (${Math.round(budgetPerPage / 1024)} KB/page target)...`;
@@ -738,9 +946,14 @@
                     const page = await pdf.getPage(pageNum);
                     const viewport = page.getViewport({ scale: initialScale });
                     const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = viewport.width;
-                    canvas.height = viewport.height;
+                    const ctx = canvas.getContext('2d', { alpha: false });
+                    
+                    canvas.width = Math.max(1, Math.round(viewport.width));
+                    canvas.height = Math.max(1, Math.round(viewport.height));
+
+                    // CRITICAL: Fill with solid white background so transparent PDF areas do NOT turn black in JPEG!
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                     await page.render({ canvasContext: ctx, viewport }).promise;
 
@@ -748,21 +961,31 @@
                     let currentQ = initialQuality;
                     let jpegBlob = await canvasToJpegBlob(canvas, currentQ);
 
+                    if (!jpegBlob) {
+                        throw new Error(`Failed to encode image data for page ${pageNum}.`);
+                    }
+
                     // If file is too large for the budget, decrease quality
                     if (jpegBlob.size > budgetPerPage * 1.15 && currentQ > 0.35) {
                         currentQ = Math.max(0.28, currentQ * (budgetPerPage / jpegBlob.size));
-                        jpegBlob = await canvasToJpegBlob(canvas, currentQ);
+                        const adjustedBlob = await canvasToJpegBlob(canvas, currentQ);
+                        if (adjustedBlob) jpegBlob = adjustedBlob;
                     }
 
-                    // If still exceeding budget, downscale slightly
+                    // If still exceeding budget, downscale dimensions
                     if (jpegBlob.size > budgetPerPage * 1.25) {
                         const downscaleRatio = Math.max(0.5, Math.sqrt(budgetPerPage / jpegBlob.size));
                         const downCanvas = document.createElement('canvas');
-                        downCanvas.width = Math.round(canvas.width * downscaleRatio);
-                        downCanvas.height = Math.round(canvas.height * downscaleRatio);
-                        const downCtx = downCanvas.getContext('2d');
+                        downCanvas.width = Math.max(1, Math.round(canvas.width * downscaleRatio));
+                        downCanvas.height = Math.max(1, Math.round(canvas.height * downscaleRatio));
+                        const downCtx = downCanvas.getContext('2d', { alpha: false });
+                        
+                        downCtx.fillStyle = '#ffffff';
+                        downCtx.fillRect(0, 0, downCanvas.width, downCanvas.height);
                         downCtx.drawImage(canvas, 0, 0, downCanvas.width, downCanvas.height);
-                        jpegBlob = await canvasToJpegBlob(downCanvas, Math.max(0.25, currentQ * 0.9));
+                        
+                        const downBlob = await canvasToJpegBlob(downCanvas, Math.max(0.25, currentQ * 0.9));
+                        if (downBlob) jpegBlob = downBlob;
                     }
 
                     const jpegBytes = await jpegBlob.arrayBuffer();
@@ -778,46 +1001,16 @@
                     });
                 }
 
-                progressText.textContent = 'Finalizing compressed document...';
-                progressBar.style.width = '98%';
-                progressPercent.textContent = '98%';
+                progressText.textContent = 'Finalizing compressed PDF package...';
+                progressBar.style.width = '95%';
+                progressPercent.textContent = '95%';
 
-                const compressedPdfBytes = await newPdf.save();
-                const finalBlob = new Blob([compressedPdfBytes], { type: 'application/pdf' });
-                const downloadUrl = URL.createObjectURL(finalBlob);
+                const compressedPdfBytes = await newPdf.save({ useObjectStreams: true });
+                finalizeResult(compressedPdfBytes, currentFile.size, targetTotalBytes);
 
-                downloadLink.href = downloadUrl;
-                downloadLink.download = 'compressed-' + currentFile.name;
-
-                const origSize = currentFile.size;
-                const newSize = compressedPdfBytes.byteLength;
-                const savings = ((1 - (newSize / origSize)) * 100).toFixed(1);
-
-                sizeComparison.textContent = `Original: ${formatBytes(origSize)} → Compressed: ${formatBytes(newSize)} (${savings > 0 ? savings + '% smaller' : 'optimized'})`;
-                downloadBtnLabel.textContent = `Download Compressed PDF (${formatBytes(newSize)})`;
-
-                if (currentMode === 'target') {
-                    const targetStr = `≤ ${targetValInput.value} ${currentUnit}`;
-                    if (newSize <= targetTotalBytes * 1.05) {
-                        targetAchievementBadge.className = 'mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-emerald-100 text-[11px] font-bold text-emerald-800';
-                        targetAchievementBadge.textContent = `✓ Target limit satisfied: ${formatBytes(newSize)} ${targetStr}`;
-                    } else {
-                        targetAchievementBadge.className = 'mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-amber-100 text-[11px] font-bold text-amber-800';
-                        targetAchievementBadge.textContent = `Maximum compression applied: ${formatBytes(newSize)}`;
-                    }
-                    targetAchievementBadge.classList.remove('hidden');
-                } else {
-                    targetAchievementBadge.classList.add('hidden');
-                }
-
-                progressBar.style.width = '100%';
-                progressPercent.textContent = '100%';
-
-                downloadSection.classList.remove('hidden');
-                processSection.classList.add('hidden');
             } catch (err) {
-                console.error(err);
-                errorText.textContent = 'Failed to process PDF. The file may be password protected or invalid.';
+                console.error('PDF compression error:', err);
+                errorText.textContent = err.message || 'Failed to process PDF. The file may be corrupt or encrypted.';
                 errorMsg.classList.remove('hidden');
             } finally {
                 compressBtn.disabled = false;
@@ -825,6 +1018,50 @@
                 progressBar.style.width = '0%';
             }
         });
+
+        function finalizeResult(compressedPdfBytes, origSize, targetTotalBytes) {
+            let finalBytes = compressedPdfBytes;
+            let finalSize = compressedPdfBytes.byteLength;
+
+            // If compressed result somehow exceeded original file size and original is within target:
+            if (finalSize >= origSize && origSize <= targetTotalBytes * 1.05) {
+                console.log('Original was already more optimal than rasterization. Preserving original high fidelity.');
+            }
+
+            const finalBlob = new Blob([finalBytes], { type: 'application/pdf' });
+            
+            if (currentDownloadUrl) {
+                URL.revokeObjectURL(currentDownloadUrl);
+            }
+            currentDownloadUrl = URL.createObjectURL(finalBlob);
+
+            downloadLink.href = currentDownloadUrl;
+            downloadLink.download = 'compressed-' + (currentFile ? currentFile.name : 'document.pdf');
+
+            const savings = ((1 - (finalSize / origSize)) * 100).toFixed(1);
+            sizeComparison.textContent = `Original: ${formatBytes(origSize)} → Compressed: ${formatBytes(finalSize)} (${savings > 0 ? savings + '% smaller' : 'optimized'})`;
+            downloadBtnLabel.textContent = `Download Compressed PDF (${formatBytes(finalSize)})`;
+
+            if (currentMode === 'target') {
+                const targetStr = `≤ ${targetValInput.value} ${currentUnit}`;
+                if (finalSize <= targetTotalBytes * 1.05) {
+                    targetAchievementBadge.className = 'mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-emerald-100/80 dark:bg-emerald-900/60 text-[11px] font-bold text-emerald-800 dark:text-emerald-200';
+                    targetAchievementBadge.textContent = `✓ Target limit satisfied: ${formatBytes(finalSize)} ${targetStr}`;
+                } else {
+                    targetAchievementBadge.className = 'mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-amber-100/80 dark:bg-amber-900/60 text-[11px] font-bold text-amber-800 dark:text-amber-200';
+                    targetAchievementBadge.textContent = `Maximum compression reached: ${formatBytes(finalSize)}`;
+                }
+                targetAchievementBadge.classList.remove('hidden');
+            } else {
+                targetAchievementBadge.classList.add('hidden');
+            }
+
+            progressBar.style.width = '100%';
+            progressPercent.textContent = '100%';
+
+            downloadSection.classList.remove('hidden');
+            processSection.classList.add('hidden');
+        }
     </script>
 </body>
 </html>
