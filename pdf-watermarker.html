@@ -771,7 +771,7 @@
                 pdfDocBytes = await file.arrayBuffer();
 
                 // Load via pdf-lib to get metadata
-                const pdfLibDoc = await PDFLib.PDFDocument.load(pdfDocBytes, { ignoreEncryption: true });
+                const pdfLibDoc = await PDFLib.PDFDocument.load(pdfDocBytes.slice(0), { ignoreEncryption: true });
                 const pageCount = pdfLibDoc.getPageCount();
 
                 fileNameEl.textContent = file.name;
@@ -786,7 +786,7 @@
                 await renderBasePreview();
             } catch (err) {
                 console.error(err);
-                errorText.textContent = 'Failed to load PDF document. The file may be password protected or corrupted.';
+                errorText.textContent = (err && err.message) ? ('Failed to load PDF document: ' + err.message) : 'Failed to load PDF document. The file may be password protected or corrupted.';
                 errorMsg.classList.remove('hidden');
             }
         }
@@ -796,35 +796,76 @@
             previewStage.classList.add('hidden');
 
             try {
-                const loadingTask = pdfjsLib.getDocument({ data: pdfDocBytes });
+                if (window.pdfjsLib && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+                    pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+                }
+
+                // Important: pass a cloned slice of the buffer so web workers never detach the original!
+                const bufferToRender = pdfDocBytes.slice(0);
+                const loadingTask = pdfjsLib.getDocument({ 
+                    data: bufferToRender,
+                    isEvalSupported: false,
+                    useSystemFonts: true
+                });
                 pdfJsDoc = await loadingTask.promise;
                 const page = await pdfJsDoc.getPage(1);
 
                 const unscaledViewport = page.getViewport({ scale: 1.0 });
-                basePageWidth = unscaledViewport.width;
-                basePageHeight = unscaledViewport.height;
+                basePageWidth = unscaledViewport.width || 595;
+                basePageHeight = unscaledViewport.height || 842;
 
                 // Scale for preview display (fit nicely around max 380px width)
                 const scale = Math.min(380 / basePageWidth, 480 / basePageHeight, 1.2);
                 const viewport = page.getViewport({ scale });
 
                 baseCanvasOffscreen = document.createElement('canvas');
-                baseCanvasOffscreen.width = viewport.width;
-                baseCanvasOffscreen.height = viewport.height;
+                baseCanvasOffscreen.width = Math.max(10, Math.floor(viewport.width));
+                baseCanvasOffscreen.height = Math.max(10, Math.floor(viewport.height));
                 const offCtx = baseCanvasOffscreen.getContext('2d');
 
                 await page.render({ canvasContext: offCtx, viewport }).promise;
 
-                previewCanvas.width = viewport.width;
-                previewCanvas.height = viewport.height;
+                previewCanvas.width = baseCanvasOffscreen.width;
+                previewCanvas.height = baseCanvasOffscreen.height;
 
                 previewLoader.classList.add('hidden');
                 previewStage.classList.remove('hidden');
 
                 updatePreviewOverlay();
             } catch (err) {
-                console.error('Error rendering PDF preview:', err);
-                previewLoader.innerHTML = '<span class="text-zinc-500 text-xs">Preview unavailable, but watermark will still apply properly.</span>';
+                console.warn('PDF.js preview render fallback:', err);
+                // Create a clean simulated document preview so the user can still position and configure watermarks
+                basePageWidth = 595;
+                basePageHeight = 842;
+                const previewW = 320;
+                const previewH = Math.round(previewW * (842 / 595));
+
+                baseCanvasOffscreen = document.createElement('canvas');
+                baseCanvasOffscreen.width = previewW;
+                baseCanvasOffscreen.height = previewH;
+                const offCtx = baseCanvasOffscreen.getContext('2d');
+
+                // White paper background with soft border
+                offCtx.fillStyle = '#ffffff';
+                offCtx.fillRect(0, 0, previewW, previewH);
+                offCtx.strokeStyle = '#e4e4e7';
+                offCtx.lineWidth = 1;
+                offCtx.strokeRect(1, 1, previewW - 2, previewH - 2);
+
+                // Simulated document lines
+                offCtx.fillStyle = '#f4f4f5';
+                for (let y = 30; y < previewH - 40; y += 16) {
+                    const rowW = (y % 32 === 0) ? (previewW - 90) : (previewW - 50);
+                    offCtx.fillRect(25, y, Math.max(40, rowW), 7);
+                }
+
+                previewCanvas.width = previewW;
+                previewCanvas.height = previewH;
+
+                previewLoader.classList.add('hidden');
+                previewStage.classList.remove('hidden');
+
+                updatePreviewOverlay();
             }
         }
 
@@ -960,10 +1001,22 @@
             } : { r: 0.86, g: 0.15, b: 0.15 };
         }
 
-        applyBtn.addEventListener('click', async () => {
-            if (!currentPdfFile || !pdfDocBytes) return;
+        function canWinAnsiEncode(str) {
+            if (!str) return true;
+            for (let i = 0; i < str.length; i++) {
+                const code = str.charCodeAt(i);
+                // Standard WinAnsi printable range: 32-126 and 160-255
+                if (code < 32 || (code > 126 && code < 160) || code > 255) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
-            const wmType = document.querySelector('input[name="wm-type"]:checked').value;
+        applyBtn.addEventListener('click', async () => {
+            if (!currentPdfFile) return;
+
+            const wmType = (document.querySelector('input[name="wm-type"]:checked') || {}).value || 'text';
             if (wmType === 'image' && (!uploadedImage || !uploadedImageBytes)) {
                 errorText.textContent = 'Please choose an image file (PNG/JPG) for the watermark.';
                 errorMsg.classList.remove('hidden');
@@ -979,31 +1032,94 @@
                 progressBar.style.width = '15%';
                 progressPercent.textContent = '15%';
 
-                const pdfDoc = await PDFLib.PDFDocument.load(pdfDocBytes);
-                const font = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
-
-                let embeddedImg = null;
-                if (wmType === 'image') {
-                    if (uploadedImageType === 'image/png') {
-                        embeddedImg = await pdfDoc.embedPng(uploadedImageBytes);
-                    } else {
-                        embeddedImg = await pdfDoc.embedJpg(uploadedImageBytes);
-                    }
-                }
+                // Always load fresh bytes directly from currentPdfFile with ignoreEncryption: true
+                const freshBytes = await currentPdfFile.arrayBuffer();
+                const pdfDoc = await PDFLib.PDFDocument.load(freshBytes, { ignoreEncryption: true });
 
                 const pages = pdfDoc.getPages();
-                const totalPages = pages.length;
-                const pagesOption = document.querySelector('input[name="wm-pages-option"]:checked').value;
+                if (!pages || pages.length === 0) {
+                    throw new Error('This PDF contains no readable pages.');
+                }
+
+                const pagesOption = (document.querySelector('input[name="wm-pages-option"]:checked') || {}).value || 'all';
                 const pagesToProcess = pagesOption === 'first' ? [pages[0]] : pages;
 
-                const text = wmText.value || 'CONFIDENTIAL';
+                const rawText = (wmText.value || 'CONFIDENTIAL').trim() || 'CONFIDENTIAL';
                 const fontSize = parseFloat(wmFontSize.value) || 48;
-                const colorRgb = hexToRgb(wmColorPicker.value || '#dc2626');
+                const colorHex = wmColorPicker.value || '#dc2626';
+                const colorRgb = hexToRgb(colorHex);
                 const rotDeg = parseFloat(wmRotation.value) || 0;
                 const rotRad = (rotDeg * Math.PI) / 180;
                 const opacity = (parseFloat(wmOpacity.value) || 25) / 100;
-                const pos = document.querySelector('input[name="wm-pos"]:checked').value;
+                const pos = (document.querySelector('input[name="wm-pos"]:checked') || {}).value || 'center';
                 const imgScaleRatio = (parseFloat(wmImageScale.value) || 35) / 100;
+
+                let standardFont = null;
+                let unicodeTextImg = null;
+                let textW = 0;
+                let textH = 0;
+                let embeddedImg = null;
+
+                if (wmType === 'text') {
+                    if (canWinAnsiEncode(rawText)) {
+                        // Standard WinAnsi vector font
+                        standardFont = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+                        textW = standardFont.widthOfTextAtSize(rawText, fontSize);
+                        textH = standardFont.heightAtSize(fontSize);
+                    } else {
+                        // Unicode / Multilingual fallback: render crisp high-DPI text canvas to transparent PNG
+                        const dpr = 2; // high resolution for crisp PDF printing
+                        const offCanvas = document.createElement('canvas');
+                        const offCtx = offCanvas.getContext('2d');
+                        const renderFontSize = Math.round(fontSize * dpr);
+                        offCtx.font = `bold ${renderFontSize}px 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif`;
+                        const metrics = offCtx.measureText(rawText);
+                        const textW_px = Math.ceil(metrics.width);
+                        const textH_px = Math.ceil(renderFontSize * 1.3);
+
+                        offCanvas.width = Math.max(10, textW_px + 20 * dpr);
+                        offCanvas.height = Math.max(10, textH_px + 20 * dpr);
+
+                        offCtx.font = `bold ${renderFontSize}px 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif`;
+                        offCtx.fillStyle = colorHex;
+                        offCtx.textAlign = 'center';
+                        offCtx.textBaseline = 'middle';
+                        offCtx.fillText(rawText, offCanvas.width / 2, offCanvas.height / 2);
+
+                        const pngDataUrl = offCanvas.toDataURL('image/png');
+                        const binStr = atob(pngDataUrl.split(',')[1]);
+                        const pngBytes = new Uint8Array(binStr.length);
+                        for (let k = 0; k < binStr.length; k++) pngBytes[k] = binStr.charCodeAt(k);
+
+                        unicodeTextImg = await pdfDoc.embedPng(pngBytes);
+                        textW = offCanvas.width / dpr;
+                        textH = offCanvas.height / dpr;
+                    }
+                } else if (wmType === 'image') {
+                    progressText.textContent = 'Embedding watermark logo...';
+                    // Convert uploaded image via offscreen canvas to guarantee valid PNG format
+                    try {
+                        const imgCanvas = document.createElement('canvas');
+                        imgCanvas.width = uploadedImage.naturalWidth || uploadedImage.width;
+                        imgCanvas.height = uploadedImage.naturalHeight || uploadedImage.height;
+                        const imgCtx = imgCanvas.getContext('2d');
+                        imgCtx.drawImage(uploadedImage, 0, 0);
+                        const pngDataUrl = imgCanvas.toDataURL('image/png');
+                        const binStr = atob(pngDataUrl.split(',')[1]);
+                        const pngBytes = new Uint8Array(binStr.length);
+                        for (let k = 0; k < binStr.length; k++) pngBytes[k] = binStr.charCodeAt(k);
+                        embeddedImg = await pdfDoc.embedPng(pngBytes);
+                    } catch (canvasErr) {
+                        console.warn('Canvas conversion fallback for image watermark:', canvasErr);
+                        if (uploadedImageBytes) {
+                            try {
+                                embeddedImg = await pdfDoc.embedPng(uploadedImageBytes.slice(0));
+                            } catch (e1) {
+                                embeddedImg = await pdfDoc.embedJpg(uploadedImageBytes.slice(0));
+                            }
+                        }
+                    }
+                }
 
                 for (let i = 0; i < pagesToProcess.length; i++) {
                     const page = pagesToProcess[i];
@@ -1015,24 +1131,30 @@
                     const { width: pWidth, height: pHeight } = page.getSize();
 
                     if (wmType === 'text') {
-                        const textW = font.widthOfTextAtSize(text, fontSize);
-                        const textH = font.heightAtSize(fontSize);
-
-                        // PDF coordinate system starts at bottom-left!
                         const drawTextAt = (cx, cy) => {
-                            // Calculate lower-left origin so that after rotation the center is at (cx, cy)
                             const offsetX = (textW / 2) * Math.cos(rotRad) - (textH / 2) * Math.sin(rotRad);
                             const offsetY = (textW / 2) * Math.sin(rotRad) + (textH / 2) * Math.cos(rotRad);
 
-                            page.drawText(text, {
-                                x: cx - offsetX,
-                                y: cy - offsetY,
-                                size: fontSize,
-                                font: font,
-                                color: PDFLib.rgb(colorRgb.r, colorRgb.g, colorRgb.b),
-                                opacity: opacity,
-                                rotate: PDFLib.degrees(rotDeg)
-                            });
+                            if (standardFont) {
+                                page.drawText(rawText, {
+                                    x: cx - offsetX,
+                                    y: cy - offsetY,
+                                    size: fontSize,
+                                    font: standardFont,
+                                    color: PDFLib.rgb(colorRgb.r, colorRgb.g, colorRgb.b),
+                                    opacity: opacity,
+                                    rotate: PDFLib.degrees(rotDeg)
+                                });
+                            } else if (unicodeTextImg) {
+                                page.drawImage(unicodeTextImg, {
+                                    x: cx - offsetX,
+                                    y: cy - offsetY,
+                                    width: textW,
+                                    height: textH,
+                                    opacity: opacity,
+                                    rotate: PDFLib.degrees(rotDeg)
+                                });
+                            }
                         };
 
                         if (pos === 'tiled') {
@@ -1052,7 +1174,8 @@
 
                     } else if (wmType === 'image' && embeddedImg) {
                         const targetW = pWidth * 0.45 * imgScaleRatio;
-                        const targetH = (targetW / embeddedImg.width) * embeddedImg.height;
+                        const imgAspect = (embeddedImg.width && embeddedImg.height) ? (embeddedImg.width / embeddedImg.height) : 1;
+                        const targetH = targetW / imgAspect;
 
                         const drawImgAt = (cx, cy) => {
                             const offsetX = (targetW / 2) * Math.cos(rotRad) - (targetH / 2) * Math.sin(rotRad);
@@ -1107,8 +1230,10 @@
                 downloadSection.classList.remove('hidden');
                 workspaceSection.classList.add('hidden');
             } catch (err) {
-                console.error(err);
-                errorText.textContent = 'Failed to apply watermark. The document may be corrupted or protected.';
+                console.error('Apply watermark error:', err);
+                errorText.textContent = (err && err.message)
+                    ? `Failed to apply watermark: ${err.message}`
+                    : 'Failed to apply watermark. The document may be corrupted or protected.';
                 errorMsg.classList.remove('hidden');
             } finally {
                 applyBtn.disabled = false;
