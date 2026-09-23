@@ -31,6 +31,10 @@ app.get('/split-pdf', (req, res) => {
   res.sendFile(path.join(__dirname, 'split-pdf.html'));
 });
 
+app.get(['/pdf-watermarker', '/pdf-watermark'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'pdf-watermarker.html'));
+});
+
 app.get('/image-to-pdf', (req, res) => {
   res.sendFile(path.join(__dirname, 'image-to-pdf.html'));
 });

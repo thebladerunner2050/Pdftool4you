@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Watermarker — Add Text or Image Watermarks Online | PDFTool4You</title>
+    <meta name="description" content="Add custom text or logo image watermarks to your PDF documents locally with transparency, rotation, and position controls. 100% private, free, and secure.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.9/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: #fafbfc;
+            color: #09090b;
+        }
+        input[type="range"] {
+            accent-color: #7c3aed;
+        }
+        .preview-canvas-container {
+            position: relative;
+            display: inline-block;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-purple-100 selection:text-purple-900">
+
+    <!-- Minimal Header -->
+    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-zinc-200/80">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-zinc-900 text-white flex items-center justify-center text-sm font-bold shadow-sm">
+                    ⚡
+                </div>
+                <span class="font-bold text-base text-zinc-900 tracking-tight">PDFTool<span class="text-blue-600">4You</span></span>
+            </a>
+            <a href="index.html" class="inline-flex items-center gap-1 text-xs font-semibold text-zinc-600 hover:text-zinc-900 px-3 py-1.5 rounded-lg hover:bg-zinc-100 transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                <span>Back to Tools</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-10 w-full">
+        
+        <!-- Header Info -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 border border-purple-200/60 text-purple-700 text-xs font-semibold mb-3">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6"/>
+                </svg>
+                <span>Client-Side PDF Protection</span>
+            </div>
+            <h1 class="text-3xl font-extrabold tracking-tight text-zinc-900 mb-2">PDF Watermarker</h1>
+            <p class="text-sm text-zinc-600 max-w-lg mx-auto">Add custom text or image watermarks to protect your PDF documents. Customize transparency, position, rotation, and page range locally.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-zinc-200/80 p-6 sm:p-8 shadow-sm">
+            
+            <!-- Error Alert -->
+            <div id="error-msg" class="hidden mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-xs font-medium text-red-700 flex items-start gap-2.5">
+                <svg class="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span id="error-text">Please upload a valid PDF document (.pdf).</span>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div id="drop-zone" class="group border-2 border-dashed border-zinc-200 rounded-2xl p-8 sm:p-10 text-center cursor-pointer hover:border-purple-500 hover:bg-purple-50/20 transition-all">
+                <input type="file" id="file-input" accept=".pdf,application/pdf" class="hidden">
+                <div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-400 group-hover:scale-110 group-hover:border-purple-300 group-hover:text-purple-600 transition-all">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <p class="text-sm font-bold text-zinc-900 mb-1">Click to select PDF or drag and drop here</p>
+                <p class="text-xs text-zinc-400">All processing is 100% private and performed in your browser</p>
+            </div>
+
+            <!-- File Selected Meta Card -->
+            <div id="file-info" class="hidden mt-6 p-4 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-between">
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <div class="w-9 h-9 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-xs shrink-0">
+                        PDF
+                    </div>
+                    <div class="truncate">
+                        <p id="file-name" class="text-xs font-bold text-zinc-900 truncate max-w-xs"></p>
+                        <p id="file-size" class="text-[11px] text-zinc-500 font-medium"></p>
+                    </div>
+                </div>
+                <button type="button" id="change-file-btn" class="text-xs text-zinc-400 hover:text-red-600 p-1 font-medium transition-colors">
+                    Change file
+                </button>
+            </div>
+
+            <!-- Configuration & Live Preview Section -->
+            <div id="workspace-section" class="hidden mt-6 space-y-6">
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    
+                    <!-- Left Column: Controls (7 cols) -->
+                    <div class="lg:col-span-7 space-y-5">
+                        
+                        <!-- Watermark Type Selector -->
+                        <div>
+                            <label class="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-2">Watermark Type</label>
+                            <div class="grid grid-cols-2 gap-2.5">
+                                <label class="cursor-pointer border border-zinc-200 rounded-xl p-3 text-center transition-all bg-zinc-50 hover:bg-white has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50/40 has-[:checked]:ring-1 has-[:checked]:ring-purple-600">
+                                    <input type="radio" name="wm-type" value="text" class="sr-only" checked>
+                                    <div class="font-bold text-xs text-zinc-900 flex items-center justify-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 5v14m4-4l4 4m0 0l4-4m-4 4V9"/>
+                                        </svg>
+                                        <span>Text Watermark</span>
+                                    </div>
+                                    <div class="text-[10px] text-zinc-500 mt-0.5">Custom text stamp</div>
+                                </label>
+                                <label class="cursor-pointer border border-zinc-200 rounded-xl p-3 text-center transition-all bg-zinc-50 hover:bg-white has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50/40 has-[:checked]:ring-1 has-[:checked]:ring-purple-600">
+                                    <input type="radio" name="wm-type" value="image" class="sr-only">
+                                    <div class="font-bold text-xs text-zinc-900 flex items-center justify-center gap-1.5">
+                                        <svg class="w-3.5 h-3.5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                        <span>Image / Logo</span>
+                                    </div>
+                                    <div class="text-[10px] text-zinc-500 mt-0.5">PNG or JPG stamp</div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 1. Text Controls Box -->
+                        <div id="text-controls-box" class="space-y-4 p-4 rounded-xl bg-zinc-50 border border-zinc-200">
+                            <div>
+                                <label for="wm-text" class="block text-xs font-bold text-zinc-700 mb-1.5">Watermark Text</label>
+                                <input 
+                                    type="text" 
+                                    id="wm-text" 
+                                    value="CONFIDENTIAL" 
+                                    maxlength="100" 
+                                    class="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs font-bold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
+                                    placeholder="e.g. CONFIDENTIAL, DRAFT"
+                                >
+                            </div>
+
+                            <!-- Presets -->
+                            <div>
+                                <span class="text-[11px] font-semibold text-zinc-500 block mb-1.5">Quick Presets:</span>
+                                <div class="flex flex-wrap gap-1.5">
+                                    <button type="button" class="preset-btn px-2.5 py-1 text-[11px] font-semibold bg-white border border-zinc-200 hover:border-purple-300 rounded-md text-zinc-700 transition-all">CONFIDENTIAL</button>
+                                    <button type="button" class="preset-btn px-2.5 py-1 text-[11px] font-semibold bg-white border border-zinc-200 hover:border-purple-300 rounded-md text-zinc-700 transition-all">DRAFT</button>
+                                    <button type="button" class="preset-btn px-2.5 py-1 text-[11px] font-semibold bg-white border border-zinc-200 hover:border-purple-300 rounded-md text-zinc-700 transition-all">DO NOT COPY</button>
+                                    <button type="button" class="preset-btn px-2.5 py-1 text-[11px] font-semibold bg-white border border-zinc-200 hover:border-purple-300 rounded-md text-zinc-700 transition-all">SAMPLE</button>
+                                    <button type="button" class="preset-btn px-2.5 py-1 text-[11px] font-semibold bg-white border border-zinc-200 hover:border-purple-300 rounded-md text-zinc-700 transition-all">INTERNAL ONLY</button>
+                                </div>
+                            </div>
+
+                            <!-- Font Size & Color -->
+                            <div class="grid grid-cols-2 gap-3 pt-1">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <label for="wm-font-size" class="text-xs font-bold text-zinc-700">Font Size</label>
+                                        <span id="wm-font-size-val" class="text-xs font-semibold text-purple-700">48px</span>
+                                    </div>
+                                    <input type="range" id="wm-font-size" min="16" max="96" value="48" class="w-full cursor-pointer">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-zinc-700 mb-1">Color</label>
+                                    <div class="flex items-center gap-1.5 pt-1">
+                                        <input type="color" id="wm-color-picker" value="#dc2626" class="w-7 h-7 rounded-lg border border-zinc-200 cursor-pointer p-0 bg-transparent">
+                                        <div class="flex gap-1">
+                                            <button type="button" class="color-preset w-5 h-5 rounded-md bg-red-600 border border-black/10" data-color="#dc2626" title="Red"></button>
+                                            <button type="button" class="color-preset w-5 h-5 rounded-md bg-zinc-500 border border-black/10" data-color="#71717a" title="Gray"></button>
+                                            <button type="button" class="color-preset w-5 h-5 rounded-md bg-blue-600 border border-black/10" data-color="#2563eb" title="Blue"></button>
+                                            <button type="button" class="color-preset w-5 h-5 rounded-md bg-zinc-900 border border-black/10" data-color="#18181b" title="Black"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Image Controls Box -->
+                        <div id="image-controls-box" class="hidden space-y-4 p-4 rounded-xl bg-zinc-50 border border-zinc-200">
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-700 mb-1.5">Select Logo or Image</label>
+                                <input type="file" id="wm-image-input" accept="image/png,image/jpeg,image/jpg" class="hidden">
+                                <div id="image-drop-area" class="border border-dashed border-zinc-300 rounded-lg p-3 text-center bg-white cursor-pointer hover:border-purple-400 transition-all flex items-center justify-center gap-3">
+                                    <div id="image-thumb-container" class="hidden w-10 h-10 rounded border border-zinc-200 overflow-hidden shrink-0 bg-zinc-50 flex items-center justify-center">
+                                        <img id="image-thumb" class="w-full h-full object-contain" src="" alt="Thumbnail">
+                                    </div>
+                                    <div class="text-left truncate">
+                                        <p id="image-file-label" class="text-xs font-semibold text-zinc-800">Click to choose image (PNG, JPG)</p>
+                                        <p class="text-[10px] text-zinc-400">Transparent PNG logos work best</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label for="wm-image-scale" class="text-xs font-bold text-zinc-700">Image Scale</label>
+                                    <span id="wm-image-scale-val" class="text-xs font-semibold text-purple-700">35%</span>
+                                </div>
+                                <input type="range" id="wm-image-scale" min="10" max="100" value="35" class="w-full cursor-pointer">
+                            </div>
+                        </div>
+
+                        <!-- 3. Positioning, Rotation & Opacity (Common) -->
+                        <div class="space-y-4 p-4 rounded-xl bg-zinc-50 border border-zinc-200">
+                            
+                            <!-- Position Grid -->
+                            <div>
+                                <label class="block text-xs font-bold text-zinc-700 mb-1.5">Position</label>
+                                <div class="grid grid-cols-3 sm:grid-cols-4 gap-1.5 text-xs">
+                                    <label class="flex items-center justify-center p-2 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-purple-300 has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50 has-[:checked]:text-purple-700 has-[:checked]:font-bold">
+                                        <input type="radio" name="wm-pos" value="center" checked class="sr-only">
+                                        <span>Center</span>
+                                    </label>
+                                    <label class="flex items-center justify-center p-2 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-purple-300 has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50 has-[:checked]:text-purple-700 has-[:checked]:font-bold">
+                                        <input type="radio" name="wm-pos" value="top-left" class="sr-only">
+                                        <span>Top-Left</span>
+                                    </label>
+                                    <label class="flex items-center justify-center p-2 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-purple-300 has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50 has-[:checked]:text-purple-700 has-[:checked]:font-bold">
+                                        <input type="radio" name="wm-pos" value="top-right" class="sr-only">
+                                        <span>Top-Right</span>
+                                    </label>
+                                    <label class="flex items-center justify-center p-2 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-purple-300 has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50 has-[:checked]:text-purple-700 has-[:checked]:font-bold">
+                                        <input type="radio" name="wm-pos" value="bottom-left" class="sr-only">
+                                        <span>Bottom-Left</span>
+                                    </label>
+                                    <label class="flex items-center justify-center p-2 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-purple-300 has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50 has-[:checked]:text-purple-700 has-[:checked]:font-bold">
+                                        <input type="radio" name="wm-pos" value="bottom-right" class="sr-only">
+                                        <span>Bottom-Right</span>
+                                    </label>
+                                    <label class="flex items-center justify-center p-2 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-purple-300 has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50 has-[:checked]:text-purple-700 has-[:checked]:font-bold">
+                                        <input type="radio" name="wm-pos" value="tiled" class="sr-only">
+                                        <span>Tiled Grid</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Rotation -->
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label for="wm-rotation" class="text-xs font-bold text-zinc-700">Rotation Angle</label>
+                                    <div class="flex items-center gap-1.5">
+                                        <button type="button" class="rot-preset px-1.5 py-0.5 rounded text-[10px] font-semibold bg-white border border-zinc-200 hover:bg-zinc-100" data-rot="0">0°</button>
+                                        <button type="button" class="rot-preset px-1.5 py-0.5 rounded text-[10px] font-semibold bg-white border border-zinc-200 hover:bg-zinc-100" data-rot="-45">-45°</button>
+                                        <button type="button" class="rot-preset px-1.5 py-0.5 rounded text-[10px] font-semibold bg-white border border-zinc-200 hover:bg-zinc-100" data-rot="45">45°</button>
+                                        <span id="wm-rotation-val" class="text-xs font-semibold text-purple-700 min-w-[32px] text-right">-45°</span>
+                                    </div>
+                                </div>
+                                <input type="range" id="wm-rotation" min="-90" max="90" value="-45" class="w-full cursor-pointer">
+                            </div>
+
+                            <!-- Transparency / Opacity -->
+                            <div>
+                                <div class="flex justify-between items-center mb-1">
+                                    <label for="wm-opacity" class="text-xs font-bold text-zinc-700">Opacity / Transparency</label>
+                                    <span id="wm-opacity-val" class="text-xs font-semibold text-purple-700">25%</span>
+                                </div>
+                                <input type="range" id="wm-opacity" min="5" max="100" value="25" class="w-full cursor-pointer">
+                            </div>
+
+                            <!-- Page Range Option -->
+                            <div class="pt-2 border-t border-zinc-200/60">
+                                <label class="block text-xs font-bold text-zinc-700 mb-1.5">Apply to Pages</label>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <label class="flex items-center gap-2 p-2 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-zinc-300">
+                                        <input type="radio" name="wm-pages-option" value="all" checked class="text-purple-600 focus:ring-purple-500">
+                                        <span class="font-medium text-zinc-800">All Pages</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-zinc-300">
+                                        <input type="radio" name="wm-pages-option" value="first" class="text-purple-600 focus:ring-purple-500">
+                                        <span class="font-medium text-zinc-800">First Page Only</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div id="progress-container" class="hidden space-y-1.5">
+                            <div class="flex justify-between text-xs font-semibold text-zinc-600">
+                                <span id="progress-text">Applying watermark to document...</span>
+                                <span id="progress-percent">0%</span>
+                            </div>
+                            <div class="w-full bg-zinc-100 rounded-full h-2 overflow-hidden">
+                                <div id="progress-bar" class="bg-purple-600 h-2 rounded-full transition-all duration-200" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Process Action Button -->
+                        <button id="apply-btn" class="w-full py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm text-white bg-zinc-900 hover:bg-zinc-800 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span>Apply Watermark & Download</span>
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </button>
+
+                    </div>
+
+                    <!-- Right Column: Live Interactive Preview (5 cols) -->
+                    <div class="lg:col-span-5 flex flex-col items-center">
+                        <div class="w-full flex items-center justify-between mb-2">
+                            <span class="text-xs font-bold text-zinc-700 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                Live Page Preview
+                            </span>
+                            <span class="text-[11px] text-zinc-400">Page 1 representation</span>
+                        </div>
+
+                        <div class="w-full bg-zinc-100/80 rounded-2xl border border-zinc-200 p-4 flex flex-col items-center justify-center min-h-[360px] overflow-hidden">
+                            <div id="preview-loader" class="text-xs font-medium text-zinc-400 flex items-center gap-2">
+                                <svg class="animate-spin h-4 w-4 text-purple-600" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Rendering page preview...</span>
+                            </div>
+
+                            <div id="preview-stage" class="hidden preview-canvas-container rounded-lg overflow-hidden border border-zinc-300 max-w-full">
+                                <canvas id="preview-canvas" class="block max-w-full h-auto"></canvas>
+                            </div>
+                        </div>
+
+                        <p class="text-[11px] text-zinc-400 mt-2 text-center">Settings adjust instantly on the preview before finalizing</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Download Section -->
+            <div id="download-section" class="hidden mt-6 space-y-4">
+                <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-center">
+                    <p class="font-bold text-sm">✓ Watermark Applied Successfully!</p>
+                    <p id="watermark-summary" class="text-xs text-emerald-700 mt-1 font-medium"></p>
+                </div>
+                
+                <a id="download-link" href="#" download="watermarked.pdf" class="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-sm">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    <span>Download Watermarked PDF</span>
+                </a>
+
+                <div class="text-center pt-2">
+                    <button id="watermark-another-btn" class="text-xs font-semibold text-zinc-500 hover:text-zinc-900 transition-colors">
+                        ← Watermark another PDF document
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Privacy Assurance Card -->
+        <div class="mt-8 text-center text-xs text-zinc-400">
+            <span>🔒 Complete Privacy: All watermark embedding and PDF composition happens 100% in local browser memory. No data is transmitted.</span>
+        </div>
+
+    </main>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const fileInfo = document.getElementById('file-info');
+        const fileNameEl = document.getElementById('file-name');
+        const fileSizeEl = document.getElementById('file-size');
+        const changeFileBtn = document.getElementById('change-file-btn');
+        const workspaceSection = document.getElementById('workspace-section');
+        const textControlsBox = document.getElementById('text-controls-box');
+        const imageControlsBox = document.getElementById('image-controls-box');
+        const wmText = document.getElementById('wm-text');
+        const wmFontSize = document.getElementById('wm-font-size');
+        const wmFontSizeVal = document.getElementById('wm-font-size-val');
+        const wmColorPicker = document.getElementById('wm-color-picker');
+        const wmImageInput = document.getElementById('wm-image-input');
+        const imageDropArea = document.getElementById('image-drop-area');
+        const imageThumbContainer = document.getElementById('image-thumb-container');
+        const imageThumb = document.getElementById('image-thumb');
+        const imageFileLabel = document.getElementById('image-file-label');
+        const wmImageScale = document.getElementById('wm-image-scale');
+        const wmImageScaleVal = document.getElementById('wm-image-scale-val');
+        const wmRotation = document.getElementById('wm-rotation');
+        const wmRotationVal = document.getElementById('wm-rotation-val');
+        const wmOpacity = document.getElementById('wm-opacity');
+        const wmOpacityVal = document.getElementById('wm-opacity-val');
+        const applyBtn = document.getElementById('apply-btn');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const progressPercent = document.getElementById('progress-percent');
+        const downloadSection = document.getElementById('download-section');
+        const downloadLink = document.getElementById('download-link');
+        const watermarkSummary = document.getElementById('watermark-summary');
+        const watermarkAnotherBtn = document.getElementById('watermark-another-btn');
+        const errorMsg = document.getElementById('error-msg');
+        const errorText = document.getElementById('error-text');
+
+        const previewLoader = document.getElementById('preview-loader');
+        const previewStage = document.getElementById('preview-stage');
+        const previewCanvas = document.getElementById('preview-canvas');
+        const previewCtx = previewCanvas.getContext('2d');
+
+        let currentPdfFile = null;
+        let pdfDocBytes = null;
+        let pdfJsDoc = null;
+        let baseCanvasOffscreen = null; // cached render of page 1
+        let basePageWidth = 0;
+        let basePageHeight = 0;
+        let uploadedImage = null; // HTMLImageElement
+        let uploadedImageBytes = null;
+        let uploadedImageType = null; // 'image/png' or 'image/jpeg'
+
+        // File drop listeners
+        dropZone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handlePdfSelected);
+        changeFileBtn.addEventListener('click', resetAll);
+        watermarkAnotherBtn.addEventListener('click', resetAll);
+
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-purple-500', 'bg-purple-50/30'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-purple-500', 'bg-purple-50/30'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-purple-500', 'bg-purple-50/30');
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                handlePdfSelected();
+            }
+        });
+
+        // Watermark Type Toggle
+        document.querySelectorAll('input[name="wm-type"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if (e.target.value === 'text') {
+                    textControlsBox.classList.remove('hidden');
+                    imageControlsBox.classList.add('hidden');
+                } else {
+                    textControlsBox.classList.add('hidden');
+                    imageControlsBox.classList.remove('hidden');
+                }
+                updatePreviewOverlay();
+            });
+        });
+
+        // Presets text
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                wmText.value = btn.textContent.trim();
+                updatePreviewOverlay();
+            });
+        });
+
+        // Color presets
+        document.querySelectorAll('.color-preset').forEach(btn => {
+            btn.addEventListener('click', () => {
+                wmColorPicker.value = btn.dataset.color;
+                updatePreviewOverlay();
+            });
+        });
+
+        // Rotation presets
+        document.querySelectorAll('.rot-preset').forEach(btn => {
+            btn.addEventListener('click', () => {
+                wmRotation.value = btn.dataset.rot;
+                wmRotationVal.textContent = btn.dataset.rot + '°';
+                updatePreviewOverlay();
+            });
+        });
+
+        // Range input listeners
+        wmFontSize.addEventListener('input', (e) => {
+            wmFontSizeVal.textContent = e.target.value + 'px';
+            updatePreviewOverlay();
+        });
+        wmRotation.addEventListener('input', (e) => {
+            wmRotationVal.textContent = e.target.value + '°';
+            updatePreviewOverlay();
+        });
+        wmOpacity.addEventListener('input', (e) => {
+            wmOpacityVal.textContent = e.target.value + '%';
+            updatePreviewOverlay();
+        });
+        wmImageScale.addEventListener('input', (e) => {
+            wmImageScaleVal.textContent = e.target.value + '%';
+            updatePreviewOverlay();
+        });
+        wmText.addEventListener('input', updatePreviewOverlay);
+        wmColorPicker.addEventListener('input', updatePreviewOverlay);
+
+        document.querySelectorAll('input[name="wm-pos"]').forEach(radio => {
+            radio.addEventListener('change', updatePreviewOverlay);
+        });
+
+        // Image file handling
+        imageDropArea.addEventListener('click', () => wmImageInput.click());
+        wmImageInput.addEventListener('change', handleImageSelected);
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        async function handlePdfSelected() {
+            const file = fileInput.files[0];
+            if (!file || !(file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))) {
+                errorText.textContent = 'Please select a valid PDF document (.pdf).';
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                errorMsg.classList.add('hidden');
+                currentPdfFile = file;
+                pdfDocBytes = await file.arrayBuffer();
+
+                // Load via pdf-lib to get metadata
+                const pdfLibDoc = await PDFLib.PDFDocument.load(pdfDocBytes, { ignoreEncryption: true });
+                const pageCount = pdfLibDoc.getPageCount();
+
+                fileNameEl.textContent = file.name;
+                fileSizeEl.textContent = `${formatBytes(file.size)} · ${pageCount} page${pageCount === 1 ? '' : 's'}`;
+
+                dropZone.classList.add('hidden');
+                fileInfo.classList.remove('hidden');
+                workspaceSection.classList.remove('hidden');
+                downloadSection.classList.add('hidden');
+
+                // Render page 1 preview
+                await renderBasePreview();
+            } catch (err) {
+                console.error(err);
+                errorText.textContent = 'Failed to load PDF document. The file may be password protected or corrupted.';
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        async function renderBasePreview() {
+            previewLoader.classList.remove('hidden');
+            previewStage.classList.add('hidden');
+
+            try {
+                const loadingTask = pdfjsLib.getDocument({ data: pdfDocBytes });
+                pdfJsDoc = await loadingTask.promise;
+                const page = await pdfJsDoc.getPage(1);
+
+                const unscaledViewport = page.getViewport({ scale: 1.0 });
+                basePageWidth = unscaledViewport.width;
+                basePageHeight = unscaledViewport.height;
+
+                // Scale for preview display (fit nicely around max 380px width)
+                const scale = Math.min(380 / basePageWidth, 480 / basePageHeight, 1.2);
+                const viewport = page.getViewport({ scale });
+
+                baseCanvasOffscreen = document.createElement('canvas');
+                baseCanvasOffscreen.width = viewport.width;
+                baseCanvasOffscreen.height = viewport.height;
+                const offCtx = baseCanvasOffscreen.getContext('2d');
+
+                await page.render({ canvasContext: offCtx, viewport }).promise;
+
+                previewCanvas.width = viewport.width;
+                previewCanvas.height = viewport.height;
+
+                previewLoader.classList.add('hidden');
+                previewStage.classList.remove('hidden');
+
+                updatePreviewOverlay();
+            } catch (err) {
+                console.error('Error rendering PDF preview:', err);
+                previewLoader.innerHTML = '<span class="text-zinc-500 text-xs">Preview unavailable, but watermark will still apply properly.</span>';
+            }
+        }
+
+        function handleImageSelected(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            uploadedImageType = file.type;
+            const reader = new FileReader();
+            reader.onload = async (evt) => {
+                const img = new Image();
+                img.onload = () => {
+                    uploadedImage = img;
+                    imageThumb.src = evt.target.result;
+                    imageThumbContainer.classList.remove('hidden');
+                    imageFileLabel.textContent = file.name;
+                    updatePreviewOverlay();
+                };
+                img.src = evt.target.result;
+
+                // Also store array buffer for pdf-lib embedding
+                uploadedImageBytes = await file.arrayBuffer();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function updatePreviewOverlay() {
+            if (!baseCanvasOffscreen) return;
+
+            // 1. Draw base page
+            previewCtx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+            previewCtx.drawImage(baseCanvasOffscreen, 0, 0);
+
+            // 2. Compute parameters
+            const wmType = document.querySelector('input[name="wm-type"]:checked').value;
+            const pos = document.querySelector('input[name="wm-pos"]:checked').value;
+            const rotDeg = parseFloat(wmRotation.value) || 0;
+            const rotRad = (rotDeg * Math.PI) / 180;
+            const opacity = (parseFloat(wmOpacity.value) || 25) / 100;
+            const canvasW = previewCanvas.width;
+            const canvasH = previewCanvas.height;
+
+            // Ratio of preview canvas to original unscaled PDF page
+            const scaleFactor = canvasW / basePageWidth;
+
+            previewCtx.save();
+            previewCtx.globalAlpha = opacity;
+
+            if (wmType === 'text') {
+                const text = wmText.value || 'CONFIDENTIAL';
+                const fontSize = (parseFloat(wmFontSize.value) || 48) * scaleFactor;
+                const color = wmColorPicker.value || '#dc2626';
+
+                previewCtx.font = `bold ${fontSize}px 'Plus Jakarta Sans', Helvetica, Arial, sans-serif`;
+                previewCtx.fillStyle = color;
+                previewCtx.textAlign = 'center';
+                previewCtx.textBaseline = 'middle';
+
+                const drawAt = (cx, cy) => {
+                    previewCtx.save();
+                    previewCtx.translate(cx, cy);
+                    previewCtx.rotate(rotRad);
+                    previewCtx.fillText(text, 0, 0);
+                    previewCtx.restore();
+                };
+
+                if (pos === 'tiled') {
+                    const cols = 3;
+                    const rows = 3;
+                    for (let c = 0; c < cols; c++) {
+                        for (let r = 0; r < rows; r++) {
+                            const cx = (canvasW / (cols + 1)) * (c + 1);
+                            const cy = (canvasH / (rows + 1)) * (r + 1);
+                            drawAt(cx, cy);
+                        }
+                    }
+                } else {
+                    const coords = getTargetCoords(pos, canvasW, canvasH, 40 * scaleFactor);
+                    drawAt(coords.x, coords.y);
+                }
+
+            } else if (wmType === 'image' && uploadedImage) {
+                const imgScaleRatio = (parseFloat(wmImageScale.value) || 35) / 100;
+                // Target width based on page width
+                const targetW = canvasW * 0.45 * imgScaleRatio;
+                const targetH = (targetW / uploadedImage.width) * uploadedImage.height;
+
+                const drawImgAt = (cx, cy) => {
+                    previewCtx.save();
+                    previewCtx.translate(cx, cy);
+                    previewCtx.rotate(rotRad);
+                    previewCtx.drawImage(uploadedImage, -targetW / 2, -targetH / 2, targetW, targetH);
+                    previewCtx.restore();
+                };
+
+                if (pos === 'tiled') {
+                    const cols = 3;
+                    const rows = 3;
+                    for (let c = 0; c < cols; c++) {
+                        for (let r = 0; r < rows; r++) {
+                            const cx = (canvasW / (cols + 1)) * (c + 1);
+                            const cy = (canvasH / (rows + 1)) * (r + 1);
+                            drawImgAt(cx, cy);
+                        }
+                    }
+                } else {
+                    const coords = getTargetCoords(pos, canvasW, canvasH, (targetW / 2) + 20);
+                    drawImgAt(coords.x, coords.y);
+                }
+            }
+
+            previewCtx.restore();
+        }
+
+        function getTargetCoords(pos, w, h, margin) {
+            switch (pos) {
+                case 'top-left': return { x: margin * 1.5, y: margin * 1.2 };
+                case 'top-right': return { x: w - margin * 1.5, y: margin * 1.2 };
+                case 'bottom-left': return { x: margin * 1.5, y: h - margin * 1.2 };
+                case 'bottom-right': return { x: w - margin * 1.5, y: h - margin * 1.2 };
+                case 'center':
+                default:
+                    return { x: w / 2, y: h / 2 };
+            }
+        }
+
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16) / 255,
+                g: parseInt(result[2], 16) / 255,
+                b: parseInt(result[3], 16) / 255
+            } : { r: 0.86, g: 0.15, b: 0.15 };
+        }
+
+        applyBtn.addEventListener('click', async () => {
+            if (!currentPdfFile || !pdfDocBytes) return;
+
+            const wmType = document.querySelector('input[name="wm-type"]:checked').value;
+            if (wmType === 'image' && (!uploadedImage || !uploadedImageBytes)) {
+                errorText.textContent = 'Please choose an image file (PNG/JPG) for the watermark.';
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            errorMsg.classList.add('hidden');
+            applyBtn.disabled = true;
+            progressContainer.classList.remove('hidden');
+
+            try {
+                progressText.textContent = 'Loading PDF document...';
+                progressBar.style.width = '15%';
+                progressPercent.textContent = '15%';
+
+                const pdfDoc = await PDFLib.PDFDocument.load(pdfDocBytes);
+                const font = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+
+                let embeddedImg = null;
+                if (wmType === 'image') {
+                    if (uploadedImageType === 'image/png') {
+                        embeddedImg = await pdfDoc.embedPng(uploadedImageBytes);
+                    } else {
+                        embeddedImg = await pdfDoc.embedJpg(uploadedImageBytes);
+                    }
+                }
+
+                const pages = pdfDoc.getPages();
+                const totalPages = pages.length;
+                const pagesOption = document.querySelector('input[name="wm-pages-option"]:checked').value;
+                const pagesToProcess = pagesOption === 'first' ? [pages[0]] : pages;
+
+                const text = wmText.value || 'CONFIDENTIAL';
+                const fontSize = parseFloat(wmFontSize.value) || 48;
+                const colorRgb = hexToRgb(wmColorPicker.value || '#dc2626');
+                const rotDeg = parseFloat(wmRotation.value) || 0;
+                const rotRad = (rotDeg * Math.PI) / 180;
+                const opacity = (parseFloat(wmOpacity.value) || 25) / 100;
+                const pos = document.querySelector('input[name="wm-pos"]:checked').value;
+                const imgScaleRatio = (parseFloat(wmImageScale.value) || 35) / 100;
+
+                for (let i = 0; i < pagesToProcess.length; i++) {
+                    const page = pagesToProcess[i];
+                    const percent = 20 + Math.round(((i + 1) / pagesToProcess.length) * 65);
+                    progressBar.style.width = percent + '%';
+                    progressPercent.textContent = percent + '%';
+                    progressText.textContent = `Watermarking page ${i + 1} of ${pagesToProcess.length}...`;
+
+                    const { width: pWidth, height: pHeight } = page.getSize();
+
+                    if (wmType === 'text') {
+                        const textW = font.widthOfTextAtSize(text, fontSize);
+                        const textH = font.heightAtSize(fontSize);
+
+                        // PDF coordinate system starts at bottom-left!
+                        const drawTextAt = (cx, cy) => {
+                            // Calculate lower-left origin so that after rotation the center is at (cx, cy)
+                            const offsetX = (textW / 2) * Math.cos(rotRad) - (textH / 2) * Math.sin(rotRad);
+                            const offsetY = (textW / 2) * Math.sin(rotRad) + (textH / 2) * Math.cos(rotRad);
+
+                            page.drawText(text, {
+                                x: cx - offsetX,
+                                y: cy - offsetY,
+                                size: fontSize,
+                                font: font,
+                                color: PDFLib.rgb(colorRgb.r, colorRgb.g, colorRgb.b),
+                                opacity: opacity,
+                                rotate: PDFLib.degrees(rotDeg)
+                            });
+                        };
+
+                        if (pos === 'tiled') {
+                            const cols = 3;
+                            const rows = 3;
+                            for (let c = 0; c < cols; c++) {
+                                for (let r = 0; r < rows; r++) {
+                                    const cx = (pWidth / (cols + 1)) * (c + 1);
+                                    const cy = (pHeight / (rows + 1)) * (r + 1);
+                                    drawTextAt(cx, cy);
+                                }
+                            }
+                        } else {
+                            const coords = getPdfTargetCoords(pos, pWidth, pHeight, 80);
+                            drawTextAt(coords.x, coords.y);
+                        }
+
+                    } else if (wmType === 'image' && embeddedImg) {
+                        const targetW = pWidth * 0.45 * imgScaleRatio;
+                        const targetH = (targetW / embeddedImg.width) * embeddedImg.height;
+
+                        const drawImgAt = (cx, cy) => {
+                            const offsetX = (targetW / 2) * Math.cos(rotRad) - (targetH / 2) * Math.sin(rotRad);
+                            const offsetY = (targetW / 2) * Math.sin(rotRad) + (targetH / 2) * Math.cos(rotRad);
+
+                            page.drawImage(embeddedImg, {
+                                x: cx - offsetX,
+                                y: cy - offsetY,
+                                width: targetW,
+                                height: targetH,
+                                opacity: opacity,
+                                rotate: PDFLib.degrees(rotDeg)
+                            });
+                        };
+
+                        if (pos === 'tiled') {
+                            const cols = 3;
+                            const rows = 3;
+                            for (let c = 0; c < cols; c++) {
+                                for (let r = 0; r < rows; r++) {
+                                    const cx = (pWidth / (cols + 1)) * (c + 1);
+                                    const cy = (pHeight / (rows + 1)) * (r + 1);
+                                    drawImgAt(cx, cy);
+                                }
+                            }
+                        } else {
+                            const coords = getPdfTargetCoords(pos, pWidth, pHeight, targetW / 2 + 30);
+                            drawImgAt(coords.x, coords.y);
+                        }
+                    }
+                }
+
+                progressText.textContent = 'Saving watermarked document...';
+                progressBar.style.width = '95%';
+                progressPercent.textContent = '95%';
+
+                const savedBytes = await pdfDoc.save();
+                const blob = new Blob([savedBytes], { type: 'application/pdf' });
+                const downloadUrl = URL.createObjectURL(blob);
+
+                const baseName = currentPdfFile.name.replace(/\.[^/.]+$/, '');
+                downloadLink.href = downloadUrl;
+                downloadLink.download = `${baseName}-watermarked.pdf`;
+
+                watermarkSummary.textContent = `Applied ${wmType} watermark across ${pagesToProcess.length} page${pagesToProcess.length === 1 ? '' : 's'} (${formatBytes(savedBytes.byteLength)}).`;
+
+                progressBar.style.width = '100%';
+                progressPercent.textContent = '100%';
+                downloadSection.classList.remove('hidden');
+                workspaceSection.classList.add('hidden');
+            } catch (err) {
+                console.error(err);
+                errorText.textContent = 'Failed to apply watermark. The document may be corrupted or protected.';
+                errorMsg.classList.remove('hidden');
+            } finally {
+                applyBtn.disabled = false;
+                progressContainer.classList.add('hidden');
+                progressBar.style.width = '0%';
+            }
+        });
+
+        // PDF coordinate system has (0, 0) at BOTTOM-left!
+        function getPdfTargetCoords(pos, w, h, margin) {
+            switch (pos) {
+                case 'top-left': return { x: margin * 1.5, y: h - margin * 1.2 };
+                case 'top-right': return { x: w - margin * 1.5, y: h - margin * 1.2 };
+                case 'bottom-left': return { x: margin * 1.5, y: margin * 1.2 };
+                case 'bottom-right': return { x: w - margin * 1.5, y: margin * 1.2 };
+                case 'center':
+                default:
+                    return { x: w / 2, y: h / 2 };
+            }
+        }
+
+        function resetAll() {
+            fileInput.value = '';
+            currentPdfFile = null;
+            pdfDocBytes = null;
+            pdfJsDoc = null;
+            baseCanvasOffscreen = null;
+            uploadedImage = null;
+            uploadedImageBytes = null;
+
+            imageThumb.src = '';
+            imageThumbContainer.classList.add('hidden');
+            imageFileLabel.textContent = 'Click to choose image (PNG, JPG)';
+            wmImageInput.value = '';
+
+            dropZone.classList.remove('hidden');
+            fileInfo.classList.add('hidden');
+            workspaceSection.classList.add('hidden');
+            downloadSection.classList.add('hidden');
+            errorMsg.classList.add('hidden');
+            progressContainer.classList.add('hidden');
+            progressBar.style.width = '0%';
+        }
+    </script>
+</body>
+</html>
