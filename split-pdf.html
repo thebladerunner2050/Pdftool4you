@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Split PDF Files Online — PDFTool4You</title>
+    <meta name="description" content="Extract individual pages or custom ranges from PDF documents into separate files directly in your browser. 100% private, free, and secure.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.9/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: #fafbfc;
+            color: #09090b;
+        }
+        .page-chip.selected {
+            border-color: #2563eb;
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- Minimal Header -->
+    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-zinc-200/80">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-zinc-900 text-white flex items-center justify-center text-sm font-bold shadow-sm">
+                    ⚡
+                </div>
+                <span class="font-bold text-base text-zinc-900 tracking-tight">PDFTool<span class="text-blue-600">4You</span></span>
+            </a>
+            <a href="index.html" class="inline-flex items-center gap-1 text-xs font-semibold text-zinc-600 hover:text-zinc-900 px-3 py-1.5 rounded-lg hover:bg-zinc-100 transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                <span>Back to Tools</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-2xl mx-auto px-4 sm:px-6 py-10 w-full">
+        
+        <!-- Header Info -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-50 border border-orange-200/60 text-orange-700 text-xs font-semibold mb-3">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11l2 2-2 2m-8-4l-2 2 2 2"/>
+                </svg>
+                <span>Client-Side PDF Splitter</span>
+            </div>
+            <h1 class="text-3xl font-extrabold tracking-tight text-zinc-900 mb-2">Split PDF Document</h1>
+            <p class="text-sm text-zinc-600">Extract individual pages, custom page ranges, or separate every page into distinct files.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-zinc-200/80 p-6 sm:p-8 shadow-sm">
+            
+            <!-- Error Alert -->
+            <div id="error-msg" class="hidden mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-xs font-medium text-red-700 flex items-start gap-2.5">
+                <svg class="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span id="error-text">Please upload a valid PDF document (.pdf).</span>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div id="drop-zone" class="group border-2 border-dashed border-zinc-200 rounded-2xl p-8 sm:p-10 text-center cursor-pointer hover:border-orange-500 hover:bg-orange-50/20 transition-all">
+                <input type="file" id="file-input" accept=".pdf,application/pdf" class="hidden">
+                <div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-400 group-hover:scale-110 group-hover:border-orange-300 group-hover:text-orange-600 transition-all">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <p class="text-sm font-bold text-zinc-900 mb-1">Click to select PDF or drag and drop here</p>
+                <p class="text-xs text-zinc-400">PDF pages are analyzed and separated entirely on your device</p>
+            </div>
+
+            <!-- File Selected Meta Card -->
+            <div id="file-info" class="hidden mt-6 p-4 rounded-xl bg-zinc-50 border border-zinc-200 flex items-center justify-between">
+                <div class="flex items-center gap-3 overflow-hidden">
+                    <div class="w-9 h-9 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-xs shrink-0">
+                        PDF
+                    </div>
+                    <div class="truncate">
+                        <p id="file-name" class="text-xs font-bold text-zinc-900 truncate max-w-xs"></p>
+                        <p id="file-size" class="text-[11px] text-zinc-500 font-medium"></p>
+                    </div>
+                </div>
+                <button type="button" id="change-file-btn" class="text-xs text-zinc-400 hover:text-red-600 p-1 font-medium transition-colors">
+                    Change file
+                </button>
+            </div>
+
+            <!-- Split Options Section -->
+            <div id="split-section" class="hidden mt-6 space-y-6">
+                
+                <!-- Mode Selection -->
+                <div>
+                    <label class="block text-xs font-bold text-zinc-700 uppercase tracking-wider mb-2.5">Splitting Mode</label>
+                    <div class="grid grid-cols-2 gap-3">
+                        <label class="cursor-pointer border border-zinc-200 rounded-xl p-3 text-center transition-all bg-zinc-50 hover:bg-white has-[:checked]:border-orange-600 has-[:checked]:bg-orange-50/50 has-[:checked]:ring-1 has-[:checked]:ring-orange-600">
+                            <input type="radio" name="split-mode" value="range" class="sr-only" checked>
+                            <div class="font-bold text-xs text-zinc-900">Extract Range / Pages</div>
+                            <div class="text-[10px] text-zinc-500 mt-0.5">Select specific pages</div>
+                        </label>
+                        <label class="cursor-pointer border border-zinc-200 rounded-xl p-3 text-center transition-all bg-zinc-50 hover:bg-white has-[:checked]:border-orange-600 has-[:checked]:bg-orange-50/50 has-[:checked]:ring-1 has-[:checked]:ring-orange-600">
+                            <input type="radio" name="split-mode" value="all" class="sr-only">
+                            <div class="font-bold text-xs text-zinc-900">Extract Every Page</div>
+                            <div class="text-[10px] text-zinc-500 mt-0.5">Separate into individual PDFs</div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Range Configuration (Visible in Range mode) -->
+                <div id="range-config-box" class="space-y-4 bg-zinc-50/80 border border-zinc-200 p-4 rounded-xl">
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label for="range-input" class="text-xs font-bold text-zinc-700">Page Range or Numbers</label>
+                            <span class="text-[11px] text-zinc-400">e.g. 1-3, 5, 7-9</span>
+                        </div>
+                        <input 
+                            type="text" 
+                            id="range-input" 
+                            class="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs font-medium text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
+                            placeholder="Enter page range (e.g. 1-2, 4)"
+                        >
+                    </div>
+
+                    <!-- Quick Select Helpers -->
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-[11px] font-semibold text-zinc-500">Or click pages to toggle:</span>
+                            <div class="flex items-center gap-2 text-[11px]">
+                                <button type="button" id="btn-select-all" class="text-orange-600 hover:text-orange-800 font-medium">All</button>
+                                <span class="text-zinc-300">·</span>
+                                <button type="button" id="btn-select-odd" class="text-zinc-600 hover:text-zinc-900 font-medium">Odd</button>
+                                <span class="text-zinc-300">·</span>
+                                <button type="button" id="btn-select-even" class="text-zinc-600 hover:text-zinc-900 font-medium">Even</button>
+                                <span class="text-zinc-300">·</span>
+                                <button type="button" id="btn-clear-selection" class="text-zinc-400 hover:text-red-600 font-medium">Clear</button>
+                            </div>
+                        </div>
+
+                        <!-- Page Chips Container -->
+                        <div id="pages-grid" class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto p-1 bg-white rounded-lg border border-zinc-200">
+                            <!-- Populated with page chips -->
+                        </div>
+                    </div>
+
+                    <!-- Output Format for Range -->
+                    <div class="pt-2 border-t border-zinc-200/60">
+                        <label class="block text-xs font-bold text-zinc-700 mb-2">Save Selected Pages As:</label>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <label class="flex items-center gap-2 p-2 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-zinc-300">
+                                <input type="radio" name="range-output-type" value="single" checked class="text-orange-600 focus:ring-orange-500">
+                                <span class="font-medium text-zinc-800">1 Combined PDF</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-2 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-zinc-300">
+                                <input type="radio" name="range-output-type" value="separate" class="text-orange-600 focus:ring-orange-500">
+                                <span class="font-medium text-zinc-800">Separate PDF files</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Pages Mode Note (Visible in All Pages mode) -->
+                <div id="all-config-box" class="hidden p-4 bg-orange-50 border border-orange-200 rounded-xl text-xs text-orange-900">
+                    <p class="font-bold mb-1">Split all pages individually</p>
+                    <p class="text-orange-700 leading-relaxed">
+                        Each page will be extracted into its own standalone PDF document. You will be able to download individual pages or a combined ZIP archive.
+                    </p>
+                </div>
+
+                <!-- Progress Bar -->
+                <div id="progress-container" class="hidden space-y-2">
+                    <div class="flex justify-between text-xs font-semibold text-zinc-600">
+                        <span id="progress-text">Extracting pages...</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="w-full bg-zinc-100 rounded-full h-2 overflow-hidden">
+                        <div id="progress-bar" class="bg-orange-600 h-2 rounded-full transition-all duration-200" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <button id="split-btn" class="w-full py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm text-white bg-zinc-900 hover:bg-zinc-800 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span>Split & Extract PDF</span>
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Download Results Section -->
+            <div id="download-section" class="hidden mt-6 space-y-4">
+                <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-center">
+                    <p class="font-bold text-sm">✓ PDF Successfully Split!</p>
+                    <p id="result-summary" class="text-xs text-emerald-700 mt-1 font-medium"></p>
+                </div>
+
+                <!-- Single File Download Action -->
+                <div id="single-download-box" class="hidden">
+                    <a id="single-download-link" href="#" download="split-document.pdf" class="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-sm">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        <span>Download Extracted PDF</span>
+                    </a>
+                </div>
+
+                <!-- Multiple Files Download Action -->
+                <div id="multiple-download-box" class="hidden space-y-3">
+                    <button type="button" id="zip-download-btn" class="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-sm">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                        <span>Download All Files (.ZIP)</span>
+                    </button>
+
+                    <div class="pt-2">
+                        <p class="text-xs font-bold text-zinc-700 mb-2">Or download individual pages:</p>
+                        <div id="extracted-files-list" class="space-y-1.5 max-h-52 overflow-y-auto pr-1">
+                            <!-- Populated with page download items -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center pt-2">
+                    <button id="split-another-btn" class="text-xs font-semibold text-zinc-500 hover:text-zinc-900 transition-colors">
+                        ← Split another PDF document
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Privacy Assurance Card -->
+        <div class="mt-8 text-center text-xs text-zinc-400">
+            <span>🔒 Complete Privacy: Split operations are processed locally in your browser memory. Nothing is ever sent to a server.</span>
+        </div>
+
+    </main>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const fileInfo = document.getElementById('file-info');
+        const fileNameEl = document.getElementById('file-name');
+        const fileSizeEl = document.getElementById('file-size');
+        const changeFileBtn = document.getElementById('change-file-btn');
+        const splitSection = document.getElementById('split-section');
+        const rangeConfigBox = document.getElementById('range-config-box');
+        const allConfigBox = document.getElementById('all-config-box');
+        const rangeInput = document.getElementById('range-input');
+        const pagesGrid = document.getElementById('pages-grid');
+        const splitBtn = document.getElementById('split-btn');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const progressPercent = document.getElementById('progress-percent');
+        const downloadSection = document.getElementById('download-section');
+        const resultSummary = document.getElementById('result-summary');
+        const singleDownloadBox = document.getElementById('single-download-box');
+        const singleDownloadLink = document.getElementById('single-download-link');
+        const multipleDownloadBox = document.getElementById('multiple-download-box');
+        const zipDownloadBtn = document.getElementById('zip-download-btn');
+        const extractedFilesList = document.getElementById('extracted-files-list');
+        const splitAnotherBtn = document.getElementById('split-another-btn');
+        const errorMsg = document.getElementById('error-msg');
+        const errorText = document.getElementById('error-text');
+
+        const btnSelectAll = document.getElementById('btn-select-all');
+        const btnSelectOdd = document.getElementById('btn-select-odd');
+        const btnSelectEven = document.getElementById('btn-select-even');
+        const btnClearSelection = document.getElementById('btn-clear-selection');
+
+        let currentFile = null;
+        let loadedPdfDoc = null;
+        let totalPages = 0;
+        let selectedPageNumbers = new Set(); // 1-indexed numbers
+        let generatedZipBlob = null;
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFile);
+        changeFileBtn.addEventListener('click', resetAll);
+        splitAnotherBtn.addEventListener('click', resetAll);
+
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-orange-500', 'bg-orange-50/30'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-orange-500', 'bg-orange-50/30'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-orange-500', 'bg-orange-50/30');
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                handleFile();
+            }
+        });
+
+        document.querySelectorAll('input[name="split-mode"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if (e.target.value === 'range') {
+                    rangeConfigBox.classList.remove('hidden');
+                    allConfigBox.classList.add('hidden');
+                } else {
+                    rangeConfigBox.classList.add('hidden');
+                    allConfigBox.classList.remove('hidden');
+                }
+            });
+        });
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        async function handleFile() {
+            const file = fileInput.files[0];
+            if (!file || !(file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))) {
+                errorText.textContent = 'Please select a valid PDF document (.pdf).';
+                errorMsg.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                errorMsg.classList.add('hidden');
+                currentFile = file;
+                const arrayBuffer = await file.arrayBuffer();
+                loadedPdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+                totalPages = loadedPdfDoc.getPageCount();
+
+                fileNameEl.textContent = file.name;
+                fileSizeEl.textContent = `${formatBytes(file.size)} · ${totalPages} page${totalPages === 1 ? '' : 's'}`;
+
+                dropZone.classList.add('hidden');
+                fileInfo.classList.remove('hidden');
+                splitSection.classList.remove('hidden');
+                downloadSection.classList.add('hidden');
+
+                // Default select all pages or 1-indexed pages
+                selectedPageNumbers.clear();
+                for (let i = 1; i <= totalPages; i++) {
+                    selectedPageNumbers.add(i);
+                }
+                updateRangeInputFromSet();
+                renderPageChips();
+            } catch (err) {
+                console.error(err);
+                errorText.textContent = 'Failed to load PDF document. The file may be password protected or corrupted.';
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        function renderPageChips() {
+            pagesGrid.innerHTML = '';
+            for (let i = 1; i <= totalPages; i++) {
+                const chip = document.createElement('button');
+                chip.type = 'button';
+                const isSelected = selectedPageNumbers.has(i);
+                chip.className = `page-chip text-xs px-2.5 py-1 rounded-md border text-center transition-all ${
+                    isSelected ? 'selected border-blue-600 bg-blue-50 text-blue-700 font-bold' : 'border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300'
+                }`;
+                chip.textContent = i;
+                chip.addEventListener('click', () => {
+                    if (selectedPageNumbers.has(i)) {
+                        selectedPageNumbers.delete(i);
+                    } else {
+                        selectedPageNumbers.add(i);
+                    }
+                    updateRangeInputFromSet();
+                    renderPageChips();
+                });
+                pagesGrid.appendChild(chip);
+            }
+        }
+
+        function updateRangeInputFromSet() {
+            if (selectedPageNumbers.size === 0) {
+                rangeInput.value = '';
+                return;
+            }
+            const sorted = Array.from(selectedPageNumbers).sort((a, b) => a - b);
+            const ranges = [];
+            let start = sorted[0];
+            let prev = sorted[0];
+
+            for (let i = 1; i < sorted.length; i++) {
+                const curr = sorted[i];
+                if (curr === prev + 1) {
+                    prev = curr;
+                } else {
+                    ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
+                    start = curr;
+                    prev = curr;
+                }
+            }
+            ranges.push(start === prev ? `${start}` : `${start}-${prev}`);
+            rangeInput.value = ranges.join(', ');
+        }
+
+        function parseRangeInput(text) {
+            const pageSet = new Set();
+            const parts = text.split(/[,;\s]+/);
+            for (const part of parts) {
+                const trimmed = part.trim();
+                if (!trimmed) continue;
+                if (trimmed.includes('-')) {
+                    const [startStr, endStr] = trimmed.split('-');
+                    const start = parseInt(startStr, 10);
+                    const end = parseInt(endStr, 10);
+                    if (!isNaN(start) && !isNaN(end)) {
+                        const low = Math.max(1, Math.min(start, end));
+                        const high = Math.min(totalPages, Math.max(start, end));
+                        for (let p = low; p <= high; p++) pageSet.add(p);
+                    }
+                } else {
+                    const num = parseInt(trimmed, 10);
+                    if (!isNaN(num) && num >= 1 && num <= totalPages) {
+                        pageSet.add(num);
+                    }
+                }
+            }
+            return pageSet;
+        }
+
+        rangeInput.addEventListener('input', (e) => {
+            selectedPageNumbers = parseRangeInput(e.target.value);
+            renderPageChips();
+        });
+
+        btnSelectAll.addEventListener('click', () => {
+            selectedPageNumbers.clear();
+            for (let i = 1; i <= totalPages; i++) selectedPageNumbers.add(i);
+            updateRangeInputFromSet();
+            renderPageChips();
+        });
+
+        btnSelectOdd.addEventListener('click', () => {
+            selectedPageNumbers.clear();
+            for (let i = 1; i <= totalPages; i += 2) selectedPageNumbers.add(i);
+            updateRangeInputFromSet();
+            renderPageChips();
+        });
+
+        btnSelectEven.addEventListener('click', () => {
+            selectedPageNumbers.clear();
+            for (let i = 2; i <= totalPages; i += 2) selectedPageNumbers.add(i);
+            updateRangeInputFromSet();
+            renderPageChips();
+        });
+
+        btnClearSelection.addEventListener('click', () => {
+            selectedPageNumbers.clear();
+            rangeInput.value = '';
+            renderPageChips();
+        });
+
+        function resetAll() {
+            fileInput.value = '';
+            currentFile = null;
+            loadedPdfDoc = null;
+            totalPages = 0;
+            selectedPageNumbers.clear();
+            generatedZipBlob = null;
+
+            dropZone.classList.remove('hidden');
+            fileInfo.classList.add('hidden');
+            splitSection.classList.add('hidden');
+            downloadSection.classList.add('hidden');
+            errorMsg.classList.add('hidden');
+            progressContainer.classList.add('hidden');
+            progressBar.style.width = '0%';
+        }
+
+        splitBtn.addEventListener('click', async () => {
+            if (!currentFile || !loadedPdfDoc) return;
+
+            const mode = document.querySelector('input[name="split-mode"]:checked').value;
+            let pagesToExtract = [];
+
+            if (mode === 'all') {
+                for (let i = 1; i <= totalPages; i++) pagesToExtract.push(i);
+            } else {
+                pagesToExtract = Array.from(selectedPageNumbers).sort((a, b) => a - b);
+                if (pagesToExtract.length === 0) {
+                    errorText.textContent = 'Please select at least one page to extract.';
+                    errorMsg.classList.remove('hidden');
+                    return;
+                }
+            }
+
+            errorMsg.classList.add('hidden');
+            splitBtn.disabled = true;
+            progressContainer.classList.remove('hidden');
+
+            const isSingleOutput = mode === 'range' && document.querySelector('input[name="range-output-type"]:checked').value === 'single';
+
+            try {
+                const baseName = currentFile.name.replace(/\.[^/.]+$/, '');
+                const srcArrayBuffer = await currentFile.arrayBuffer();
+
+                if (isSingleOutput) {
+                    // Combine extracted pages into 1 PDF
+                    progressText.textContent = 'Extracting and combining selected pages...';
+                    progressBar.style.width = '50%';
+                    progressPercent.textContent = '50%';
+
+                    const newDoc = await PDFLib.PDFDocument.create();
+                    const srcDoc = await PDFLib.PDFDocument.load(srcArrayBuffer);
+                    const zeroIndexed = pagesToExtract.map(p => p - 1);
+                    const copiedPages = await newDoc.copyPages(srcDoc, zeroIndexed);
+                    copiedPages.forEach(p => newDoc.addPage(p));
+
+                    const pdfBytes = await newDoc.save();
+                    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                    const downloadUrl = URL.createObjectURL(blob);
+
+                    singleDownloadLink.href = downloadUrl;
+                    singleDownloadLink.download = `${baseName}-extracted.pdf`;
+
+                    resultSummary.textContent = `Extracted ${pagesToExtract.length} page${pagesToExtract.length === 1 ? '' : 's'} into 1 PDF (${formatBytes(pdfBytes.byteLength)}).`;
+                    singleDownloadBox.classList.remove('hidden');
+                    multipleDownloadBox.classList.add('hidden');
+                } else {
+                    // Extract into separate PDF files + build ZIP
+                    const zip = new JSZip();
+                    extractedFilesList.innerHTML = '';
+                    const total = pagesToExtract.length;
+
+                    for (let idx = 0; idx < total; idx++) {
+                        const pageNum = pagesToExtract[idx];
+                        const percent = Math.round(((idx) / total) * 90);
+                        progressBar.style.width = `${percent}%`;
+                        progressPercent.textContent = `${percent}%`;
+                        progressText.textContent = `Generating page ${pageNum} (${idx + 1} of ${total})...`;
+
+                        const singlePageDoc = await PDFLib.PDFDocument.create();
+                        const srcDoc = await PDFLib.PDFDocument.load(srcArrayBuffer);
+                        const [copied] = await singlePageDoc.copyPages(srcDoc, [pageNum - 1]);
+                        singlePageDoc.addPage(copied);
+
+                        const bytes = await singlePageDoc.save();
+                        const blob = new Blob([bytes], { type: 'application/pdf' });
+                        const fileName = `${baseName}-page-${pageNum}.pdf`;
+
+                        zip.file(fileName, bytes);
+
+                        // Add to download list
+                        const itemRow = document.createElement('div');
+                        itemRow.className = 'flex items-center justify-between p-2 rounded-lg bg-zinc-50 border border-zinc-200 text-xs';
+                        itemRow.innerHTML = `
+                            <div class="truncate mr-2">
+                                <span class="font-bold text-zinc-900">${fileName}</span>
+                                <span class="text-zinc-400 ml-1">(${formatBytes(bytes.byteLength)})</span>
+                            </div>
+                            <a href="${URL.createObjectURL(blob)}" download="${fileName}" class="px-2.5 py-1 text-[11px] font-semibold text-blue-600 hover:text-blue-800 bg-white border border-zinc-200 rounded-md shrink-0">
+                                Download
+                            </a>
+                        `;
+                        extractedFilesList.appendChild(itemRow);
+                    }
+
+                    progressText.textContent = 'Packaging ZIP archive...';
+                    progressBar.style.width = '95%';
+                    progressPercent.textContent = '95%';
+
+                    generatedZipBlob = await zip.generateAsync({ type: 'blob' });
+                    zipDownloadBtn.onclick = () => {
+                        const url = URL.createObjectURL(generatedZipBlob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `${baseName}-split-pages.zip`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    };
+
+                    resultSummary.textContent = `Generated ${total} individual PDF file${total === 1 ? '' : 's'} (${formatBytes(generatedZipBlob.size)} total).`;
+                    singleDownloadBox.classList.add('hidden');
+                    multipleDownloadBox.classList.remove('hidden');
+                }
+
+                progressBar.style.width = '100%';
+                progressPercent.textContent = '100%';
+                downloadSection.classList.remove('hidden');
+                splitSection.classList.add('hidden');
+            } catch (err) {
+                console.error(err);
+                errorText.textContent = 'Failed to split document. The file might be corrupted or protected.';
+                errorMsg.classList.remove('hidden');
+            } finally {
+                splitBtn.disabled = false;
+                progressContainer.classList.add('hidden');
+                progressBar.style.width = '0%';
+            }
+        });
+    </script>
+</body>
+</html>

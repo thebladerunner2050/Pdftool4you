@@ -3,373 +3,606 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDFTool4You - Advanced Premium Web Tools</title>
-    <meta name="description" content="Advanced client-side utility tools for PDF and image conversion. 100% private and fast in-browser processing.">
-    <meta property="og:title" content="PDFTool4You - Advanced Premium Web Tools">
-    <meta property="og:description" content="Advanced client-side utility tools for PDF and image conversion. 100% private and fast in-browser processing.">
-    
-    <!-- Deep Professional Custom CSS Setup -->
+    <title>PDFTool4You — Minimal & Private PDF & Image Tools</title>
+    <meta name="description" content="Free, fast, client-side PDF and image utility tools. Compress PDFs and convert images directly in your browser with zero server uploads.">
+    <meta property="og:title" content="PDFTool4You — Minimal & Private PDF & Image Tools">
+    <meta property="og:description" content="Free, fast, client-side PDF and image utility tools. 100% private in-browser processing.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        /* Modern Fonts & CSS Reset */
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            scroll-behavior: smooth;
-        }
-
         body {
-            background-color: #f8fafc;
-            color: #0f172a;
-            overflow-x: hidden;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: #fafbfc;
+            color: #09090b;
         }
-
-        /* Core Global Containers */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        /* Ultra Premium Premium Navbar Styles */
-        .navbar {
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            padding: 16px 0;
-        }
-
-        .nav-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .brand-logo {
-            font-size: 24px;
-            font-weight: 800;
-            color: #ffffff;
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
-
-        .brand-logo span {
-            color: #3b82f6;
-        }
-
-        /* Hero Banner Block Layout */
-        .hero {
-            background: radial-gradient(circle at top right, #1e3a8a, #0f172a);
-            color: #ffffff;
-            padding: 90px 0 80px 0;
-            text-align: center;
-            position: relative;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
-            background-size: 24px 24px;
-            opacity: 0.7;
-        }
-
-        .hero-tag {
-            background: rgba(59, 130, 246, 0.2);
-            color: #60a5fa;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            padding: 6px 16px;
-            border-radius: 100px;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            display: inline-block;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .hero h1 {
-            font-size: 48px;
-            font-weight: 800;
-            letter-spacing: -1px;
-            margin-bottom: 16px;
-            position: relative;
-            line-height: 1.2;
-        }
-
-        .hero p {
-            font-size: 18px;
-            color: #94a3b8;
-            max-width: 600px;
-            margin: 0 auto;
-            position: relative;
-            font-weight: 400;
-        }
-
-        /* Grid Framework for Dynamic Sections */
-        .main-content {
-            padding: 60px 0;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 36px;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 16px;
-        }
-
-        .section-header.image-dept {
-            border-bottom-color: #3b82f6;
-        }
-
-        .section-header class-icon {
-            font-size: 28px;
-        }
-
-        .section-header h2 {
-            font-size: 26px;
-            font-weight: 800;
-            color: #1e293b;
-            letter-spacing: -0.5px;
-        }
-
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 32px;
-            margin-bottom: 60px;
-        }
-
-        /* Advanced Custom CSS Animated Tool Cards */
-        .card {
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 32px;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: #6366f1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .card.image-card::before {
-            background: #3b82f6;
-        }
-
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            border-color: #cbd5e1;
-        }
-
-        .card:hover::before {
-            opacity: 1;
-        }
-
-        .card-badge {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #6366f1;
-            margin-bottom: 12px;
-            display: inline-block;
-        }
-
-        .image-card .card-badge {
-            color: #3b82f6;
-        }
-
-        .card h3 {
-            font-size: 22px;
-            font-weight: 700;
-            color: #0f172a;
-            margin-bottom: 12px;
-            letter-spacing: -0.3px;
-        }
-
-        .card p {
-            font-size: 14px;
-            color: #475569;
-            line-height: 1.6;
-            margin-bottom: 28px;
-        }
-
-        /* Luxury Clean CSS Buttons */
-        .btn {
-            display: block;
-            text-align: center;
-            background: #6366f1;
-            color: #ffffff;
-            font-weight: 600;
-            font-size: 15px;
-            padding: 14px 24px;
-            border-radius: 12px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
-        }
-
-        .btn-blue {
-            background: #3b82f6;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
-        }
-
-        .btn:hover {
-            background: #4f46e5;
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
-        }
-
-        .btn-blue:hover {
-            background: #2563eb;
-            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
-        }
-
-        /* Structural Ad Space Design Layout */
-        .ad-row {
-            background: #f1f5f9;
-            border: 2px dashed #cbd5e1;
-            border-radius: 16px;
-            padding: 24px;
-            text-align: center;
-            color: #64748b;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin: 40px 0;
-        }
-
-        /* Footer Alignment */
-        footer {
-            background: #0f172a;
-            color: #94a3b8;
-            padding: 40px 0;
-            text-align: center;
-            border-top: 1px solid #334155;
-            font-size: 14px;
-        }
-
-        footer p strong {
-            color: #f1f5f9;
-        }
-
-        footer .notice {
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 8px;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Full Structural Responsiveness Control */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 32px; }
-            .hero p { font-size: 15px; }
-            .tools-grid { grid-template-columns: 1fr; gap: 24px; }
+        .mesh-bg {
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%);
         }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
 
-    <!-- Executive Custom Sticky Nav -->
-    <nav class="navbar">
-        <div class="container nav-wrapper">
-            <a href="index.html" class="brand-logo">⚡ PDFTool<span>4You</span></a>
-        </div>
-    </nav>
+    <!-- Minimal Sticky Navigation -->
+    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-zinc-200/80">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5 group">
+                <div class="w-9 h-9 rounded-xl bg-zinc-900 text-white flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
+                    <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div class="flex items-baseline gap-1">
+                    <span class="font-bold text-lg text-zinc-900 tracking-tight">PDFTool<span class="text-blue-600">4You</span></span>
+                </div>
+            </a>
 
-    <!-- Canvas Background Hero Grid Banner -->
-    <header class="hero">
-        <div class="container">
-            <span class="hero-tag">Secure Client-Side AI Ecosystem</span>
-            <h1>Smart Online Utility Tools</h1>
-            <p>Bina kisi delay ke apne web browser mein documents compress aur convert karein. Apka data 100% safe aur secure rehta hai.</p>
+            <!-- Right Nav Links & Privacy Indicator -->
+            <div class="flex items-center gap-4 sm:gap-6">
+                <nav class="hidden md:flex items-center gap-5 text-sm font-medium text-zinc-600">
+                    <a href="#tools-section" class="hover:text-zinc-900 transition-colors">Tools</a>
+                    <a href="#privacy-section" class="hover:text-zinc-900 transition-colors">Privacy</a>
+                    <a href="#faq-section" class="hover:text-zinc-900 transition-colors">FAQ</a>
+                </nav>
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-800 text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>100% In-Browser</span>
+                </div>
+            </div>
         </div>
     </header>
 
-    <!-- Primary UI Workspace -->
-    <main class="container main-content">
-        
-        <div class="ad-row">[ AdSense Top Leaderboard Performance Ad Area ]</div>
-
-        <!-- 📄 REGION 1: PDF PROCESSING SECTION -->
-        <section id="pdf-section">
-            <div class="section-header">
-                <span class="class-icon">📄</span>
-                <h2>PDF & Document Architecture</h2>
+    <!-- Hero Section -->
+    <section class="mesh-bg pt-14 pb-12 sm:pt-20 sm:pb-16 border-b border-zinc-100">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 border border-blue-200/60 text-blue-700 text-xs font-semibold mb-6">
+                <span>⚡ Private & Fast</span>
+                <span class="text-blue-300">·</span>
+                <span>Zero Server Uploads</span>
             </div>
-            
-            <div class="tools-grid">
-                <!-- Tool Instance: PDF Compressor -->
-                <div class="card">
-                    <div>
-                        <span class="card-badge">Core Engine</span>
-                        <h3>Online PDF Compressor</h3>
-                        <p>Apne bhari PDF files ka size bina graphics ya rendering loose kiye instantly chota karein. Govt form submission ke liye optimized layout.</p>
+            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-zinc-900 mb-5 leading-[1.15]">
+                Minimal, instant utility tools<br class="hidden sm:inline"/> for PDFs and images.
+            </h1>
+            <p class="text-base sm:text-lg text-zinc-600 max-w-2xl mx-auto leading-relaxed">
+                Compress, convert, and format your files safely on your own computer. Your sensitive files never leave your browser memory.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Workspace Container -->
+    <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-10 w-full" id="tools-section">
+
+        <!-- Search Bar & Filters -->
+        <div class="mb-10 bg-white rounded-2xl border border-zinc-200/80 p-4 sm:p-5 shadow-sm">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+                
+                <!-- Search Input Field -->
+                <div class="relative flex-1">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-zinc-400">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-4.35-4.35m1.35-5.65a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
                     </div>
-                    <a href="pdf-compressor.html" class="btn">Open Compressor Engine</a>
+                    <input 
+                        type="text" 
+                        id="tool-search-input" 
+                        class="w-full pl-10 pr-20 py-2.5 bg-zinc-50 border border-zinc-200 rounded-xl text-sm font-medium text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                        placeholder="Filter tools by keyword (e.g., compress, jpg, png)..."
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center gap-1.5 pointer-events-none">
+                        <button type="button" id="search-clear-btn" class="hidden pointer-events-auto text-zinc-400 hover:text-zinc-600 p-0.5" aria-label="Clear search">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                            </svg>
+                        </button>
+                        <kbd class="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[11px] font-mono text-zinc-400 bg-white border border-zinc-200 rounded shadow-2xs">/</kbd>
+                    </div>
+                </div>
+
+                <!-- Category Segmented Buttons -->
+                <div class="flex items-center gap-1.5 p-1 bg-zinc-100 rounded-xl overflow-x-auto" role="tablist">
+                    <button class="filter-tab active px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all bg-white text-zinc-900 shadow-2xs whitespace-nowrap" data-category="all">
+                        All Tools
+                    </button>
+                    <button class="filter-tab px-3.5 py-1.5 text-xs font-medium rounded-lg text-zinc-600 hover:text-zinc-900 transition-all whitespace-nowrap" data-category="pdf">
+                        PDF Tools
+                    </button>
+                    <button class="filter-tab px-3.5 py-1.5 text-xs font-medium rounded-lg text-zinc-600 hover:text-zinc-900 transition-all whitespace-nowrap" data-category="image">
+                        Image Tools
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-3 flex items-center justify-between text-xs text-zinc-500 pt-2.5 border-t border-zinc-100">
+                <span id="search-counter">Showing 6 tools</span>
+                <span class="text-zinc-400">All tools execute 100% on-device</span>
+            </div>
+        </div>
+
+        <!-- Empty Results State -->
+        <div id="no-results" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-zinc-200">
+            <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-zinc-100 flex items-center justify-center text-zinc-400">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+            <h3 class="text-base font-semibold text-zinc-900 mb-1">No tools matched your search</h3>
+            <p id="no-results-desc" class="text-sm text-zinc-500 max-w-sm mx-auto mb-4">Try searching for keywords like "compress", "merge", "split", "jpg", "png", or "pdf".</p>
+            <button type="button" id="reset-search-btn" class="px-4 py-2 text-xs font-semibold bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg transition-colors">
+                Reset filters
+            </button>
+        </div>
+
+        <!-- Tools Grid Section -->
+        <div id="tools-container" class="space-y-10">
+
+            <!-- 1. PDF Tools Section -->
+            <div id="section-pdf" class="tool-section">
+                <div class="flex items-center gap-2 mb-4 pb-2 border-b border-zinc-200/80">
+                    <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <h2 class="text-base font-bold text-zinc-900 tracking-tight">PDF Document Tools</h2>
+                    <span class="text-xs text-zinc-400 font-medium">· Local processing</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-5">
+                    
+                    <!-- Tool: PDF Compressor -->
+                    <div class="tool-card group bg-white rounded-2xl border border-zinc-200/80 p-6 flex flex-col justify-between hover:border-zinc-300 hover:shadow-md transition-all" data-category="pdf" data-keywords="pdf compressor compress document reduce file size optimize shrink mb kb portal">
+                        <div>
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold text-sm">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs font-semibold text-zinc-400 group-hover:text-zinc-600 transition-colors">Client-side</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-zinc-900 mb-2 group-hover:text-blue-600 transition-colors">Online PDF Compressor</h3>
+                            <p class="text-sm text-zinc-600 leading-relaxed mb-6">
+                                Reduce bulky PDF document sizes right inside your browser. Select low, medium, or high compression with real-time size savings estimation.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
+                            <div class="text-xs text-zinc-400">
+                                <span>Adjustable quality</span>
+                                <span class="mx-1">·</span>
+                                <span>Fast</span>
+                            </div>
+                            <a href="pdf-compressor.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 bg-zinc-100 group-hover:bg-blue-600 group-hover:text-white rounded-lg transition-all">
+                                <span>Open Tool</span>
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tool: Merge PDF -->
+                    <div class="tool-card group bg-white rounded-2xl border border-zinc-200/80 p-6 flex flex-col justify-between hover:border-zinc-300 hover:shadow-md transition-all" data-category="pdf" data-keywords="merge pdf combine documents join multiple pdfs binder unite files order pages">
+                        <div>
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-sm">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs font-semibold text-zinc-400 group-hover:text-zinc-600 transition-colors">Multi-file</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-zinc-900 mb-2 group-hover:text-blue-600 transition-colors">Merge PDF Files</h3>
+                            <p class="text-sm text-zinc-600 leading-relaxed mb-6">
+                                Combine multiple PDF documents into a single file in any order you choose. Fast, drag-and-drop reordering with zero file uploads.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
+                            <div class="text-xs text-zinc-400">
+                                <span>Reorder pages</span>
+                                <span class="mx-1">·</span>
+                                <span>Uncapped</span>
+                            </div>
+                            <a href="merge-pdf.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 bg-zinc-100 group-hover:bg-blue-600 group-hover:text-white rounded-lg transition-all">
+                                <span>Open Tool</span>
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tool: Split PDF -->
+                    <div class="tool-card group bg-white rounded-2xl border border-zinc-200/80 p-6 flex flex-col justify-between hover:border-zinc-300 hover:shadow-md transition-all" data-category="pdf" data-keywords="split pdf extract separate pages range divide cut document individual zip">
+                        <div>
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center font-bold text-sm">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11l2 2-2 2m-8-4l-2 2 2 2"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs font-semibold text-zinc-400 group-hover:text-zinc-600 transition-colors">Range & single</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-zinc-900 mb-2 group-hover:text-blue-600 transition-colors">Split PDF Document</h3>
+                            <p class="text-sm text-zinc-600 leading-relaxed mb-6">
+                                Extract individual pages, custom page ranges (e.g. 1-3, 5), or separate all pages into individual files. Download singly or as ZIP.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
+                            <div class="text-xs text-zinc-400">
+                                <span>Visual selector</span>
+                                <span class="mx-1">·</span>
+                                <span>ZIP export</span>
+                            </div>
+                            <a href="split-pdf.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 bg-zinc-100 group-hover:bg-blue-600 group-hover:text-white rounded-lg transition-all">
+                                <span>Open Tool</span>
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tool: Image to PDF -->
+                    <div class="tool-card group bg-white rounded-2xl border border-zinc-200/80 p-6 flex flex-col justify-between hover:border-zinc-300 hover:shadow-md transition-all" data-category="pdf" data-keywords="image to pdf convert photos jpg png combine merge document">
+                        <div>
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-sm">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs font-semibold text-zinc-400 group-hover:text-zinc-600 transition-colors">Instant</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-zinc-900 mb-2 group-hover:text-blue-600 transition-colors">Image to PDF Converter</h3>
+                            <p class="text-sm text-zinc-600 leading-relaxed mb-6">
+                                Package your JPG or PNG image directly into a clean, standard PDF document. Perfect for receipts, IDs, certificates, and job applications.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
+                            <div class="text-xs text-zinc-400">
+                                <span>Multi-format</span>
+                                <span class="mx-1">·</span>
+                                <span>No watermark</span>
+                            </div>
+                            <a href="image-to-pdf.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 bg-zinc-100 group-hover:bg-blue-600 group-hover:text-white rounded-lg transition-all">
+                                <span>Open Tool</span>
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 2. Image Tools Section -->
+            <div id="section-image" class="tool-section">
+                <div class="flex items-center gap-2 mb-4 pb-2 border-b border-zinc-200/80">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <h2 class="text-base font-bold text-zinc-900 tracking-tight">Image Conversion Utilities</h2>
+                    <span class="text-xs text-zinc-400 font-medium">· High resolution</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    
+                    <!-- Tool: PNG to JPG -->
+                    <div class="tool-card group bg-white rounded-2xl border border-zinc-200/80 p-6 flex flex-col justify-between hover:border-zinc-300 hover:shadow-md transition-all" data-category="image" data-keywords="png to jpg convert picture photo format graphics jpeg image">
+                        <div>
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-sm">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs font-semibold text-zinc-400 group-hover:text-zinc-600 transition-colors">Lossless logic</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-zinc-900 mb-2 group-hover:text-blue-600 transition-colors">PNG to JPG Converter</h3>
+                            <p class="text-sm text-zinc-600 leading-relaxed mb-6">
+                                Transform PNG images and transparent graphics into clean, high-quality JPG files. Adjust quality level and download immediately.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
+                            <div class="text-xs text-zinc-400">
+                                <span>Fast canvas engine</span>
+                                <span class="mx-1">·</span>
+                                <span>No file caps</span>
+                            </div>
+                            <a href="png-to-jpg.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 bg-zinc-100 group-hover:bg-blue-600 group-hover:text-white rounded-lg transition-all">
+                                <span>Open Tool</span>
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Tool: JPG to PNG -->
+                    <div class="tool-card group bg-white rounded-2xl border border-zinc-200/80 p-6 flex flex-col justify-between hover:border-zinc-300 hover:shadow-md transition-all" data-category="image" data-keywords="jpg to png convert photo jpeg picture lossless graphic">
+                        <div>
+                            <div class="flex items-start justify-between mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-sm">
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs font-semibold text-zinc-400 group-hover:text-zinc-600 transition-colors">Crisp output</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-zinc-900 mb-2 group-hover:text-blue-600 transition-colors">JPG to PNG Converter</h3>
+                            <p class="text-sm text-zinc-600 leading-relaxed mb-6">
+                                Convert standard JPG photos to uncompressed PNG format for crystal-clear clarity, web design assets, and print materials.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-zinc-100 flex items-center justify-between">
+                            <div class="text-xs text-zinc-400">
+                                <span>Zero quality loss</span>
+                                <span class="mx-1">·</span>
+                                <span>Instant</span>
+                            </div>
+                            <a href="jpg-to-png.html" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-zinc-900 bg-zinc-100 group-hover:bg-blue-600 group-hover:text-white rounded-lg transition-all">
+                                <span>Open Tool</span>
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Privacy & Architecture Section -->
+        <section id="privacy-section" class="mt-20 pt-12 border-t border-zinc-200/80">
+            <div class="text-center max-w-2xl mx-auto mb-10">
+                <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/60 mb-3">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <span>Browser-Native Execution</span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-zinc-900 tracking-tight mb-3">Engineered for total privacy.</h2>
+                <p class="text-sm sm:text-base text-zinc-600">
+                    Unlike traditional file converters that upload your PDFs and photos to third-party cloud servers, PDFTool4You processes everything locally in browser memory.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white rounded-2xl border border-zinc-200/80 p-6 shadow-2xs">
+                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-base font-bold text-zinc-900 mb-1.5">Zero Remote Storage</h3>
+                    <p class="text-sm text-zinc-600 leading-relaxed">
+                        Files never transit across the internet. Bank statements, IDs, and tax documents remain strictly on your hardware.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-zinc-200/80 p-6 shadow-2xs">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-base font-bold text-zinc-900 mb-1.5">Instant Latency</h3>
+                    <p class="text-sm text-zinc-600 leading-relaxed">
+                        No queuing or waiting for remote server clusters to pick up your job. WebAssembly and HTML5 Canvas run instantly.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-2xl border border-zinc-200/80 p-6 shadow-2xs">
+                    <div class="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-4">
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-base font-bold text-zinc-900 mb-1.5">Always Free & Uncapped</h3>
+                    <p class="text-sm text-zinc-600 leading-relaxed">
+                        No sign-ups, subscriptions, or intrusive watermarks slapped onto your downloaded documents.
+                    </p>
                 </div>
             </div>
         </section>
 
-        <div class="ad-row">[ AdSense In-Article Dynamic Banner Ad Area ]</div>
-
-        <!-- 🖼️ REGION 2: IMAGE METADATA PROCESSING -->
-        <section id="image-section">
-            <div class="section-header image-dept">
-                <span class="class-icon">🖼️</span>
-                <h2>Image Format & Photo Utilities</h2>
+        <!-- FAQ Section -->
+        <section id="faq-section" class="mt-20 pt-12 border-t border-zinc-200/80">
+            <div class="text-center max-w-xl mx-auto mb-10">
+                <h2 class="text-2xl font-bold text-zinc-900 tracking-tight mb-2">Frequently Asked Questions</h2>
+                <p class="text-sm text-zinc-600">Quick answers about how our client-side tools work.</p>
             </div>
-            
-            <div class="tools-grid">
-                <!-- Tool Instance: PNG to JPG Converter -->
-                <div class="card image-card">
-                    <div>
-                        <span class="card-badge">Image Engine</span>
-                        <h3>PNG to JPG Converter</h3>
-                        <p>Apne PNG format ke photos aur graphics ko instant high quality JPG file format mein convert karein bina quality loose kiye.</p>
-                    </div>
-                    <a href="png-to-jpg.html" class="btn btn-blue">Open Converter Engine</a>
+
+            <div class="max-w-3xl mx-auto space-y-4">
+                <div class="bg-white rounded-xl border border-zinc-200/80 p-5">
+                    <h3 class="text-sm font-bold text-zinc-900 mb-1">Are my files uploaded to your servers?</h3>
+                    <p class="text-sm text-zinc-600 leading-relaxed">
+                        No. Every single operation is computed completely inside your browser using client-side JavaScript, PDF.js, and HTML Canvas. We do not have any database or storage server holding your files.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-xl border border-zinc-200/80 p-5">
+                    <h3 class="text-sm font-bold text-zinc-900 mb-1">Is there a maximum file size limit?</h3>
+                    <p class="text-sm text-zinc-600 leading-relaxed">
+                        There is no artificial limit imposed by us. The only limit is your device's available browser memory. Documents and images of typical sizes (under 100 MB) convert swiftly.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-xl border border-zinc-200/80 p-5">
+                    <h3 class="text-sm font-bold text-zinc-900 mb-1">Does the PDF Compressor add watermarks?</h3>
+                    <p class="text-sm text-zinc-600 leading-relaxed">
+                        Never. Your output documents remain 100% clean and watermark-free, fully compliant for government, job, or academic portals.
+                    </p>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- Global Footer -->
-    <footer>
-        <div class="container">
-            <p>© 2025 <strong>PDFTool4You</strong>. All rights reserved.</p>
-            <p class="notice">All operations are executed 100% client-side in your browser for maximum security and privacy.</p>
+    <!-- Minimal Clean Footer -->
+    <footer class="mt-20 border-t border-zinc-200 bg-white">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-6 h-6 rounded-lg bg-zinc-900 text-white flex items-center justify-center text-xs font-bold">⚡</div>
+                <span class="font-bold text-sm text-zinc-900">PDFTool4You</span>
+                <span class="text-xs text-zinc-400">· Fast in-browser utilities</span>
+            </div>
+            <div class="text-xs text-zinc-500 text-center sm:text-right">
+                <span>© 2026 PDFTool4You. Built with privacy and speed first.</span>
+            </div>
         </div>
     </footer>
+
+    <!-- Interactive Filtering & Search Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('tool-search-input');
+            const clearBtn = document.getElementById('search-clear-btn');
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            const toolCards = document.querySelectorAll('.tool-card');
+            const searchCounter = document.getElementById('search-counter');
+            const noResults = document.getElementById('no-results');
+            const noResultsDesc = document.getElementById('no-results-desc');
+            const resetSearchBtn = document.getElementById('reset-search-btn');
+
+            const sectionPdf = document.getElementById('section-pdf');
+            const sectionImage = document.getElementById('section-image');
+
+            let activeCategory = 'all';
+            const totalCount = toolCards.length;
+
+            function filterTools() {
+                const query = (searchInput.value || '').trim().toLowerCase();
+
+                // Toggle clear button
+                clearBtn.classList.toggle('hidden', query.length === 0);
+
+                let visibleCount = 0;
+                let visibleInPdf = 0;
+                let visibleInImage = 0;
+
+                toolCards.forEach(card => {
+                    const cardCategory = card.getAttribute('data-category') || '';
+                    const keywords = card.getAttribute('data-keywords') || '';
+                    const title = (card.querySelector('h3')?.textContent || '').toLowerCase();
+                    const desc = (card.querySelector('p')?.textContent || '').toLowerCase();
+
+                    const matchesCategory = (activeCategory === 'all' || cardCategory === activeCategory);
+                    const corpus = `${title} ${desc} ${keywords}`.toLowerCase();
+                    const matchesQuery = query === '' || query.split(/\s+/).every(word => corpus.includes(word));
+
+                    if (matchesCategory && matchesQuery) {
+                        card.classList.remove('hidden');
+                        visibleCount++;
+                        if (cardCategory === 'pdf') visibleInPdf++;
+                        if (cardCategory === 'image') visibleInImage++;
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+
+                // Adjust sections
+                if (sectionPdf) sectionPdf.classList.toggle('hidden', visibleInPdf === 0);
+                if (sectionImage) sectionImage.classList.toggle('hidden', visibleInImage === 0);
+
+                // Update counter and empty state
+                if (visibleCount === 0) {
+                    noResults.classList.remove('hidden');
+                    if (query) {
+                        noResultsDesc.textContent = `No tools match "${query}". Try different search terms or select "All Tools".`;
+                    } else {
+                        noResultsDesc.textContent = 'No tools found in this category.';
+                    }
+                    searchCounter.textContent = '0 tools found';
+                } else {
+                    noResults.classList.add('hidden');
+                    searchCounter.textContent = `Showing ${visibleCount} of ${totalCount} tool${visibleCount === 1 ? '' : 's'}`;
+                }
+            }
+
+            searchInput.addEventListener('input', filterTools);
+
+            clearBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                searchInput.focus();
+                filterTools();
+            });
+
+            resetSearchBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                activeCategory = 'all';
+                filterTabs.forEach(tab => {
+                    const isActive = tab.dataset.category === 'all';
+                    tab.classList.toggle('active', isActive);
+                    tab.classList.toggle('bg-white', isActive);
+                    tab.classList.toggle('text-zinc-900', isActive);
+                    tab.classList.toggle('shadow-2xs', isActive);
+                    tab.classList.toggle('text-zinc-600', !isActive);
+                });
+                searchInput.focus();
+                filterTools();
+            });
+
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    filterTabs.forEach(t => {
+                        t.classList.remove('active', 'bg-white', 'text-zinc-900', 'shadow-2xs');
+                        t.classList.add('text-zinc-600');
+                    });
+                    tab.classList.add('active', 'bg-white', 'text-zinc-900', 'shadow-2xs');
+                    tab.classList.remove('text-zinc-600');
+                    activeCategory = tab.dataset.category;
+                    filterTools();
+                });
+            });
+
+            // Keyboard shortcut '/'
+            document.addEventListener('keydown', (e) => {
+                if (e.key === '/' && document.activeElement !== searchInput && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+                    e.preventDefault();
+                    searchInput.focus();
+                    searchInput.select();
+                } else if (e.key === 'Escape' && document.activeElement === searchInput) {
+                    if (searchInput.value) {
+                        searchInput.value = '';
+                        filterTools();
+                    } else {
+                        searchInput.blur();
+                    }
+                }
+            });
+
+            filterTools();
+        });
+    </script>
 </body>
 </html>

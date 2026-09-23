@@ -15,8 +15,24 @@ app.get('/png-to-jpg', (req, res) => {
   res.sendFile(path.join(__dirname, 'png-to-jpg.html'));
 });
 
+app.get('/jpg-to-png', (req, res) => {
+  res.sendFile(path.join(__dirname, 'jpg-to-png.html'));
+});
+
 app.get('/pdf-compressor', (req, res) => {
   res.sendFile(path.join(__dirname, 'pdf-compressor.html'));
+});
+
+app.get('/merge-pdf', (req, res) => {
+  res.sendFile(path.join(__dirname, 'merge-pdf.html'));
+});
+
+app.get('/split-pdf', (req, res) => {
+  res.sendFile(path.join(__dirname, 'split-pdf.html'));
+});
+
+app.get('/image-to-pdf', (req, res) => {
+  res.sendFile(path.join(__dirname, 'image-to-pdf.html'));
 });
 
 app.get('*', (req, res) => {

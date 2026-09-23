@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge PDF Files Online — PDFTool4You</title>
+    <meta name="description" content="Combine multiple PDF documents into a single PDF file directly in your browser. 100% private, free, fast, and secure.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.9/dist/pdf-lib.min.js"></script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: #fafbfc;
+            color: #09090b;
+        }
+        .file-item {
+            transition: all 0.2s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- Minimal Header -->
+    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-zinc-200/80">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2.5">
+                <div class="w-8 h-8 rounded-xl bg-zinc-900 text-white flex items-center justify-center text-sm font-bold shadow-sm">
+                    ⚡
+                </div>
+                <span class="font-bold text-base text-zinc-900 tracking-tight">PDFTool<span class="text-blue-600">4You</span></span>
+            </a>
+            <a href="index.html" class="inline-flex items-center gap-1 text-xs font-semibold text-zinc-600 hover:text-zinc-900 px-3 py-1.5 rounded-lg hover:bg-zinc-100 transition-colors">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                <span>Back to Tools</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-2xl mx-auto px-4 sm:px-6 py-10 w-full">
+        
+        <!-- Header Info -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 border border-red-200/60 text-red-700 text-xs font-semibold mb-3">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
+                </svg>
+                <span>Client-Side PDF Merger</span>
+            </div>
+            <h1 class="text-3xl font-extrabold tracking-tight text-zinc-900 mb-2">Merge PDF Files</h1>
+            <p class="text-sm text-zinc-600">Combine multiple PDF documents into a single file in the exact order you need.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-zinc-200/80 p-6 sm:p-8 shadow-sm">
+            
+            <!-- Error Alert -->
+            <div id="error-msg" class="hidden mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-xs font-medium text-red-700 flex items-start gap-2.5">
+                <svg class="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span id="error-text">Please select valid PDF documents (.pdf).</span>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div id="drop-zone" class="group border-2 border-dashed border-zinc-200 rounded-2xl p-8 sm:p-10 text-center cursor-pointer hover:border-red-500 hover:bg-red-50/20 transition-all">
+                <input type="file" id="file-input" accept=".pdf,application/pdf" multiple class="hidden">
+                <div class="w-12 h-12 mx-auto mb-3 rounded-2xl bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-400 group-hover:scale-110 group-hover:border-red-300 group-hover:text-red-600 transition-all">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <p class="text-sm font-bold text-zinc-900 mb-1">Click to select PDF files or drag them here</p>
+                <p class="text-xs text-zinc-400">Select two or more files to combine. 100% in-browser processing.</p>
+            </div>
+
+            <!-- Document List & Reorder Section -->
+            <div id="files-section" class="hidden mt-6 space-y-4">
+                <div class="flex items-center justify-between pb-2 border-b border-zinc-100">
+                    <div>
+                        <span class="text-xs font-bold text-zinc-900" id="file-count-label">Selected Files (0)</span>
+                        <span class="text-[11px] text-zinc-400 block sm:inline sm:ml-2">Use arrows to reorder pages</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button type="button" id="add-more-btn" class="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            <span>Add more</span>
+                        </button>
+                        <span class="text-zinc-300">|</span>
+                        <button type="button" id="clear-all-btn" class="text-xs font-medium text-zinc-400 hover:text-red-600 transition-colors">
+                            Clear all
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Files List Container -->
+                <div id="file-list" class="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+                    <!-- Populated dynamically via JS -->
+                </div>
+
+                <!-- Minimum Files Notice -->
+                <div id="min-files-notice" class="hidden p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs font-medium text-amber-800 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>Please add at least one more PDF file to perform a merge.</span>
+                </div>
+
+                <!-- Action Button & Progress Indicator -->
+                <div class="pt-3">
+                    <div id="progress-container" class="hidden mb-3 space-y-1.5">
+                        <div class="flex justify-between text-xs font-semibold text-zinc-600">
+                            <span id="progress-label">Merging documents...</span>
+                            <span id="progress-val">0%</span>
+                        </div>
+                        <div class="w-full bg-zinc-100 rounded-full h-2 overflow-hidden">
+                            <div id="progress-bar" class="bg-red-600 h-2 rounded-full transition-all duration-200" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <button id="merge-btn" class="w-full py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm text-white bg-zinc-900 hover:bg-zinc-800 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span>Merge PDF Documents</span>
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Download Section -->
+            <div id="download-section" class="hidden mt-6 space-y-4">
+                <div class="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-900 text-center">
+                    <p class="font-bold text-sm">✓ PDFs Successfully Merged!</p>
+                    <p id="merge-meta" class="text-xs text-emerald-700 mt-1 font-medium"></p>
+                </div>
+                
+                <a id="download-link" href="#" download="merged-document.pdf" class="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-sm">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    <span>Download Merged PDF</span>
+                </a>
+
+                <div class="text-center pt-2">
+                    <button id="merge-another-btn" class="text-xs font-semibold text-zinc-500 hover:text-zinc-900 transition-colors">
+                        ← Merge more PDF documents
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Privacy Assurance Card -->
+        <div class="mt-8 text-center text-xs text-zinc-400">
+            <span>🔒 Complete Privacy: Merging occurs 100% inside your browser memory. Documents never touch any remote server.</span>
+        </div>
+
+    </main>
+
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const filesSection = document.getElementById('files-section');
+        const fileList = document.getElementById('file-list');
+        const fileCountLabel = document.getElementById('file-count-label');
+        const addMoreBtn = document.getElementById('add-more-btn');
+        const clearAllBtn = document.getElementById('clear-all-btn');
+        const minFilesNotice = document.getElementById('min-files-notice');
+        const mergeBtn = document.getElementById('merge-btn');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressLabel = document.getElementById('progress-label');
+        const progressVal = document.getElementById('progress-val');
+        const downloadSection = document.getElementById('download-section');
+        const downloadLink = document.getElementById('download-link');
+        const mergeMeta = document.getElementById('merge-meta');
+        const mergeAnotherBtn = document.getElementById('merge-another-btn');
+        const errorMsg = document.getElementById('error-msg');
+        const errorText = document.getElementById('error-text');
+
+        // Array of { id, file, pagesCount, name, size }
+        let selectedFiles = [];
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        addMoreBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFileInput);
+
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-red-500', 'bg-red-50/30'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-red-500', 'bg-red-50/30'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-red-500', 'bg-red-50/30');
+            if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                addFiles(Array.from(e.dataTransfer.files));
+            }
+        });
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function handleFileInput(e) {
+            if (e.target.files && e.target.files.length > 0) {
+                addFiles(Array.from(e.target.files));
+                fileInput.value = '';
+            }
+        }
+
+        async function addFiles(files) {
+            errorMsg.classList.add('hidden');
+            let invalidCount = 0;
+
+            for (const file of files) {
+                if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+                    const fileObj = {
+                        id: 'pdf_' + Math.random().toString(36).substring(2, 9),
+                        file: file,
+                        name: file.name,
+                        size: file.size,
+                        pagesCount: null
+                    };
+
+                    selectedFiles.push(fileObj);
+                    // Asynchronously load page count using pdf-lib
+                    loadPageCount(fileObj);
+                } else {
+                    invalidCount++;
+                }
+            }
+
+            if (invalidCount > 0) {
+                errorText.textContent = `${invalidCount} file(s) were skipped because they are not valid PDF documents.`;
+                errorMsg.classList.remove('hidden');
+            }
+
+            renderFileList();
+        }
+
+        async function loadPageCount(fileObj) {
+            try {
+                const arrayBuffer = await fileObj.file.arrayBuffer();
+                const doc = await PDFLib.PDFDocument.load(arrayBuffer, { ignoreEncryption: true });
+                fileObj.pagesCount = doc.getPageCount();
+            } catch (err) {
+                console.warn('Could not determine page count for', fileObj.name, err);
+                fileObj.pagesCount = '—';
+            }
+            renderFileList();
+        }
+
+        function renderFileList() {
+            if (selectedFiles.length === 0) {
+                dropZone.classList.remove('hidden');
+                filesSection.classList.add('hidden');
+                downloadSection.classList.add('hidden');
+                return;
+            }
+
+            dropZone.classList.add('hidden');
+            filesSection.classList.remove('hidden');
+            downloadSection.classList.add('hidden');
+
+            fileCountLabel.textContent = `Selected Files (${selectedFiles.length})`;
+            fileList.innerHTML = '';
+
+            const canMerge = selectedFiles.length >= 2;
+            minFilesNotice.classList.toggle('hidden', canMerge);
+            mergeBtn.disabled = !canMerge;
+
+            selectedFiles.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'file-item bg-zinc-50 border border-zinc-200 rounded-xl p-3 flex items-center justify-between gap-3 hover:border-zinc-300';
+
+                const pagesText = item.pagesCount !== null ? `${item.pagesCount} page${item.pagesCount === 1 ? '' : 's'}` : 'Reading pages...';
+
+                row.innerHTML = `
+                    <div class="flex items-center gap-3 min-w-0">
+                        <span class="w-6 h-6 rounded-lg bg-zinc-200 text-zinc-700 font-bold text-xs flex items-center justify-center shrink-0">
+                            ${index + 1}
+                        </span>
+                        <div class="min-w-0">
+                            <p class="text-xs font-bold text-zinc-900 truncate max-w-[200px] sm:max-w-xs" title="${item.name}">${item.name}</p>
+                            <p class="text-[11px] text-zinc-500 font-medium">
+                                <span>${formatBytes(item.size)}</span>
+                                <span class="mx-1">·</span>
+                                <span>${pagesText}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0">
+                        <button type="button" class="btn-up p-1.5 rounded-lg text-zinc-400 hover:text-zinc-800 hover:bg-zinc-200 transition-colors ${index === 0 ? 'opacity-30 cursor-not-allowed' : ''}" title="Move Up" ${index === 0 ? 'disabled' : ''}>
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="btn-down p-1.5 rounded-lg text-zinc-400 hover:text-zinc-800 hover:bg-zinc-200 transition-colors ${index === selectedFiles.length - 1 ? 'opacity-30 cursor-not-allowed' : ''}" title="Move Down" ${index === selectedFiles.length - 1 ? 'disabled' : ''}>
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        <button type="button" class="btn-remove p-1.5 rounded-lg text-zinc-400 hover:text-red-600 hover:bg-red-50 transition-colors ml-1" title="Remove File">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+
+                row.querySelector('.btn-up').addEventListener('click', () => moveFile(index, -1));
+                row.querySelector('.btn-down').addEventListener('click', () => moveFile(index, 1));
+                row.querySelector('.btn-remove').addEventListener('click', () => removeFile(index));
+
+                fileList.appendChild(row);
+            });
+        }
+
+        function moveFile(index, direction) {
+            const newIndex = index + direction;
+            if (newIndex < 0 || newIndex >= selectedFiles.length) return;
+            const temp = selectedFiles[index];
+            selectedFiles[index] = selectedFiles[newIndex];
+            selectedFiles[newIndex] = temp;
+            renderFileList();
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            renderFileList();
+        }
+
+        clearAllBtn.addEventListener('click', () => {
+            selectedFiles = [];
+            renderFileList();
+        });
+
+        mergeAnotherBtn.addEventListener('click', () => {
+            selectedFiles = [];
+            renderFileList();
+        });
+
+        mergeBtn.addEventListener('click', async () => {
+            if (selectedFiles.length < 2) return;
+
+            mergeBtn.disabled = true;
+            progressContainer.classList.remove('hidden');
+            errorMsg.classList.add('hidden');
+
+            try {
+                const mergedPdf = await PDFLib.PDFDocument.create();
+                let totalMergedPages = 0;
+                const totalFiles = selectedFiles.length;
+
+                for (let i = 0; i < totalFiles; i++) {
+                    const item = selectedFiles[i];
+                    const percent = Math.round(((i) / totalFiles) * 90);
+                    progressBar.style.width = percent + '%';
+                    progressVal.textContent = percent + '%';
+                    progressLabel.textContent = `Merging file ${i + 1} of ${totalFiles}: ${item.name}...`;
+
+                    const arrayBuffer = await item.file.arrayBuffer();
+                    const srcDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+                    const pageIndices = srcDoc.getPageIndices();
+                    const copiedPages = await mergedPdf.copyPages(srcDoc, pageIndices);
+
+                    copiedPages.forEach((page) => mergedPdf.addPage(page));
+                    totalMergedPages += copiedPages.length;
+                }
+
+                progressLabel.textContent = 'Finalizing merged document...';
+                progressBar.style.width = '100%';
+                progressVal.textContent = '100%';
+
+                const mergedPdfBytes = await mergedPdf.save();
+                const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+                const downloadUrl = URL.createObjectURL(blob);
+
+                downloadLink.href = downloadUrl;
+                downloadLink.download = 'merged-document.pdf';
+                mergeMeta.textContent = `Combined ${totalFiles} documents into ${totalMergedPages} pages (${formatBytes(mergedPdfBytes.byteLength)}).`;
+
+                downloadSection.classList.remove('hidden');
+                filesSection.classList.add('hidden');
+            } catch (err) {
+                console.error('Merge error:', err);
+                errorText.textContent = 'Failed to merge documents. One of the PDF files may be encrypted or corrupted.';
+                errorMsg.classList.remove('hidden');
+            } finally {
+                mergeBtn.disabled = false;
+                progressContainer.classList.add('hidden');
+                progressBar.style.width = '0%';
+            }
+        });
+    </script>
+</body>
+</html>
