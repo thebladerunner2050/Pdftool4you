@@ -33,6 +33,7 @@
         })();
     </script>
     <script src="theme.js"></script>
+    <script src="i18n.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.9/dist/pdf-lib.min.js"></script>
     <style>
         body {
@@ -63,7 +64,41 @@
                 </div>
                 <span class="font-bold text-base text-zinc-900 dark:text-white tracking-tight">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
             </a>
-            <div class="flex items-center gap-2.5">
+            <div class="flex items-center gap-2 sm:gap-2.5">
+                <!-- Language Switcher Dropdown (EN / हिन्दी) -->
+                <div class="relative" data-lang-menu-container>
+                    <button type="button" data-lang-trigger aria-label="Switch language / भाषा बदलें" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        <svg class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                        </svg>
+                        <span class="lang-current-label text-xs font-semibold">EN</span>
+                        <svg class="w-3 h-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div data-lang-menu class="hidden absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1.5 z-50 text-xs">
+                        <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500" data-i18n="lang_heading">Language / भाषा</div>
+                        <button type="button" data-lang-value="en" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span class="flex items-center gap-2">
+                                <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">EN</span>
+                                <span data-i18n="lang_name_en">English</span>
+                            </span>
+                            <svg class="lang-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </button>
+                        <button type="button" data-lang-value="hi" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span class="flex items-center gap-2">
+                                <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-400">HI</span>
+                                <span data-i18n="lang_name_hi">हिन्दी (Hindi)</span>
+                            </span>
+                            <svg class="lang-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Theme Toggle Dropdown -->
                 <div class="relative" data-theme-menu-container>
                     <button type="button" data-theme-trigger aria-label="Toggle color theme" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none">
@@ -79,17 +114,17 @@
                         <span class="theme-label hidden sm:inline text-xs font-semibold">Theme</span>
                     </button>
                     <div data-theme-menu class="hidden absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1.5 z-50 text-xs">
-                        <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Appearance</div>
+                        <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500" data-i18n="theme_appearance">Appearance</div>
                         <button type="button" data-theme-value="system" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
-                            <span>System default</span>
+                            <span data-i18n="theme_system">System default</span>
                             <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                         </button>
                         <button type="button" data-theme-value="light" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
-                            <span>Light</span>
+                            <span data-i18n="theme_light">Light</span>
                             <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                         </button>
                         <button type="button" data-theme-value="dark" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
-                            <span>Dark</span>
+                            <span data-i18n="theme_dark">Dark</span>
                             <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                         </button>
                     </div>
@@ -99,7 +134,7 @@
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
-                    <span>Back to Tools</span>
+                    <span data-i18n="nav_back">Back to Tools</span>
                 </a>
             </div>
         </div>
@@ -110,9 +145,12 @@
         
         <!-- Header Info -->
         <div class="text-center mb-8">
-            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 dark:bg-red-950/40 border border-red-200/60 dark:border-red-800/60 text-red-700 dark:text-red-300 text-xs font-semibold mb-3">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-800/60 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-3">
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3v5h5"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v13a2 2 0 002 2h11"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14h6m-3-3v6"/>
                 </svg>
                 <span>Client-Side PDF Merger</span>
             </div>

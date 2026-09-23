@@ -133,6 +133,7 @@
                     const isOpen = !menu.classList.contains('hidden');
                     // Close all other menus first
                     document.querySelectorAll('[data-theme-menu]').forEach(m => m.classList.add('hidden'));
+                    document.querySelectorAll('[data-lang-menu]').forEach(m => m.classList.add('hidden'));
                     if (!isOpen) {
                         menu.classList.remove('hidden');
                     }
@@ -152,11 +153,13 @@
         // Close dropdowns on outside click or Escape
         document.addEventListener('click', () => {
             document.querySelectorAll('[data-theme-menu]').forEach(m => m.classList.add('hidden'));
+            document.querySelectorAll('[data-lang-menu]').forEach(m => m.classList.add('hidden'));
         });
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 document.querySelectorAll('[data-theme-menu]').forEach(m => m.classList.add('hidden'));
+                document.querySelectorAll('[data-lang-menu]').forEach(m => m.classList.add('hidden'));
             }
         });
     }
