@@ -1,0 +1,8 @@
+{
+  "name": "PDFTool4You",
+  "description": "Advanced client-side utility tools for PDF and image conversion.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

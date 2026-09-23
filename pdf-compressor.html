@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online PDF Compressor - PDFTool4You</title>
+    <meta name="description" content="Compress heavy PDF documents directly in your browser without uploading to any server. 100% private and secure.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.9/dist/pdf-lib.min.js"></script>
+    <style>
+        .ad-space { background: #f3f4f6; border: 2px dashed #d1d5db; text-align: center; color: #9ca3af; padding: 20px; margin: 20px 0; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+
+    <nav class="bg-indigo-600 text-white shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold tracking-wide">⚡ PDFTool<span class="text-indigo-200">4You</span></a>
+            <a href="index.html" class="hover:text-indigo-200 text-sm font-medium">← Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <main class="max-w-3xl mx-auto px-4 py-12">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
+            <h1 class="text-3xl font-extrabold text-gray-800 mb-2">Online PDF Compressor</h1>
+            <p class="text-gray-600 mb-8">Reduce PDF file size quickly right in your browser. Perfect for government and job portal submissions.</p>
+
+            <div class="ad-space font-semibold">[ AdSense Tool Top Ad ]</div>
+
+            <div id="error-msg" class="hidden p-4 mb-6 bg-red-50 text-red-700 rounded-xl font-medium border border-red-200 text-left">
+                Please upload a valid PDF document (.pdf).
+            </div>
+
+            <div id="drop-zone" class="border-4 border-dashed border-gray-200 rounded-xl p-8 cursor-pointer hover:border-indigo-500 transition-colors bg-gray-50 mb-6">
+                <input type="file" id="file-input" accept=".pdf,application/pdf" class="hidden">
+                <div class="space-y-2">
+                    <p class="text-lg font-semibold text-gray-700">Drag & drop your PDF file here</p>
+                    <p class="text-sm text-gray-400">or click to browse from device</p>
+                </div>
+            </div>
+
+            <div id="file-info" class="hidden mb-6 p-4 bg-indigo-50 border border-indigo-100 rounded-xl flex items-center justify-between text-left">
+                <div>
+                    <p id="file-name" class="font-semibold text-indigo-950 truncate max-w-sm"></p>
+                    <p id="file-size" class="text-sm text-indigo-700"></p>
+                </div>
+                <span class="px-3 py-1 bg-indigo-200 text-indigo-800 text-xs font-bold rounded-full">Selected</span>
+            </div>
+
+            <div id="process-section" class="hidden space-y-6">
+                <div class="bg-gray-50 p-4 rounded-xl text-left border border-gray-200">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Compression Level</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="cursor-pointer border rounded-lg p-3 text-center transition-all bg-white has-[:checked]:border-indigo-600 has-[:checked]:ring-2 has-[:checked]:ring-indigo-100">
+                            <input type="radio" name="compression" value="low" class="sr-only">
+                            <div class="font-semibold text-sm">Low</div>
+                            <div class="text-xs text-gray-400">High Quality</div>
+                        </label>
+                        <label class="cursor-pointer border rounded-lg p-3 text-center transition-all bg-white has-[:checked]:border-indigo-600 has-[:checked]:ring-2 has-[:checked]:ring-indigo-100">
+                            <input type="radio" name="compression" value="medium" class="sr-only" checked>
+                            <div class="font-semibold text-sm">Medium</div>
+                            <div class="text-xs text-gray-400">Recommended</div>
+                        </label>
+                        <label class="cursor-pointer border rounded-lg p-3 text-center transition-all bg-white has-[:checked]:border-indigo-600 has-[:checked]:ring-2 has-[:checked]:ring-indigo-100">
+                            <input type="radio" name="compression" value="high" class="sr-only">
+                            <div class="font-semibold text-sm">High</div>
+                            <div class="text-xs text-gray-400">Smallest Size</div>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="progress-bar-container" class="hidden space-y-2 text-left">
+                    <div class="flex justify-between text-xs text-gray-500 font-semibold">
+                        <span id="progress-text">Processing pages...</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                        <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <button id="compress-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition-colors shadow-sm">
+                    Compress PDF
+                </button>
+            </div>
+
+            <div id="download-section" class="hidden space-y-4">
+                <div class="p-4 bg-green-50 text-green-700 rounded-xl font-medium border border-green-200">
+                    <p class="font-bold">✓ PDF Compression Complete!</p>
+                    <p id="size-comparison" class="text-sm mt-1 text-green-600"></p>
+                </div>
+                <a id="download-link" href="#" download="compressed-document.pdf" class="inline-block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-colors text-center shadow-sm">
+                    Download Compressed PDF
+                </a>
+                <button id="compress-another-btn" class="text-sm text-gray-500 hover:text-indigo-600 font-medium">Compress another file</button>
+            </div>
+
+            <div class="ad-space font-semibold">[ AdSense Tool Bottom Ad ]</div>
+        </div>
+    </main>
+
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const fileInfo = document.getElementById('file-info');
+        const fileNameEl = document.getElementById('file-name');
+        const fileSizeEl = document.getElementById('file-size');
+        const processSection = document.getElementById('process-section');
+        const compressBtn = document.getElementById('compress-btn');
+        const progressBarContainer = document.getElementById('progress-bar-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const progressPercent = document.getElementById('progress-percent');
+        const downloadSection = document.getElementById('download-section');
+        const downloadLink = document.getElementById('download-link');
+        const sizeComparison = document.getElementById('size-comparison');
+        const compressAnotherBtn = document.getElementById('compress-another-btn');
+        const errorMsg = document.getElementById('error-msg');
+
+        let currentFile = null;
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', handleFile);
+
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-indigo-500'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-indigo-500'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-indigo-500');
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                handleFile();
+            }
+        });
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function handleFile() {
+            const file = fileInput.files[0];
+            if (file && (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))) {
+                currentFile = file;
+                errorMsg.classList.add('hidden');
+                fileNameEl.textContent = file.name;
+                fileSizeEl.textContent = formatBytes(file.size);
+                fileInfo.classList.remove('hidden');
+                processSection.classList.remove('hidden');
+                downloadSection.classList.add('hidden');
+            } else {
+                errorMsg.classList.remove('hidden');
+                fileInfo.classList.add('hidden');
+                processSection.classList.add('hidden');
+                downloadSection.classList.add('hidden');
+            }
+        }
+
+        compressBtn.addEventListener('click', async () => {
+            if (!currentFile) return;
+
+            compressBtn.disabled = true;
+            compressBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            progressBarContainer.classList.remove('hidden');
+
+            const selectedLevel = document.querySelector('input[name="compression"]:checked').value;
+            let scale = 1.0;
+            let quality = 0.75;
+
+            if (selectedLevel === 'low') {
+                scale = 1.2;
+                quality = 0.85;
+            } else if (selectedLevel === 'medium') {
+                scale = 1.0;
+                quality = 0.65;
+            } else if (selectedLevel === 'high') {
+                scale = 0.8;
+                quality = 0.45;
+            }
+
+            try {
+                const arrayBuffer = await currentFile.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                const totalPages = pdf.numPages;
+
+                const newPdf = await PDFLib.PDFDocument.create();
+
+                for (let pageNum = 1; pageNum <= totalPages; pageNum++) {
+                    progressText.textContent = `Optimizing page ${pageNum} of ${totalPages}...`;
+                    const percent = Math.round((pageNum / totalPages) * 90);
+                    progressBar.style.width = percent + '%';
+                    progressPercent.textContent = percent + '%';
+
+                    const page = await pdf.getPage(pageNum);
+                    const viewport = page.getViewport({ scale });
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+
+                    await page.render({ canvasContext: ctx, viewport }).promise;
+
+                    const jpegDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    const jpegImageBytes = await fetch(jpegDataUrl).then(res => res.arrayBuffer());
+                    const embeddedImage = await newPdf.embedJpg(jpegImageBytes);
+
+                    const origViewport = page.getViewport({ scale: 1.0 });
+                    const newPage = newPdf.addPage([origViewport.width, origViewport.height]);
+                    newPage.drawImage(embeddedImage, {
+                        x: 0,
+                        y: 0,
+                        width: origViewport.width,
+                        height: origViewport.height,
+                    });
+                }
+
+                progressText.textContent = 'Finalizing document...';
+                progressBar.style.width = '100%';
+                progressPercent.textContent = '100%';
+
+                const compressedPdfBytes = await newPdf.save();
+                const blob = new Blob([compressedPdfBytes], { type: 'application/pdf' });
+                const downloadUrl = URL.createObjectURL(blob);
+
+                downloadLink.href = downloadUrl;
+                downloadLink.download = 'compressed-' + currentFile.name;
+
+                const origSize = currentFile.size;
+                const newSize = compressedPdfBytes.byteLength;
+                const savings = ((1 - (newSize / origSize)) * 100).toFixed(1);
+
+                sizeComparison.textContent = `Original: ${formatBytes(origSize)} → Compressed: ${formatBytes(newSize)} (${savings > 0 ? savings + '% reduced' : 'optimized'})`;
+
+                downloadSection.classList.remove('hidden');
+                processSection.classList.add('hidden');
+            } catch (err) {
+                console.error(err);
+                errorMsg.textContent = 'Failed to compress PDF. The document might be password-protected or corrupted.';
+                errorMsg.classList.remove('hidden');
+            } finally {
+                compressBtn.disabled = false;
+                compressBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                progressBarContainer.classList.add('hidden');
+                progressBar.style.width = '0%';
+            }
+        });
+
+        compressAnotherBtn.addEventListener('click', () => {
+            fileInput.value = '';
+            currentFile = null;
+            fileInfo.classList.add('hidden');
+            processSection.classList.add('hidden');
+            downloadSection.classList.add('hidden');
+            errorMsg.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

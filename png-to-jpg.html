@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PNG to JPG Converter - Free Online Tool</title>
-    <link rel="stylesheet" href="https://cloudflare.com">
+    <title>PNG to JPG Converter - PDFTool4You</title>
+    <meta name="description" content="Upload your PNG image and convert it to high-quality JPG format instantly in your browser.">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .ad-space { background: #f3f4f6; border: 2px dashed #d1d5db; text-align: center; color: #9ca3af; padding: 20px; margin: 20px 0; }
     </style>
@@ -13,7 +14,7 @@
 
     <nav class="bg-blue-600 text-white shadow-md">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="index.html" class="text-2xl font-bold tracking-wide">⚡ SmartTools</a>
+            <a href="index.html" class="text-2xl font-bold tracking-wide">⚡ PDFTool<span class="text-blue-200">4You</span></a>
             <a href="index.html" class="hover:text-blue-200 text-sm font-medium">← Back to Dashboard</a>
         </div>
     </nav>
@@ -24,6 +25,10 @@
             <p class="text-gray-600 mb-8">Upload your PNG image and convert it to high-quality JPG format instantly.</p>
 
             <div class="ad-space font-semibold">[ AdSense Tool Top Ad ]</div>
+
+            <div id="error-msg" class="hidden p-4 mb-6 bg-red-50 text-red-700 rounded-xl font-medium border border-red-200 text-left">
+                Please upload a valid PNG image (.png).
+            </div>
 
             <div id="drop-zone" class="border-4 border-dashed border-gray-200 rounded-xl p-8 cursor-pointer hover:border-blue-500 transition-colors bg-gray-50 mb-6">
                 <input type="file" id="file-input" accept=".png" class="hidden">
@@ -63,6 +68,7 @@
         const convertBtn = document.getElementById('convert-btn');
         const downloadSection = document.getElementById('download-section');
         const downloadLink = document.getElementById('download-link');
+        const errorMsg = document.getElementById('error-msg');
 
         dropZone.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', handleFile);
@@ -80,7 +86,8 @@
 
         function handleFile() {
             const file = fileInput.files[0];
-            if (file && file.type === 'image/png') {
+            if (file && (file.type === 'image/png' || file.name.toLowerCase().endsWith('.png'))) {
+                errorMsg.classList.add('hidden');
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     previewImg.src = e.target.result;
@@ -89,7 +96,9 @@
                 }
                 reader.readAsDataURL(file);
             } else {
-                alert('Please upload a valid PNG image.');
+                errorMsg.classList.remove('hidden');
+                processSection.classList.add('hidden');
+                downloadSection.classList.add('hidden');
             }
         }
 
