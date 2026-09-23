@@ -151,7 +151,9 @@
             "label_target_size": "Target Size",
             "label_new_size": "New Size",
             "btn_download": "Download File",
-            "btn_process": "Process Now"
+            "btn_process": "Process Now",
+            "btn_print_document": "Print Document",
+            "btn_printing": "Preparing Print..."
         },
         hi: {
             // Header & Navigation
@@ -295,7 +297,9 @@
             "label_target_size": "लक्ष्य आकार",
             "label_new_size": "नया आकार",
             "btn_download": "फ़ाइल डाउनलोड करें",
-            "btn_process": "शुरू करें"
+            "btn_process": "शुरू करें",
+            "btn_print_document": "दस्तावेज़ प्रिंट करें",
+            "btn_printing": "प्रिंट तैयार हो रहा है..."
         }
     };
 

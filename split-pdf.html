@@ -35,6 +35,7 @@
     <script src="theme.js"></script>
     <script src="i18n.js"></script>
     <script src="share.js"></script>
+    <script src="print.js"></script>
     <script src="pdf-lib.min.js"></script>
     <script>
         if (!window.PDFLib) {
@@ -376,12 +377,20 @@
 
                 <!-- Single File Download Action -->
                 <div id="single-download-box" class="hidden">
-                    <a id="single-download-link" href="#" download="split-document.pdf" class="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-sm">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                        </svg>
-                        <span>Download Extracted PDF</span>
-                    </a>
+                    <div class="flex flex-col sm:flex-row items-center gap-3">
+                        <a id="single-download-link" href="#" download="split-document.pdf" class="flex-1 inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-sm">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            <span>Download Extracted PDF</span>
+                        </a>
+                        <button type="button" id="print-split-btn" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3.5 px-5 rounded-xl font-bold text-sm text-zinc-800 dark:text-zinc-100 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-all border border-zinc-200 dark:border-zinc-700 shadow-sm cursor-pointer shrink-0" title="Print extracted document directly">
+                            <svg class="w-4 h-4 text-zinc-600 dark:text-zinc-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                            </svg>
+                            <span class="print-btn-label" data-i18n="btn_print_document">Print Document</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Multiple Files Download Action -->
@@ -492,6 +501,7 @@
         const resultSummary = document.getElementById('result-summary');
         const singleDownloadBox = document.getElementById('single-download-box');
         const singleDownloadLink = document.getElementById('single-download-link');
+        const printSplitBtn = document.getElementById('print-split-btn');
         const multipleDownloadBox = document.getElementById('multiple-download-box');
         const zipDownloadBtn = document.getElementById('zip-download-btn');
         const extractedFilesList = document.getElementById('extracted-files-list');
@@ -509,6 +519,12 @@
         let totalPages = 0;
         let selectedPageNumbers = new Set(); // 1-indexed numbers
         let generatedZipBlob = null;
+        let currentSingleExtractedUrl = null;
+        let createdPageBlobUrls = [];
+
+        if (window.attachPrintAction && printSplitBtn) {
+            window.attachPrintAction(printSplitBtn, () => currentSingleExtractedUrl, 'application/pdf');
+        }
 
         dropZone.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', handleFile);
@@ -688,6 +704,14 @@
         });
 
         function resetAll() {
+            if (currentSingleExtractedUrl) {
+                URL.revokeObjectURL(currentSingleExtractedUrl);
+                currentSingleExtractedUrl = null;
+            }
+            if (createdPageBlobUrls.length > 0) {
+                createdPageBlobUrls.forEach(u => URL.revokeObjectURL(u));
+                createdPageBlobUrls = [];
+            }
             fileInput.value = '';
             currentFile = null;
             loadedPdfDoc = null;
@@ -745,9 +769,12 @@
 
                     const pdfBytes = await newDoc.save();
                     const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-                    const downloadUrl = URL.createObjectURL(blob);
+                    if (currentSingleExtractedUrl) {
+                        URL.revokeObjectURL(currentSingleExtractedUrl);
+                    }
+                    currentSingleExtractedUrl = URL.createObjectURL(blob);
 
-                    singleDownloadLink.href = downloadUrl;
+                    singleDownloadLink.href = currentSingleExtractedUrl;
                     singleDownloadLink.download = `${baseName}-extracted.pdf`;
 
                     resultSummary.textContent = `Extracted ${pagesToExtract.length} page${pagesToExtract.length === 1 ? '' : 's'} into 1 PDF (${formatBytes(pdfBytes.byteLength)}).`;
@@ -777,7 +804,10 @@
 
                         zip.file(fileName, bytes);
 
-                        // Add to download list
+                        const pageBlobUrl = URL.createObjectURL(blob);
+                        createdPageBlobUrls.push(pageBlobUrl);
+
+                        // Add to download list with direct print button
                         const itemRow = document.createElement('div');
                         itemRow.className = 'flex items-center justify-between p-2 rounded-lg bg-zinc-50 dark:bg-zinc-800/70 border border-zinc-200 dark:border-zinc-700 text-xs';
                         itemRow.innerHTML = `
@@ -785,10 +815,25 @@
                                 <span class="font-bold text-zinc-900 dark:text-white">${fileName}</span>
                                 <span class="text-zinc-400 dark:text-zinc-500 ml-1">(${formatBytes(bytes.byteLength)})</span>
                             </div>
-                            <a href="${URL.createObjectURL(blob)}" download="${fileName}" class="px-2.5 py-1 text-[11px] font-semibold text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md shrink-0 transition-colors">
-                                Download
-                            </a>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                <button type="button" class="btn-print-page p-1.5 text-zinc-500 hover:text-zinc-800 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-700 rounded-md transition-colors cursor-pointer" title="Print this page directly">
+                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                                    </svg>
+                                </button>
+                                <a href="${pageBlobUrl}" download="${fileName}" class="px-2.5 py-1 text-[11px] font-semibold text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-md shrink-0 transition-colors">
+                                    Download
+                                </a>
+                            </div>
                         `;
+                        const printBtn = itemRow.querySelector('.btn-print-page');
+                        if (printBtn) {
+                            printBtn.addEventListener('click', () => {
+                                if (window.printProcessedDocument) {
+                                    window.printProcessedDocument(pageBlobUrl, 'application/pdf', fileName);
+                                }
+                            });
+                        }
                         extractedFilesList.appendChild(itemRow);
                     }
 
