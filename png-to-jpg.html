@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PNG to JPG Converter - Free Online Tool</title>
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        .ad-space { background: #f3f4f6; border: 2px dashed #d1d5db; text-align: center; color: #9ca3af; padding: 20px; margin: 20px 0; }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800">
+
+    <!-- Navbar -->
+    <nav class="bg-blue-600 text-white shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold tracking-wide">⚡ SmartTools</a>
+            <a href="index.html" class="hover:text-blue-200 text-sm font-medium">← Back to Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- Main Tool Container -->
+    <main class="max-w-3xl mx-auto px-4 py-12">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8 text-center">
+            <h1 class="text-3xl font-extrabold text-slate-800 mb-2">PNG to JPG Converter</h1>
+            <p class="text-slate-600 mb-8">Upload your PNG image and convert it to high-quality JPG format instantly.</p>
+
+            <!-- Ad Space Above Tool (AdSense Ready) -->
+            <div class="ad-space font-semibold">[ AdSense Tool Top Ad ]</div>
+
+            <!-- Upload Area -->
+            <div id="drop-zone" class="border-4 border-dashed border-slate-200 rounded-xl p-8 cursor-pointer hover:border-blue-500 transition-colors bg-slate-50 mb-6">
+                <input type="file" id="file-input" accept=".png" class="hidden">
+                <div class="space-y-2">
+                    <p class="text-lg font-semibold text-slate-700">Drag & drop your PNG image here</p>
+                    <p class="text-sm text-slate-400">or click to browse from device</p>
+                </div>
+            </div>
+
+            <!-- Preview and Action Section (Hidden Initially) -->
+            <div id="process-section" class="hidden space-y-6">
+                <div class="flex justify-center">
+                    <img id="preview-img" class="max-h-64 rounded-lg shadow-sm border border-slate-200" src="" alt="Preview">
+                </div>
+                <button id="convert-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-colors shadow-sm">
+                    Convert to JPG
+                </button>
+            </div>
+
+            <!-- Download Section (Hidden Initially) -->
+            <div id="download-section" class="hidden space-y-4">
+                <div class="p-4 bg-green-50 text-green-700 rounded-xl font-medium">
+                    ✓ Conversion Successful! Your JPG is ready.
+                </div>
+                <a id="download-link" href="#" download="converted-image.jpg" class="inline-block w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-colors text-center shadow-sm">
+                    Download JPG Image
+                </a>
+            </div>
+
+            <!-- Ad Space Below Tool -->
+            <div class="ad-space font-semibold">[ AdSense Tool Bottom Ad ]</div>
+        </div>
+    </main>
+
+    <!-- Browser Processing Script -->
+    <script>
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const processSection = document.getElementById('process-section');
+        const previewImg = document.getElementById('preview-img');
+        const convertBtn = document.getElementById('convert-btn');
+        const downloadSection = document.getElementById('download-section');
+        const downloadLink = document.getElementById('download-link');
+
+        // Click to upload
+        dropZone.addEventListener('click', () => fileInput.click());
+
+        // File Selection
+        fileInput.addEventListener('change', handleFile);
+
+        // Drag & Drop Event Listeners
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-blue-500'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-blue-500'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-blue-500');
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                handleFile();
+            }
+        });
+
+        function handleFile() {
+            const file = fileInput.files[0];
+            if (file && file.type === 'image/png') {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    processSection.classList.remove('hidden');
+                    downloadSection.classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            } else {
+                alert('Please upload a valid PNG image.');
+            }
+        }
+
+        // Browser-side Canvas Conversion (PNG to JPG with white background)
+        convertBtn.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            const img = new Image();
+            img.onload = function() {
+                canvas.width = img.width;
+                canvas.height = img.height;
+                
+                // PNG transparent spots ko handle karne ke liye pehle white background fill karenge
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Image draw karenge
+                ctx.drawImage(img, 0, 0);
+                
+                // JPG image generate karenge (Quality: 0.9)
+                const jpgUrl = canvas.toDataURL('image/jpeg', 0.9);
+                downloadLink.href = jpgUrl;
+                
+                // Interface update karenge
+                downloadSection.classList.remove('hidden');
+                processSection.classList.add('hidden');
+            };
+            img.src = previewImg.src;
+        });
+    </script>
+</body>
+</html>
