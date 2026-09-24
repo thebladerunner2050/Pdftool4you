@@ -148,9 +148,11 @@
             "footer_tool_merge": "Merge PDF",
             "footer_tool_split": "Split PDF",
             "footer_tool_watermark": "Watermark PDF",
+            "footer_tool_remover": "Remove PDF Password",
             "footer_tool_img2pdf": "Image to PDF",
             "footer_tool_png2jpg": "PNG to JPG",
             "footer_tool_jpg2png": "JPG to PNG",
+            "footer_tool_pan": "PAN Card Photo Maker",
 
             // Footer Legal & Links
             "footer_rights": "© 2026 PDFTool4You. All rights reserved. 100% Client-Side Processing.",
@@ -174,6 +176,7 @@
             "btn_print_document": "Print Document",
             "btn_printing": "Preparing Print...",
             "tool_pan_meta_title": "PAN Card Photo & Signature Resizer — PDFTool4You",
+            "badge_pan_compliance": "NSDL & UTIITSL Compliant",
             "pan_tool_title": "PAN Card Photo & Signature Resizer",
             "pan_tool_subtitle": "Crop, resize, and compress your photograph and signature to match the exact guidelines for NSDL (Protean) or UTIITSL application portals completely on your device.",
             "pan_upload_title": "Upload Photo or Signature Image",
@@ -381,9 +384,11 @@
             "footer_tool_merge": "मर्ज पीडीएफ (Merge PDF)",
             "footer_tool_split": "स्प्लिट पीडीएफ (Split PDF)",
             "footer_tool_watermark": "वॉटरमार्क पीडीएफ (Watermark PDF)",
+            "footer_tool_remover": "पासवर्ड हटाएं (Remove Password)",
             "footer_tool_img2pdf": "इमेज से पीडीएफ (Image to PDF)",
             "footer_tool_png2jpg": "पीएनजी से जेपीजी (PNG to JPG)",
             "footer_tool_jpg2png": "जेपीजी से पीएनजी (JPG to PNG)",
+            "footer_tool_pan": "पैन कार्ड फोटो मेकर (PAN Card Photo Maker)",
 
             // Footer Legal & Links
             "footer_rights": "© 2026 PDFTool4You. सर्वाधिकार सुरक्षित। 100% क्लाइंट-साइड प्रोसेसिंग।",
@@ -407,6 +412,7 @@
             "btn_print_document": "दस्तावेज़ प्रिंट करें",
             "btn_printing": "प्रिंट तैयार हो रहा है...",
             "tool_pan_meta_title": "पैन कार्ड फोटो और सिग्नेचर रिसाइज़र — PDFTool4You",
+            "badge_pan_compliance": "NSDL और UTIITSL अनुपालन",
             "pan_tool_title": "पैन कार्ड फोटो और सिग्नेचर रिसाइज़र",
             "pan_tool_subtitle": "NSDL (Protean) या UTIITSL आवेदन पोर्टलों के लिए अपने फोटो और हस्ताक्षर को क्रॉप, रिसाइज़ और कंप्रेस करें पूरी तरह से अपने डिवाइस पर सुरक्षित रूप से।",
             "pan_upload_title": "तस्वीर या हस्ताक्षर अपलोड करें",

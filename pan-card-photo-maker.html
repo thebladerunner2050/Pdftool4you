@@ -100,9 +100,9 @@
     <!-- Minimal Header -->
     <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/80 dark:border-zinc-800 transition-colors">
         <div class="relative max-w-4xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center lg:hidden z-30">
-                <button type="button" data-mobile-drawer-trigger aria-label="Open navigation menu" class="flex items-center justify-center w-9 h-9 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:white active:scale-95 transition-all shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="flex items-center lg:hidden z-30 pointer-events-auto">
+                <button type="button" data-mobile-drawer-trigger onclick="if(window.openMobileDrawer){window.openMobileDrawer();}else if(window.MobileNav){window.MobileNav.open();}" aria-label="Open navigation menu" class="flex items-center justify-center w-9 h-9 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white active:scale-95 transition-all shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20 pointer-events-auto">
+                    <svg class="w-5 h-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                     </svg>
                 </button>
@@ -121,86 +121,170 @@
             </a>
 
             <!-- Header Actions -->
-            <div class="flex items-center gap-2.5">
-                <!-- Back Link -->
-                <a href="index.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition-colors">
-                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                    </svg>
-                    <span data-i18n="nav_back">Back to Tools</span>
-                </a>
-
-                <!-- Share -->
+            <div class="flex items-center gap-2.5 sm:gap-3">
+                <!-- Share Button Dropdown (PC only in header, mobile/tablet in drawer) -->
                 <div class="hidden lg:block relative" data-share-container>
-                    <button type="button" data-share-trigger class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium">
+                    <button type="button" data-share-trigger aria-label="Share tool or copy link" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                         <svg class="share-icon-default w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
                         </svg>
                         <svg class="share-icon-copied hidden w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
                         </svg>
-                        <span class="share-btn-text text-xs font-semibold" data-i18n="nav_share">Share</span>
-                    </button>
-                    <!-- Share menu popup content -->
-                    <div data-share-menu class="hidden absolute right-0 mt-2 w-72 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-4 z-50 text-xs">
-                        <div class="flex items-center justify-between mb-2">
-                            <div class="font-bold text-zinc-900 dark:text-white text-sm" data-i18n="share_title">Share this Tool</div>
-                            <span class="share-copied-badge hidden text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full" data-i18n="share_copied">Copied!</span>
-                        </div>
-                        <div class="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 mb-3">
-                            <input type="text" readonly data-share-url-input class="w-full bg-transparent border-0 px-2 text-xs font-mono" value="">
-                            <button type="button" data-share-action="copy" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-xs shadow-sm cursor-pointer">Copy</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Language Selection -->
-                <div class="relative" data-lang-menu-container>
-                    <button type="button" data-lang-trigger class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-semibold focus:outline-none">
-                        <svg class="w-4 h-4 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 11.37 7.31 16.19 3 19"/>
-                        </svg>
-                        <span class="lang-current-label">EN</span>
+                        <span class="share-btn-text hidden sm:inline text-xs font-semibold" data-i18n="nav_share">Share</span>
                         <svg class="w-3 h-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </button>
-                    <div data-lang-menu class="hidden absolute right-0 mt-2 w-40 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1 z-50 text-xs">
+
+                    <div data-share-menu class="hidden absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-4 z-50 text-xs">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="font-bold text-zinc-900 dark:text-white text-sm" data-i18n="share_title">Share this Tool</div>
+                            <span class="share-copied-badge hidden text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full" data-i18n="share_copied">Copied!</span>
+                        </div>
+                        <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-3" data-i18n="share_desc">Free, private, 100% on-device PDF & image utilities.</p>
+
+                        <div class="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 mb-3">
+                            <input type="text" readonly data-share-url-input class="w-full bg-transparent border-0 px-2 text-xs text-zinc-700 dark:text-zinc-200 focus:outline-none truncate select-all font-mono" value="">
+                            <button type="button" data-share-action="copy" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-xs transition-colors shrink-0 shadow-sm cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+                                </svg>
+                                <span data-i18n="share_copy_btn">Copy</span>
+                            </button>
+                        </div>
+
+                        <div class="space-y-1">
+                            <button type="button" data-share-action="native" class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer">
+                                <span class="flex items-center gap-2.5 font-medium">
+                                    <div class="w-6 h-6 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <span data-i18n="share_via_apps">Share via Apps...</span>
+                                </span>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </button>
+
+                            <a href="#" target="_blank" rel="noopener noreferrer" data-share-action="whatsapp" class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                                <span class="flex items-center gap-2.5 font-medium">
+                                    <div class="w-6 h-6 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.969.586 1.761.884 2.796.884 3.179 0 5.767-2.587 5.767-5.766.001-3.181-2.586-5.771-5.767-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.312.045-.698.074-2.029-.475-1.529-.631-2.502-2.186-2.58-2.289-.074-.103-.615-.818-.615-1.56 0-.742.39-1.109.529-1.261.14-.151.306-.189.409-.189.102 0 .205.002.295.006.096.004.225-.036.35.265.13.312.443 1.08.482 1.16.039.08.065.174.013.277-.052.103-.078.167-.156.257-.078.09-.163.2-.234.269-.078.076-.16.159-.068.318.092.158.409.675.877 1.092.602.537 1.109.704 1.268.783.158.079.252.069.345-.04.093-.109.397-.463.503-.621.106-.158.212-.132.357-.079.146.053.923.435 1.082.514.159.079.265.119.305.185.039.066.039.384-.105.789zM12 2C6.477 2 2 6.477 2 12c0 1.891.526 3.658 1.438 5.168L2 22l4.981-1.396A9.957 9.957 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.034c-1.637 0-3.167-.478-4.457-1.3l-.32-.206-2.956.828.835-2.887-.213-.332A7.986 7.986 0 014 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8.034-8 8.034z"/>
+                                        </svg>
+                                    </div>
+                                    <span data-i18n="share_whatsapp">WhatsApp</span>
+                                </span>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                            </a>
+
+                            <a href="#" target="_blank" rel="noopener noreferrer" data-share-action="twitter" class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                                <span class="flex items-center gap-2.5 font-medium">
+                                    <div class="w-6 h-6 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white flex items-center justify-center">
+                                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                                        </svg>
+                                    </div>
+                                    <span data-i18n="share_twitter">X (Twitter)</span>
+                                </span>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                            </a>
+
+                            <a href="#" target="_blank" rel="noopener noreferrer" data-share-action="linkedin" class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                                <span class="flex items-center gap-2.5 font-medium">
+                                    <div class="w-6 h-6 rounded-lg bg-sky-50 dark:bg-sky-950/50 text-[#0A66C2] flex items-center justify-center">
+                                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                                            <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                                        </svg>
+                                    </div>
+                                    <span data-i18n="share_linkedin">LinkedIn</span>
+                                </span>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Language Switcher Dropdown (PC only in header, mobile/tablet in drawer) -->
+                <div class="hidden lg:block relative" data-lang-menu-container>
+                    <button type="button" data-lang-trigger aria-label="Switch language / भाषा बदलें" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        <svg class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                        </svg>
+                        <span class="lang-current-label text-xs font-semibold">EN</span>
+                        <svg class="w-3 h-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div data-lang-menu class="hidden absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1.5 z-50 text-xs">
+                        <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500" data-i18n="lang_heading">Language / भाषा</div>
                         <button type="button" data-lang-value="en" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
-                            <span data-i18n="lang_name_en">English</span>
-                            <span class="lang-check opacity-0 text-blue-600 dark:text-blue-400">✓</span>
+                            <span class="flex items-center gap-2">
+                                <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">EN</span>
+                                <span data-i18n="lang_name_en">English</span>
+                            </span>
+                            <svg class="lang-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                            </svg>
                         </button>
                         <button type="button" data-lang-value="hi" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
-                            <span data-i18n="lang_name_hi">हिन्दी (Hindi)</span>
-                            <span class="lang-check opacity-0 text-blue-600 dark:text-blue-400">✓</span>
+                            <span class="flex items-center gap-2">
+                                <span class="text-[11px] font-bold px-1.5 py-0.5 rounded bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-400">HI</span>
+                                <span data-i18n="lang_name_hi">हिन्दी (Hindi)</span>
+                            </span>
+                            <svg class="lang-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                            </svg>
                         </button>
                     </div>
                 </div>
 
-                <!-- Dark/Light Theme Dropdown -->
-                <div class="relative" data-theme-menu-container>
-                    <button type="button" data-theme-trigger class="flex items-center justify-center w-9 h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all shadow-2xs cursor-pointer">
-                        <!-- Light Icon -->
+                <!-- Theme Toggle Dropdown (PC only in header, mobile/tablet in drawer) -->
+                <div class="hidden lg:block relative" data-theme-menu-container>
+                    <button type="button" data-theme-trigger aria-label="Toggle color theme" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none">
+                        <svg class="theme-icon-system w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
                         <svg class="theme-icon-light hidden w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
                         </svg>
-                        <!-- Dark Icon -->
                         <svg class="theme-icon-dark hidden w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
                         </svg>
+                        <span class="theme-label hidden sm:inline text-xs font-semibold">Theme</span>
                     </button>
-                    <div data-theme-menu class="hidden absolute right-0 mt-2 w-40 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1 z-50 text-xs">
-                        <button type="button" data-theme-value="system" class="w-full flex items-center justify-between px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-left transition-colors">
-                            <span data-i18n="theme_system">System</span>
+                    <div data-theme-menu class="hidden absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1.5 z-50 text-xs">
+                        <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500" data-i18n="theme_appearance">Appearance</div>
+                        <button type="button" data-theme-value="system" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span data-i18n="theme_system">System default</span>
+                            <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                         </button>
-                        <button type="button" data-theme-value="light" class="w-full flex items-center justify-between px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-left transition-colors">
+                        <button type="button" data-theme-value="light" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
                             <span data-i18n="theme_light">Light</span>
+                            <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                         </button>
-                        <button type="button" data-theme-value="dark" class="w-full flex items-center justify-between px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-left transition-colors">
+                        <button type="button" data-theme-value="dark" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
                             <span data-i18n="theme_dark">Dark</span>
+                            <svg class="theme-check w-3.5 h-3.5 text-blue-600 dark:text-blue-400 opacity-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                         </button>
                     </div>
                 </div>
+
+                <a href="index.html" aria-label="Back to Tools" class="back-btn-responsive flex items-center justify-center gap-1.5 w-9 h-9 lg:w-auto px-0 lg:px-3 py-0 lg:py-1.5 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white font-semibold text-xs shadow-2xs transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer">
+                    <svg class="w-4 h-4 lg:w-3.5 lg:h-3.5 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="back-btn-text hidden lg:inline font-semibold text-xs whitespace-nowrap" data-i18n="nav_back">Back to Tools</span>
+                </a>
             </div>
         </div>
     </header>
@@ -209,6 +293,12 @@
     <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-8 w-full">
         <!-- Title & Subtitle Section -->
         <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-800/60 text-blue-700 dark:text-blue-300 text-xs font-semibold mb-3">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+                <span data-i18n="badge_pan_compliance">NSDL & UTIITSL Compliant</span>
+            </div>
             <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-3" data-i18n="pan_tool_title">
                 PAN Card Photo & Signature Resizer
             </h1>
@@ -221,7 +311,7 @@
             
             <!-- LEFT COLUMN: Image Upload / Crop Workspace (7 cols) -->
             <div class="lg:col-span-7 space-y-6">
-                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-850 p-4 sm:p-6 shadow-sm">
+                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 sm:p-6 shadow-sm">
                     
                     <!-- Upload Dropzone -->
                     <div id="dropzone" class="relative group border-2 border-dashed border-zinc-200 dark:border-zinc-800 hover:border-blue-500 dark:hover:border-blue-500 rounded-2xl p-8 sm:p-12 text-center transition-all cursor-pointer bg-zinc-50/50 dark:bg-zinc-900/50">
@@ -290,9 +380,9 @@
                 <div class="bg-blue-50/50 dark:bg-zinc-900 border border-blue-200/60 dark:border-zinc-800 rounded-2xl p-4 sm:p-5">
                     <h3 class="text-xs font-extrabold text-blue-900 dark:text-blue-400 uppercase tracking-wider mb-2" data-i18n="pan_guidelines_title">PORTAL GUIDELINES</h3>
                     <ul class="space-y-2 text-xs text-zinc-700 dark:text-zinc-300 leading-normal list-disc pl-4">
-                        <li data-i18n="pan_guide_1"><strong>White Background:</strong> Ensure passport photo has a solid plain white background. Avoid colorful, blurred backgrounds.</li>
-                        <li data-i18n="pan_guide_2"><strong>Black Ink Signature:</strong> Please sign with <strong>black ballpoint ink</strong> on clear white paper. Blue ink is highly discouraged as scanners might distort it.</li>
-                        <li data-i18n="pan_guide_3"><strong>Sharpness:</strong> Face must be straight-facing, with 70% to 80% area coverage. Caps, hats, masks, or dark glasses are strictly rejected.</li>
+                        <li data-i18n-html="pan_guide_1"><strong>White Background:</strong> Ensure passport photo has a solid plain white background. Avoid colorful, blurred backgrounds.</li>
+                        <li data-i18n-html="pan_guide_2"><strong>Black Ink Signature:</strong> Please sign with <strong>black ballpoint ink</strong> on clear white paper. Blue ink is highly discouraged as scanners might distort it.</li>
+                        <li data-i18n-html="pan_guide_3"><strong>Sharpness:</strong> Face must be straight-facing, with 70% to 80% area coverage. Caps, hats, masks, or dark glasses are strictly rejected.</li>
                     </ul>
                 </div>
             </div>
@@ -301,7 +391,7 @@
             <div class="lg:col-span-5 space-y-6">
                 
                 <!-- PORTAL PRESET CONTROLLER -->
-                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-850 p-4 sm:p-5 shadow-sm space-y-4">
+                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 sm:p-5 shadow-sm space-y-4">
                     <h2 class="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider" data-i18n="pan_settings_section">Application Settings</h2>
                     
                     <!-- Agency Selection -->
@@ -354,7 +444,7 @@
                 </div>
 
                 <!-- PORTAL GUIDELINE SPECIFICATIONS -->
-                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-850 p-4 sm:p-5 shadow-sm space-y-3.5">
+                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 sm:p-5 shadow-sm space-y-3.5">
                     <h2 class="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider" data-i18n="pan_specs_title">Target Specifications</h2>
                     
                     <div class="space-y-2 text-xs">
@@ -382,7 +472,7 @@
                 </div>
 
                 <!-- QUALITY AND COMPRESSION CONTROLS -->
-                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-850 p-4 sm:p-5 shadow-sm space-y-4">
+                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 p-4 sm:p-5 shadow-sm space-y-4">
                     <div class="flex items-center justify-between">
                         <h2 class="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider" data-i18n="pan_compress_settings">Quality & Compress Settings</h2>
                         <span id="live-file-size" class="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 px-2 py-0.5 rounded-full">Estimated: 12 KB</span>
@@ -458,8 +548,8 @@
 
     <!-- Global Footer -->
     <footer class="mt-20 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-colors">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10 text-xs">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
                 
                 <!-- Brand Info -->
                 <div class="md:col-span-1 space-y-3">
@@ -469,57 +559,62 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                             </svg>
                         </div>
-                        <span class="font-bold text-sm text-zinc-900 dark:text-white">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                        <span class="font-bold text-base text-zinc-900 dark:text-white">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
                     </div>
-                    <p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed" data-i18n="footer_brand_desc">
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed" data-i18n="footer_brand_desc">
                         High-performance in-browser PDF & image suite. Compress, merge, split, watermark, and convert without uploading files.
                     </p>
-                    <div class="pt-1 flex items-center gap-2 text-[10px] text-zinc-400 dark:text-zinc-500">
+                    <div class="pt-1 flex items-center gap-2 text-[11px] text-zinc-400 dark:text-zinc-500">
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        <span data-i18n="badge_memory">100% In-Browser Memory</span>
+                        <span data-i18n="badge_in_browser_memory">100% In-Browser Memory</span>
                     </div>
                 </div>
 
                 <!-- PDF Tools -->
                 <div>
-                    <h4 class="font-semibold text-zinc-900 dark:text-white mb-3.5" data-i18n="footer_pdf_tools">PDF Tools</h4>
-                    <ul class="space-y-2.5 text-zinc-600 dark:text-zinc-400">
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5 tracking-normal normal-case" data-i18n="footer_pdf_tools">PDF Tools</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
                         <li><a href="pdf-compressor.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_compressor">Compress PDF</a></li>
                         <li><a href="merge-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_merge">Merge PDF</a></li>
                         <li><a href="split-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_split">Split PDF</a></li>
                         <li><a href="pdf-watermarker.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_watermark">Watermark PDF</a></li>
+                        <li><a href="remove-pdf-password.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_remover">Remove PDF Password</a></li>
                     </ul>
                 </div>
 
                 <!-- Image Tools -->
                 <div>
-                    <h4 class="font-semibold text-zinc-900 dark:text-white mb-3.5" data-i18n="footer_image_tools">Image Tools</h4>
-                    <ul class="space-y-2.5 text-zinc-600 dark:text-zinc-400">
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5 tracking-normal normal-case" data-i18n="footer_image_tools">Image Tools</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
                         <li><a href="image-to-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_img2pdf">Image to PDF</a></li>
                         <li><a href="png-to-jpg.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_png2jpg">PNG to JPG</a></li>
                         <li><a href="jpg-to-png.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_jpg2png">JPG to PNG</a></li>
+                        <li><a href="pan-card-photo-maker.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_pan">PAN Card Photo Maker</a></li>
                     </ul>
                 </div>
 
-                <!-- Legal & Trust -->
+                <!-- Legal & Trust (Essential for AdSense) -->
                 <div>
-                    <h4 class="font-semibold text-zinc-900 dark:text-white mb-3.5" data-i18n="footer_company_legal">Company & Legal</h4>
-                    <ul class="space-y-2.5 text-zinc-600 dark:text-zinc-400">
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5 tracking-normal normal-case" data-i18n="footer_company_legal">Company & Legal</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
                         <li><a href="privacy-policy.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_privacy">Privacy Policy</a></li>
                         <li><a href="terms-and-conditions.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_terms">Terms & Conditions</a></li>
                         <li><a href="about-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_about">About Us</a></li>
                         <li><a href="contact-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_contact">Contact Us</a></li>
+                        <li><a href="disclaimer.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_disclaimer">Disclaimer</a></li>
+                        <li><a href="cookie-policy.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_cookies">Cookie Policy</a></li>
                     </ul>
                 </div>
 
             </div>
 
-            <!-- Bottom Copyright -->
-            <div class="pt-8 border-t border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-400 dark:text-zinc-500">
+            <!-- Bottom Disclaimer & Copyright -->
+            <div class="pt-8 border-t border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400 dark:text-zinc-500">
                 <p data-i18n="footer_copyright">© 2026 PDFTool4You. All rights reserved. 100% Client-Side Processing.</p>
                 <div class="flex items-center gap-4">
                     <a href="privacy-policy.html" class="hover:underline" data-i18n="footer_privacy">Privacy</a>
                     <a href="terms-and-conditions.html" class="hover:underline" data-i18n="footer_terms">Terms</a>
+                    <a href="cookie-policy.html" class="hover:underline" data-i18n="footer_cookies">Cookies</a>
                     <a href="contact-us.html" class="hover:underline" data-i18n="footer_contact">Contact</a>
                 </div>
             </div>

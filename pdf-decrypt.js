@@ -424,6 +424,45 @@
 
       params.algorithm = 'AES-256';
       params.keyLength = 32;
+    } else if (version === 4 && revision === 4) {
+      const EncryptMetadata = encryptDict.get(PDFName.of('EncryptMetadata'));
+      if (EncryptMetadata) {
+        const emStr = EncryptMetadata.toString();
+        params.encryptMetadata = emStr !== 'false';
+      } else {
+        params.encryptMetadata = true;
+      }
+
+      let keyLengthBits = Length ? (typeof Length.asNumber === 'function' ? Length.asNumber() : Number(Length.toString())) : 128;
+      params.keyLength = keyLengthBits / 8;
+
+      let cfm = 'AESV2';
+      const CF = encryptDict.get(PDFName.of('CF'));
+      const StmF = encryptDict.get(PDFName.of('StmF'));
+      const StrF = encryptDict.get(PDFName.of('StrF'));
+
+      let filterName = 'StdCF';
+      if (StmF) {
+        filterName = StmF.toString().replace(/^\//, '');
+      } else if (StrF) {
+        filterName = StrF.toString().replace(/^\//, '');
+      }
+
+      if (CF && CF instanceof PDFDict) {
+        const cryptFilter = CF.get(PDFName.of(filterName));
+        if (cryptFilter && cryptFilter instanceof PDFDict) {
+          const cfmObj = cryptFilter.get(PDFName.of('CFM'));
+          if (cfmObj) {
+            cfm = cfmObj.toString().replace(/^\//, '');
+          }
+        }
+      }
+
+      if (cfm === 'AESV2') {
+        params.algorithm = 'AES-128';
+      } else {
+        params.algorithm = 'RC4';
+      }
     } else if (version <= 3 && revision <= 4) {
       let keyLengthBits = Length ? (typeof Length.asNumber === 'function' ? Length.asNumber() : Number(Length.toString())) : 40;
       if (revision >= 3 && !Length) keyLengthBits = 128;
@@ -432,7 +471,7 @@
     } else {
       throw new Error(
         `Unsupported encryption: V=${version}, R=${revision}. ` +
-        `Only RC4 (V=1-2, R=2-3) and AES-256 (V=5, R=6) are supported.`
+        `Only RC4 (V=1-2, R=2-3, V=4, R=4) and AES (V=4, R=4, V=5, R=6) are supported.`
       );
     }
 
@@ -799,6 +838,82 @@
     }
   }
 
+  function computeAES128ObjectKey(encryptionKey, objectNum, generationNum) {
+    const keyInput = new Uint8Array(encryptionKey.length + 5 + 4);
+    keyInput.set(encryptionKey);
+
+    keyInput[encryptionKey.length] = objectNum & 0xFF;
+    keyInput[encryptionKey.length + 1] = (objectNum >> 8) & 0xFF;
+    keyInput[encryptionKey.length + 2] = (objectNum >> 16) & 0xFF;
+
+    keyInput[encryptionKey.length + 3] = generationNum & 0xFF;
+    keyInput[encryptionKey.length + 4] = (generationNum >> 8) & 0xFF;
+
+    // Append ASCII 'sAlT' (0x73, 0x41, 0x6C, 0x54)
+    keyInput[encryptionKey.length + 5] = 0x73;
+    keyInput[encryptionKey.length + 6] = 0x41;
+    keyInput[encryptionKey.length + 7] = 0x6C;
+    keyInput[encryptionKey.length + 8] = 0x54;
+
+    return md5(keyInput);
+  }
+
+  async function decryptAES128Blob(data, objectNum, generationNum, encryptionKey) {
+    if (data.length < 16) {
+      return data;
+    }
+    const iv = data.slice(0, 16);
+    const ciphertext = data.slice(16);
+
+    if (ciphertext.length === 0) {
+      return new Uint8Array(0);
+    }
+
+    if (ciphertext.length % 16 !== 0) {
+      return data;
+    }
+
+    try {
+      const objKeyBytes = computeAES128ObjectKey(encryptionKey, objectNum, generationNum);
+      const cryptoKey = await importAES256DecryptKey(objKeyBytes); // Since raw key is 16 bytes, imports as AES-128 automatically
+      return await aes256CbcDecryptWithKey(ciphertext, cryptoKey, iv);
+    } catch (err) {
+      console.warn(`AES-128 decryption failed for obj ${objectNum} gen ${generationNum}:`, err);
+      return data;
+    }
+  }
+
+  async function decryptAllAES128(streamItems, stringItems, encryptionKey) {
+    for (let i = 0; i < streamItems.length; i += BATCH_SIZE) {
+      const batch = streamItems.slice(i, i + BATCH_SIZE);
+      const results = await Promise.all(
+        batch.map(item => decryptAES128Blob(item.data, item.objectNum, item.generationNum, encryptionKey))
+      );
+
+      for (let j = 0; j < batch.length; j++) {
+        batch[j].obj.contents = results[j];
+      }
+    }
+
+    for (let i = 0; i < stringItems.length; i += BATCH_SIZE) {
+      const batch = stringItems.slice(i, i + BATCH_SIZE);
+      const results = await Promise.all(
+        batch.map(item => decryptAES128Blob(item.bytes, item.objectNum, item.generationNum, encryptionKey))
+      );
+
+      for (let j = 0; j < batch.length; j++) {
+        const item = batch[j];
+        const decrypted = results[j];
+
+        if (item.type === 'string') {
+          item.obj.value = Array.from(decrypted).map(b => String.fromCharCode(b)).join('');
+        } else {
+          item.obj.value = bytesToHex(decrypted);
+        }
+      }
+    }
+  }
+
   function decryptAllRC4(context, encryptionKey, encryptRefNum) {
     const { PDFDict, PDFRawStream, PDFName } = global.PDFLib;
     const indirectObjects = context.enumerateIndirectObjects();
@@ -892,6 +1007,23 @@
         );
 
         await decryptAllAES256(streamItems, stringItems, cryptoKey);
+
+      } else if (encryptParams.algorithm === 'AES-128') {
+        let encryptionKey = validateUserPasswordRC4(password, encryptParams);
+
+        if (!encryptionKey) {
+          encryptionKey = validateOwnerPasswordRC4(password, encryptParams);
+        }
+
+        if (!encryptionKey) {
+          throw new Error('Incorrect password. The password does not match.');
+        }
+
+        const { streamItems, stringItems } = collectEncryptedItems(
+          context, encryptRefNum, encryptParams.encryptMetadata
+        );
+
+        await decryptAllAES128(streamItems, stringItems, encryptionKey);
 
       } else {
         let encryptionKey = validateUserPasswordRC4(password, encryptParams);
