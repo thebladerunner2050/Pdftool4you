@@ -307,9 +307,39 @@
 
   function readEncryptParams(context) {
     const { PDFName, PDFRef, PDFDict, PDFArray } = global.PDFLib;
-    const trailer = context.trailerInfo;
+    
+    // Find the Encrypt reference and trailer dictionary safely
+    let encryptRef = null;
+    let trailerDict = null;
+    let trailerID = null;
 
-    const encryptRef = trailer.Encrypt;
+    // 1. Try context.trailerInfo (standard pdf-lib plain JS object)
+    if (context.trailerInfo) {
+      encryptRef = context.trailerInfo.Encrypt;
+      trailerID = context.trailerInfo.ID;
+    }
+
+    // 2. Try context.trailer (PDFDict)
+    if (!encryptRef && context.trailer && context.trailer instanceof PDFDict) {
+      encryptRef = context.trailer.get(PDFName.of('Encrypt'));
+      trailerDict = context.trailer;
+      trailerID = context.trailer.get(PDFName.of('ID'));
+    }
+
+    // 3. Scan all indirect objects for any dictionary containing /Encrypt
+    if (!encryptRef) {
+      const indirectObjects = context.enumerateIndirectObjects();
+      for (const [ref, obj] of indirectObjects) {
+        if (obj instanceof PDFDict) {
+          const enc = obj.get(PDFName.of('Encrypt'));
+          if (enc) {
+            encryptRef = enc;
+            break;
+          }
+        }
+      }
+    }
+
     if (!encryptRef) {
       return null;
     }
@@ -347,7 +377,7 @@
     }
 
     let fileId = new Uint8Array(0);
-    const idArray = trailer.ID;
+    const idArray = trailerID;
 
     if (idArray) {
       if (Array.isArray(idArray) && idArray.length > 0) {
@@ -355,6 +385,8 @@
       } else if (idArray instanceof PDFArray) {
         const firstId = idArray.lookup(0);
         fileId = extractBytes(firstId) || new Uint8Array(0);
+      } else {
+        fileId = extractBytes(idArray) || new Uint8Array(0);
       }
     }
 
@@ -817,7 +849,7 @@
       throw new Error('PDFLib is not loaded. Please ensure pdf-lib.min.js is included first.');
     }
 
-    const { PDFDocument, PDFRef } = global.PDFLib;
+    const { PDFDocument, PDFRef, PDFDict, PDFName } = global.PDFLib;
 
     try {
       const pdfDoc = await PDFDocument.load(pdfBytes, {
@@ -875,7 +907,12 @@
         decryptAllRC4(context, encryptionKey, encryptRefNum);
       }
 
-      delete context.trailerInfo.Encrypt;
+      if (context.trailerInfo) {
+        delete context.trailerInfo.Encrypt;
+      }
+      if (context.trailer && context.trailer instanceof PDFDict) {
+        context.trailer.delete(PDFName.of('Encrypt'));
+      }
 
       const decryptedBytes = await pdfDoc.save({
         useObjectStreams: false
@@ -884,6 +921,7 @@
       return decryptedBytes;
 
     } catch (error) {
+      console.error('decryptPDF error:', error);
       if (error.message.includes('not encrypted') ||
           error.message.includes('Incorrect password') ||
           error.message.includes('Unsupported encryption') ||
