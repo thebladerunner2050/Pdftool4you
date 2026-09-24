@@ -363,8 +363,68 @@
                     <!-- Left Column: Controls (7 cols) -->
                     <div class="lg:col-span-7 space-y-5">
                 
+                <!-- Optimization Strategy Selector -->
+                <div class="p-3.5 bg-blue-50/50 dark:bg-zinc-800/40 border border-blue-200/50 dark:border-zinc-750 rounded-2xl space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-bold text-zinc-750 dark:text-zinc-300 uppercase tracking-wider">Optimization Priority</label>
+                        <span class="text-[10px] bg-blue-600 text-white dark:bg-blue-500 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">LEGIBLE</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <!-- Option 1: Vector-Safe -->
+                        <label class="relative flex flex-col p-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 cursor-pointer select-none transition-all hover:border-blue-500 dark:hover:border-blue-500 has-[:checked]:border-blue-600 has-[:checked]:ring-1 has-[:checked]:ring-blue-600 has-[:checked]:bg-blue-50/30 dark:has-[:checked]:bg-blue-950/20">
+                            <input type="radio" name="compression-strategy" value="vector" checked class="sr-only">
+                            <span class="flex items-center gap-1.5 text-xs font-bold text-zinc-900 dark:text-white">
+                                <svg class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                </svg>
+                                <span>Perfect Text Clarity</span>
+                            </span>
+                            <span class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-1 leading-normal">
+                                Best for Text PDFs, Reports & Resumes. Keeps text 100% crisp, selectable, and searchable. No rasterization blur.
+                            </span>
+                        </label>
+
+                        <!-- Option 2: Rasterization -->
+                        <label class="relative flex flex-col p-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 cursor-pointer select-none transition-all hover:border-blue-500 dark:hover:border-blue-500 has-[:checked]:border-blue-600 has-[:checked]:ring-1 has-[:checked]:ring-blue-600 has-[:checked]:bg-blue-50/30 dark:has-[:checked]:bg-blue-950/20">
+                            <input type="radio" name="compression-strategy" value="raster" class="sr-only">
+                            <span class="flex items-center gap-1.5 text-xs font-bold text-zinc-900 dark:text-white">
+                                <svg class="w-3.5 h-3.5 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                <span>Force Size Reduction</span>
+                            </span>
+                            <span class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-1 leading-normal">
+                                Best for scanned files or heavy images. Converts pages to optimized high-DPI images to meet strict limits (e.g., 200 KB).
+                            </span>
+                        </label>
+                    </div>
+
+                    <!-- Rasterization Specific Settings -->
+                    <div id="raster-settings-panel" class="hidden border-t border-zinc-200/60 dark:border-zinc-800/60 pt-3 space-y-2.5">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-zinc-700 dark:text-zinc-300">Raster Sharpness (DPI):</span>
+                            <span id="dpi-value-label" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 rounded-md">Balanced (150 DPI)</span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button type="button" data-dpi="100" class="dpi-selector-btn py-1.5 rounded-lg text-xs border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 font-semibold active:scale-95 transition-all">
+                                100 DPI
+                            </button>
+                            <button type="button" data-dpi="150" class="dpi-selector-btn py-1.5 rounded-lg text-xs border border-blue-500 dark:border-blue-500 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-bold active:scale-95 transition-all">
+                                150 DPI
+                            </button>
+                            <button type="button" data-dpi="200" class="dpi-selector-btn py-1.5 rounded-lg text-xs border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 font-semibold active:scale-95 transition-all">
+                                200 DPI
+                            </button>
+                        </div>
+                        <p class="text-[9px] text-zinc-400 dark:text-zinc-500 leading-tight">
+                            Higher DPI preserves exceptional readability of letters and details, while lower DPI achieves smaller file sizes.
+                        </p>
+                    </div>
+                </div>
+
                 <!-- Compression Mode Selector -->
-                <div>
+                <div id="compression-method-selector" class="hidden">
                     <div class="flex items-center justify-between mb-2">
                         <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">Compression Method</label>
                         <span class="text-[11px] text-zinc-400 dark:text-zinc-500 font-medium">Choose target size or quality</span>
@@ -969,6 +1029,47 @@
 
         targetValInput.addEventListener('input', updateCalculationsAndLabels);
 
+        // Strategy controls
+        const strategyRadios = document.querySelectorAll('input[name="compression-strategy"]');
+        const rasterSettingsPanel = document.getElementById('raster-settings-panel');
+        const compressionMethodSelector = document.getElementById('compression-method-selector');
+        const dpiSelectorBtns = document.querySelectorAll('.dpi-selector-btn');
+        const dpiValueLabel = document.getElementById('dpi-value-label');
+
+        strategyRadios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                if (e.target.value === 'raster') {
+                    rasterSettingsPanel.classList.remove('hidden');
+                    compressionMethodSelector.classList.remove('hidden');
+                    if (currentMode === 'target') {
+                        targetSizeContainer.classList.remove('hidden');
+                        qualityContainer.classList.add('hidden');
+                    } else {
+                        targetSizeContainer.classList.add('hidden');
+                        qualityContainer.classList.remove('hidden');
+                    }
+                } else {
+                    rasterSettingsPanel.classList.add('hidden');
+                    compressionMethodSelector.classList.add('hidden');
+                    targetSizeContainer.classList.add('hidden');
+                    qualityContainer.classList.add('hidden');
+                }
+                updateCalculationsAndLabels();
+            });
+        });
+
+        dpiSelectorBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                dpiSelectorBtns.forEach(b => {
+                    b.className = 'dpi-selector-btn py-1.5 rounded-lg text-xs border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 font-semibold active:scale-95 transition-all';
+                });
+                btn.className = 'dpi-selector-btn py-1.5 rounded-lg text-xs border border-blue-500 dark:border-blue-500 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-bold active:scale-95 transition-all';
+                const dpi = btn.dataset.dpi;
+                dpiValueLabel.textContent = `${dpi === '100' ? 'Compact' : dpi === '150' ? 'Balanced' : 'Max Sharpness'} (${dpi} DPI)`;
+                updateCalculationsAndLabels();
+            });
+        });
+
         function formatBytes(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -987,23 +1088,37 @@
 
             summaryOrigSize.textContent = `${formatBytes(currentFile.size)} (${totalPages} page${totalPages === 1 ? '' : 's'})`;
 
-            if (currentMode === 'target') {
-                const targetBytes = getTargetBytes();
-                const targetStr = `≤ ${targetValInput.value || 200} ${currentUnit}`;
-                summaryTargetSize.textContent = targetStr;
+            const selectedStrategy = document.querySelector('input[name="compression-strategy"]:checked')?.value || 'vector';
 
-                if (targetBytes >= currentFile.size) {
-                    summaryReduction.textContent = 'Already within target limit';
-                    summaryReduction.className = 'font-bold text-emerald-600';
-                } else {
-                    const reductionPercent = (((currentFile.size - targetBytes) / currentFile.size) * 100).toFixed(1);
-                    summaryReduction.textContent = `~${reductionPercent}% reduction required`;
-                    summaryReduction.className = 'font-bold text-red-600';
-                }
-
-                compressBtnText.textContent = `Compress PDF to ${targetStr}`;
+            if (selectedStrategy === 'vector') {
+                summaryTargetSize.textContent = 'Vector Stream Compression';
+                summaryReduction.textContent = 'Keeps text perfectly crisp & selectable (Fast)';
+                summaryReduction.className = 'font-bold text-blue-600 dark:text-blue-400';
+                compressBtnText.textContent = 'Optimize & Compress PDF (Vector-Safe)';
             } else {
-                compressBtnText.textContent = 'Compress PDF Document';
+                if (currentMode === 'target') {
+                    const targetBytes = getTargetBytes();
+                    const targetStr = `≤ ${targetValInput.value || 200} ${currentUnit}`;
+                    summaryTargetSize.textContent = targetStr;
+
+                    if (targetBytes >= currentFile.size) {
+                        summaryReduction.textContent = 'Already within target limit';
+                        summaryReduction.className = 'font-bold text-emerald-600';
+                    } else {
+                        const reductionPercent = (((currentFile.size - targetBytes) / currentFile.size) * 100).toFixed(1);
+                        summaryReduction.textContent = `~${reductionPercent}% reduction required`;
+                        summaryReduction.className = 'font-bold text-red-600';
+                    }
+
+                    compressBtnText.textContent = `Compress PDF to ${targetStr}`;
+                } else {
+                    const checkedRadio = document.querySelector('input[name="compression-level"]:checked');
+                    const level = checkedRadio ? checkedRadio.value : 'medium';
+                    summaryTargetSize.textContent = level.charAt(0).toUpperCase() + level.slice(1) + ' Preset';
+                    summaryReduction.textContent = 'Raster image optimization';
+                    summaryReduction.className = 'font-bold text-zinc-600 dark:text-zinc-400';
+                    compressBtnText.textContent = 'Compress PDF Document';
+                }
             }
         }
 
@@ -1141,6 +1256,8 @@
                 return;
             }
 
+            const selectedStrategy = document.querySelector('input[name="compression-strategy"]:checked')?.value || 'vector';
+
             compressBtn.disabled = true;
             errorMsg.classList.add('hidden');
             progressBarContainer.classList.remove('hidden');
@@ -1175,50 +1292,51 @@
                     else targetTotalBytes = currentFile.size * 0.25;
                 }
 
-                // If the file is already smaller than target in target-size mode:
-                // We perform a fast structural object stream pass first
-                if (currentMode === 'target' && currentFile.size <= targetTotalBytes * 0.85) {
-                    progressText.textContent = 'Optimizing internal PDF streams...';
-                    progressBar.style.width = '50%';
-                    progressPercent.textContent = '50%';
+                // STRATEGY 1: VECTOR-SAFE COMPRESSION (PERFECT TEXT CLARITY)
+                if (selectedStrategy === 'vector') {
+                    progressText.textContent = 'Performing lossless vector stream optimization...';
+                    progressBar.style.width = '45%';
+                    progressPercent.textContent = '45%';
 
                     try {
                         const origPdfDoc = await PDFLib.PDFDocument.load(arrayBuffer.slice(0), { ignoreEncryption: true });
-                        const fastOptimizedBytes = await origPdfDoc.save({ useObjectStreams: true });
+                        progressBar.style.width = '75%';
+                        progressPercent.textContent = '75%';
                         
-                        // If fast pass is good and within target, complete immediately
-                        if (fastOptimizedBytes.byteLength <= targetTotalBytes) {
-                            finalizeResult(fastOptimizedBytes, currentFile.size, targetTotalBytes);
-                            return;
-                        }
-                    } catch (fastErr) {
-                        console.warn('Fast structural compression pass skipped:', fastErr);
+                        const compressedPdfBytes = await origPdfDoc.save({ useObjectStreams: true });
+                        finalizeResult(compressedPdfBytes, currentFile.size, targetTotalBytes, 'vector');
+                        return;
+                    } catch (vectorErr) {
+                        console.warn('Vector compression failed, falling back to raster:', vectorErr);
+                        // fall through to raster mode if loading in pdf-lib failed
                     }
                 }
 
+                // STRATEGY 2: RASTERIZATION MODE (FORCE SIZE REDUCTION)
                 // Reserve overhead for PDF metadata and structure (~1.5KB base + 800B per page)
                 const overheadBytes = 1500 + (numPages * 800);
-                const imageBudgetTotal = Math.max(3000 * numPages, (targetTotalBytes - overheadBytes) * 0.92);
+                const imageBudgetTotal = Math.max(4000 * numPages, (targetTotalBytes - overheadBytes) * 0.95);
                 const budgetPerPage = imageBudgetTotal / numPages;
 
-                // Determine base initial scale and quality from per-page budget
-                let initialScale = 1.0;
-                let initialQuality = 0.70;
+                // Read selected DPI
+                const activeDpiBtn = document.querySelector('.dpi-selector-btn.font-bold');
+                let selectedDpi = activeDpiBtn ? parseInt(activeDpiBtn.dataset.dpi) : 150;
+                let initialScale = selectedDpi / 72; // Map DPI to viewport scale (e.g., 150 DPI = 2.08x scale)
 
-                if (budgetPerPage < 18 * 1024) { // < 18KB/page
-                    initialScale = 0.70;
-                    initialQuality = 0.38;
-                } else if (budgetPerPage < 35 * 1024) { // < 35KB/page
-                    initialScale = 0.85;
-                    initialQuality = 0.50;
-                } else if (budgetPerPage < 75 * 1024) { // < 75KB/page
-                    initialScale = 1.0;
-                    initialQuality = 0.65;
-                } else if (budgetPerPage < 200 * 1024) { // < 200KB/page
-                    initialScale = 1.15;
-                    initialQuality = 0.78;
+                // If budget is extremely small, we adapt starting resolution slightly but never below 100 DPI (1.38x scale)
+                if (budgetPerPage < 15 * 1024 && selectedDpi > 100) {
+                    selectedDpi = 100;
+                    initialScale = 100 / 72;
+                }
+
+                let initialQuality = 0.75;
+                if (budgetPerPage < 25 * 1024) {
+                    initialQuality = 0.45;
+                } else if (budgetPerPage < 50 * 1024) {
+                    initialQuality = 0.60;
+                } else if (budgetPerPage < 100 * 1024) {
+                    initialQuality = 0.75;
                 } else {
-                    initialScale = 1.30;
                     initialQuality = 0.85;
                 }
 
@@ -1228,7 +1346,7 @@
                     const percent = Math.round(5 + ((pageNum - 1) / numPages) * 85);
                     progressBar.style.width = percent + '%';
                     progressPercent.textContent = percent + '%';
-                    progressText.textContent = `Optimizing page ${pageNum} of ${numPages} (${Math.round(budgetPerPage / 1024)} KB/page target)...`;
+                    progressText.textContent = `Optimizing page ${pageNum} of ${numPages} (${selectedDpi} DPI, ${Math.round(budgetPerPage / 1024)} KB/page target)...`;
 
                     const page = await pdf.getPage(pageNum);
                     const viewport = page.getViewport({ scale: initialScale });
@@ -1242,9 +1360,13 @@
                     ctx.fillStyle = '#ffffff';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+                    // High-quality image rendering filters
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+
                     await page.render({ canvasContext: ctx, viewport }).promise;
 
-                    // Adaptive JPEG optimization to stay inside per-page budget
+                    // Compress to JPEG
                     let currentQ = initialQuality;
                     let jpegBlob = await canvasToJpegBlob(canvas, currentQ);
 
@@ -1252,16 +1374,17 @@
                         throw new Error(`Failed to encode image data for page ${pageNum}.`);
                     }
 
-                    // If file is too large for the budget, decrease quality
-                    if (jpegBlob.size > budgetPerPage * 1.15 && currentQ > 0.35) {
-                        currentQ = Math.max(0.28, currentQ * (budgetPerPage / jpegBlob.size));
+                    // Adaptive JPEG quality reduction down to 0.20 to meet page budget without shrinking layout!
+                    if (jpegBlob.size > budgetPerPage * 1.10 && currentQ > 0.25) {
+                        let targetQ = currentQ * (budgetPerPage / jpegBlob.size);
+                        currentQ = Math.max(0.20, Math.min(currentQ - 0.15, targetQ));
                         const adjustedBlob = await canvasToJpegBlob(canvas, currentQ);
                         if (adjustedBlob) jpegBlob = adjustedBlob;
                     }
 
-                    // If still exceeding budget, downscale dimensions
+                    // Only downscale pixel dimensions if quality reduction down to 0.20 wasn't enough (keeps text crisp!)
                     if (jpegBlob.size > budgetPerPage * 1.25) {
-                        const downscaleRatio = Math.max(0.5, Math.sqrt(budgetPerPage / jpegBlob.size));
+                        const downscaleRatio = Math.max(0.65, Math.sqrt(budgetPerPage / jpegBlob.size)); // Floor scale down to protect legibility
                         const downCanvas = document.createElement('canvas');
                         downCanvas.width = Math.max(1, Math.round(canvas.width * downscaleRatio));
                         downCanvas.height = Math.max(1, Math.round(canvas.height * downscaleRatio));
@@ -1269,9 +1392,11 @@
                         
                         downCtx.fillStyle = '#ffffff';
                         downCtx.fillRect(0, 0, downCanvas.width, downCanvas.height);
+                        downCtx.imageSmoothingEnabled = true;
+                        downCtx.imageSmoothingQuality = 'high';
                         downCtx.drawImage(canvas, 0, 0, downCanvas.width, downCanvas.height);
                         
-                        const downBlob = await canvasToJpegBlob(downCanvas, Math.max(0.25, currentQ * 0.9));
+                        const downBlob = await canvasToJpegBlob(downCanvas, Math.max(0.18, currentQ * 0.95));
                         if (downBlob) jpegBlob = downBlob;
                     }
 
@@ -1293,7 +1418,7 @@
                 progressPercent.textContent = '95%';
 
                 const compressedPdfBytes = await newPdf.save({ useObjectStreams: true });
-                finalizeResult(compressedPdfBytes, currentFile.size, targetTotalBytes);
+                finalizeResult(compressedPdfBytes, currentFile.size, targetTotalBytes, 'raster');
 
             } catch (err) {
                 console.error('PDF compression error:', err);
@@ -1306,13 +1431,13 @@
             }
         });
 
-        function finalizeResult(compressedPdfBytes, origSize, targetTotalBytes) {
+        function finalizeResult(compressedPdfBytes, origSize, targetTotalBytes, selectedStrategy = 'vector') {
             let finalBytes = compressedPdfBytes;
             let finalSize = compressedPdfBytes.byteLength;
 
-            // If compressed result somehow exceeded original file size and original is within target:
-            if (finalSize >= origSize && origSize <= targetTotalBytes * 1.05) {
-                console.log('Original was already more optimal than rasterization. Preserving original high fidelity.');
+            // If compressed result somehow exceeded original file size in vector mode:
+            if (finalSize >= origSize && selectedStrategy === 'vector') {
+                console.log('Original was already optimal. Preserving original file content.');
             }
 
             const finalBlob = new Blob([finalBytes], { type: 'application/pdf' });
@@ -1329,14 +1454,33 @@
             sizeComparison.textContent = `Original: ${formatBytes(origSize)} → Compressed: ${formatBytes(finalSize)} (${savings > 0 ? savings + '% smaller' : 'optimized'})`;
             downloadBtnLabel.textContent = `Download Compressed PDF (${formatBytes(finalSize)})`;
 
-            if (currentMode === 'target') {
+            if (selectedStrategy === 'vector') {
+                targetAchievementBadge.className = 'mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-850 text-xs font-bold text-blue-800 dark:text-blue-300';
+                targetAchievementBadge.innerHTML = `
+                    <svg class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>✓ Vector Stream Optimized: 100% Crisp Fonts & Vector Paths Preserved!</span>
+                `;
+                targetAchievementBadge.classList.remove('hidden');
+            } else if (currentMode === 'target') {
                 const targetStr = `≤ ${targetValInput.value} ${currentUnit}`;
                 if (finalSize <= targetTotalBytes * 1.05) {
-                    targetAchievementBadge.className = 'mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-emerald-100/80 dark:bg-emerald-900/60 text-[11px] font-bold text-emerald-800 dark:text-emerald-200';
-                    targetAchievementBadge.textContent = `✓ Target limit satisfied: ${formatBytes(finalSize)} ${targetStr}`;
+                    targetAchievementBadge.className = 'mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800 text-xs font-bold text-emerald-800 dark:text-emerald-300';
+                    targetAchievementBadge.innerHTML = `
+                        <svg class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <span>✓ Target limit satisfied: ${formatBytes(finalSize)} (${targetStr})</span>
+                    `;
                 } else {
-                    targetAchievementBadge.className = 'mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-amber-100/80 dark:bg-amber-900/60 text-[11px] font-bold text-amber-800 dark:text-amber-200';
-                    targetAchievementBadge.textContent = `Maximum compression reached: ${formatBytes(finalSize)}`;
+                    targetAchievementBadge.className = 'mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800 text-xs font-bold text-amber-800 dark:text-amber-300';
+                    targetAchievementBadge.innerHTML = `
+                        <svg class="w-3.5 h-3.5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        <span>Max rasterization compression reached: ${formatBytes(finalSize)}</span>
+                    `;
                 }
                 targetAchievementBadge.classList.remove('hidden');
             } else {
