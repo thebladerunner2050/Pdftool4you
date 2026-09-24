@@ -301,24 +301,42 @@
 
   // ========== Encryption Detection ==========
 
-  async function isEncrypted(pdfBytes) {
+  async function normalizePdfBytes(input) {
+    if (!input) return null;
+    if (input instanceof Uint8Array) {
+      if (input.length === 0 || input.buffer.byteLength === 0) return null;
+      return new Uint8Array(input.slice(0));
+    }
+    if (input instanceof ArrayBuffer) {
+      if (input.byteLength === 0) return null;
+      return new Uint8Array(input.slice(0));
+    }
+    if (typeof Blob !== 'undefined' && input instanceof Blob) {
+      const buffer = await input.arrayBuffer();
+      return new Uint8Array(buffer);
+    }
+    return null;
+  }
+
+  async function isEncrypted(inputBytes) {
     initPdfJsWorker();
+
+    const pdfBytes = await normalizePdfBytes(inputBytes);
+    if (!pdfBytes || pdfBytes.length === 0) {
+      return { encrypted: false, canOpenWithEmptyPassword: true, hasRestrictions: false };
+    }
 
     // Strategy 1: Test with PDF.js (most accurate detection across all PDF versions)
     if (global.pdfjsLib) {
       try {
         const loadingTask = global.pdfjsLib.getDocument({
-          data: pdfBytes,
+          data: pdfBytes.slice(0),
           password: ''
         });
 
         const doc = await loadingTask.promise;
-        // If it opened with empty password, check if it has permissions restrictions or if it had encryption
-        // Test if loadingTask triggered any password prompt
         const permissions = await doc.getPermissions().catch(() => null);
         const isRestricted = permissions !== null && Array.isArray(permissions) && permissions.length > 0;
-
-        // Check if raw bytes contain /Encrypt dictionary
         const hasEncryptToken = checkRawBytesForEncrypt(pdfBytes);
 
         return {
@@ -348,6 +366,7 @@
   }
 
   function checkRawBytesForEncrypt(uint8Array) {
+    if (!uint8Array || uint8Array.length === 0) return false;
     // Search for "/Encrypt" in the PDF binary
     const searchBytes = [47, 69, 110, 99, 114, 121, 112, 116]; // "/Encrypt"
     const len = uint8Array.length;
@@ -391,7 +410,7 @@
     let pdfDoc;
     try {
       const loadingTask = global.pdfjsLib.getDocument({
-        data: pdfBytes,
+        data: pdfBytes.slice(0),
         password: password || '',
         cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
         cMapPacked: true
@@ -488,7 +507,8 @@
 
   // ========== Main Decrypt Public API ==========
 
-  async function decryptPDF(pdfBytes, password, progressCallback) {
+  async function decryptPDF(inputBytes, password, progressCallback) {
+    const pdfBytes = await normalizePdfBytes(inputBytes);
     if (!pdfBytes || pdfBytes.length === 0) {
       throw new Error('No PDF data provided.');
     }
