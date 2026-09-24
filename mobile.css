@@ -1,0 +1,219 @@
+/* mobile.css — Responsive, Touch & Ergonomics Enhancements for PDFTool4You */
+
+:root {
+    --sat: env(safe-area-inset-top, 0px);
+    --sab: env(safe-area-inset-bottom, 0px);
+    --sal: env(safe-area-inset-left, 0px);
+    --sar: env(safe-area-inset-right, 0px);
+}
+
+/* Ensure smooth scrolling across devices */
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+/* Safe area padding helper classes */
+.safe-pt { padding-top: max(1rem, var(--sat)); }
+.safe-pb { padding-bottom: max(1rem, var(--sab)); }
+.safe-pl { padding-left: max(1rem, var(--sal)); }
+.safe-pr { padding-right: max(1rem, var(--sar)); }
+
+/* Prevent auto-zooming in iOS Safari when focusing form inputs */
+@media (max-width: 640px) {
+    input[type="text"],
+    input[type="number"],
+    input[type="search"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+        font-size: 16px !important;
+    }
+}
+
+/* Smooth momentum scrolling on mobile devices */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.touch-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+}
+
+/* Tactile touch response for buttons and interactive cards */
+button:not(:disabled),
+.touch-active,
+.tool-card {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:not(:disabled):active,
+a:not(:disabled):active,
+.touch-active:active {
+    transform: scale(0.98);
+}
+
+/* Ensure touch targets meet minimum 40px - 44px ergonomic baseline on mobile */
+@media (max-width: 768px) {
+    .btn-touch {
+        min-height: 42px;
+        min-width: 42px;
+    }
+
+    /* Range input slider thumb thumb-friendly on touchscreens */
+    input[type="range"] {
+        height: 28px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    /* Prevent awkward horizontal overflow on narrow phones (320px - 380px) */
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Active mobile nav item styling */
+.mobile-nav-item.active {
+    color: #2563eb;
+    background-color: rgba(37, 99, 235, 0.08);
+    font-weight: 700;
+}
+.dark .mobile-nav-item.active {
+    color: #60a5fa;
+    background-color: rgba(96, 165, 250, 0.12);
+}
+
+/* Left slide drawer animations & ergonomics */
+#mobile-drawer-panel {
+    will-change: transform;
+    padding-top: max(0.5rem, var(--sat));
+    padding-bottom: max(1rem, var(--sab));
+}
+
+/* Three-line hamburger button styling */
+[data-mobile-drawer-trigger] {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+
+[data-mobile-drawer-trigger]:active {
+    transform: scale(0.92);
+}
+
+/* Touch drop zone pulse animation on dragover or touch focus */
+.drop-zone-touch-active {
+    border-color: #3b82f6 !important;
+    background-color: rgba(59, 130, 246, 0.08) !important;
+    transform: scale(0.99);
+}
+
+/* Backdrop blur support fallback */
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .backdrop-blur-md {
+        background-color: rgba(255, 255, 255, 0.95);
+    }
+    .dark .backdrop-blur-md {
+        background-color: rgba(9, 9, 11, 0.95);
+    }
+}
+
+/* Responsive centered header logo for mobile & tablets (< 1024px) */
+@media (max-width: 1023.98px) {
+    .header-logo-responsive {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        margin: 0 !important;
+        z-index: 20;
+    }
+}
+@media (min-width: 1024px) {
+    .header-logo-responsive {
+        position: static !important;
+        transform: none !important;
+    }
+}
+
+/* Slide-Over Drawer Container & Panel (Independent of Tailwind dynamic compiling) */
+#mobile-drawer-container {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9999 !important;
+    display: none;
+    pointer-events: none;
+}
+
+#mobile-drawer-container.is-open {
+    display: block !important;
+    pointer-events: auto !important;
+}
+
+#mobile-drawer-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    pointer-events: none !important;
+    z-index: 10000 !important;
+}
+
+#mobile-drawer-container.is-open #mobile-drawer-backdrop {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+#mobile-drawer-panel {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+    width: 20rem !important;
+    max-width: 86vw !important;
+    background-color: #ffffff !important;
+    border-right: 1px solid rgba(228, 228, 231, 0.8) !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    z-index: 10001 !important;
+    pointer-events: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    visibility: hidden;
+}
+
+.dark #mobile-drawer-panel {
+    background-color: #09090b !important;
+    border-right-color: rgba(39, 39, 42, 0.8) !important;
+}
+
+#mobile-drawer-container.is-open #mobile-drawer-panel {
+    transform: translateX(0) !important;
+    visibility: visible !important;
+}

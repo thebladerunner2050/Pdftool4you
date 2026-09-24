@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>PDFTool4You — Minimal & Private PDF & Image Tools</title>
     <meta name="description" content="Free, fast, client-side PDF and image utility tools. Compress PDFs and convert images directly in your browser with zero server uploads.">
     <link rel="canonical" href="https://pdftool4you.in/">
@@ -42,6 +42,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="mobile.css">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -79,6 +80,7 @@
     <script src="theme.js"></script>
     <script src="i18n.js"></script>
     <script src="share.js"></script>
+    <script src="mobile-nav.js" defer></script>
     <style>
         body {
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -108,21 +110,31 @@
 
     <!-- Minimal Sticky Navigation -->
     <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/80 dark:border-zinc-800 transition-colors">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-            <a href="index.html" class="flex items-center gap-2.5 group">
-                <div class="w-9 h-9 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-sm transition-transform group-hover:scale-105">
-                    <svg class="w-5 h-5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div class="relative max-w-6xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between">
+            <!-- Left: Three-line hamburger menu (mobile & tablet only, hidden on PC) -->
+            <div class="flex items-center lg:hidden z-30 pointer-events-auto">
+                <button type="button" data-mobile-drawer-trigger onclick="if(window.openMobileDrawer){window.openMobileDrawer();}else if(window.MobileNav){window.MobileNav.open();}" aria-label="Open navigation menu" class="flex items-center justify-center w-9 h-9 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white active:scale-95 transition-all shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20 pointer-events-auto">
+                    <svg class="w-5 h-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Logo: Centered on mobile & tablets, left-aligned on PC -->
+            <a href="index.html" class="header-logo-responsive flex items-center gap-2 sm:gap-2.5 group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:transform-none z-20">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-sm transition-transform group-hover:scale-105 shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                     </svg>
                 </div>
                 <div class="flex items-baseline gap-1">
-                    <span class="font-bold text-lg text-zinc-900 dark:text-white tracking-tight">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                    <span class="font-bold text-base sm:text-lg text-zinc-900 dark:text-white tracking-tight">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
                 </div>
             </a>
 
-            <!-- Right Nav Links & Controls -->
+            <!-- Right Nav Links & Controls (visible on PC / desktop, hidden on mobile & tablet) -->
             <div class="flex items-center gap-2.5 sm:gap-3">
-                <nav class="hidden md:flex items-center gap-5 text-sm font-medium text-zinc-600 dark:text-zinc-300">
+                <nav class="hidden lg:flex items-center gap-5 text-sm font-medium text-zinc-600 dark:text-zinc-300">
                     <a href="#tools-section" data-i18n="nav_tools" class="hover:text-zinc-900 dark:hover:text-white transition-colors">Tools</a>
                     <a href="about-us.html" data-i18n="nav_about" class="hover:text-zinc-900 dark:hover:text-white transition-colors">About Us</a>
                     <a href="contact-us.html" data-i18n="nav_contact" class="hover:text-zinc-900 dark:hover:text-white transition-colors">Contact</a>
@@ -130,13 +142,13 @@
                 </nav>
 
                 <!-- In-Browser Badge -->
-                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs font-semibold">
+                <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs font-semibold">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     <span data-i18n="badge_in_browser">100% In-Browser</span>
                 </div>
 
-                <!-- Share Button Dropdown -->
-                <div class="relative" data-share-container>
+                <!-- Share Button Dropdown (PC only in header, mobile/tablet in drawer) -->
+                <div class="hidden lg:block relative" data-share-container>
                     <button type="button" data-share-trigger aria-label="Share tool or copy link" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                         <!-- Share Icon -->
                         <svg class="share-icon-default w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -236,8 +248,8 @@
                     </div>
                 </div>
 
-                <!-- Language Switcher Dropdown (EN / हिन्दी) -->
-                <div class="relative" data-lang-menu-container>
+                <!-- Language Switcher Dropdown (PC only in header, mobile/tablet in drawer) -->
+                <div class="hidden lg:block relative" data-lang-menu-container>
                     <button type="button" data-lang-trigger aria-label="Switch language / भाषा बदलें" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                         <svg class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
@@ -270,8 +282,8 @@
                     </div>
                 </div>
 
-                <!-- Light / Dark / System Mode Toggle Dropdown -->
-                <div class="relative" data-theme-menu-container>
+                <!-- Light / Dark / System Mode Toggle Dropdown (PC only in header, mobile/tablet in drawer) -->
+                <div class="hidden lg:block relative" data-theme-menu-container>
                     <button type="button" data-theme-trigger aria-label="Toggle color theme" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20">
                         <!-- System Icon -->
                         <svg class="theme-icon-system w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -365,7 +377,7 @@
                     <input 
                         type="text" 
                         id="tool-search-input" 
-                        class="w-full pl-10 pr-20 py-2.5 bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl text-sm font-medium text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
+                        class="w-full pl-10 pr-20 py-2.5 bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 rounded-xl text-base sm:text-sm font-medium text-zinc-900 dark:text-white placeholder:text-zinc-400 dark:placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 dark:focus:border-blue-400 transition-all"
                         placeholder="Filter tools by keyword (e.g., compress, jpg, png)..."
                         data-i18n-placeholder="search_placeholder"
                         autocomplete="off"
@@ -382,14 +394,14 @@
                 </div>
 
                 <!-- Category Segmented Buttons -->
-                <div class="flex items-center gap-1.5 p-1 bg-zinc-100 dark:bg-zinc-800/80 rounded-xl overflow-x-auto" role="tablist">
-                    <button class="filter-tab active px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-2xs whitespace-nowrap" data-category="all" data-i18n="filter_all">
+                <div class="flex items-center gap-1.5 p-1 bg-zinc-100 dark:bg-zinc-800/80 rounded-xl overflow-x-auto touch-scroll no-scrollbar" role="tablist">
+                    <button class="filter-tab active px-3.5 py-2 sm:py-1.5 text-xs font-semibold rounded-lg transition-all bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-2xs whitespace-nowrap active:scale-95" data-category="all" data-i18n="filter_all">
                         All Tools
                     </button>
-                    <button class="filter-tab px-3.5 py-1.5 text-xs font-medium rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all whitespace-nowrap" data-category="pdf" data-i18n="filter_pdf">
+                    <button class="filter-tab px-3.5 py-2 sm:py-1.5 text-xs font-medium rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all whitespace-nowrap active:scale-95" data-category="pdf" data-i18n="filter_pdf">
                         PDF Tools
                     </button>
-                    <button class="filter-tab px-3.5 py-1.5 text-xs font-medium rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all whitespace-nowrap" data-category="image" data-i18n="filter_image">
+                    <button class="filter-tab px-3.5 py-2 sm:py-1.5 text-xs font-medium rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all whitespace-nowrap active:scale-95" data-category="image" data-i18n="filter_image">
                         Image Tools
                     </button>
                 </div>

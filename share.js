@@ -43,7 +43,7 @@
         if (!toast) {
             toast = document.createElement('div');
             toast.id = 'share-global-toast';
-            toast.className = 'fixed bottom-5 right-5 z-[9999] flex items-center gap-2.5 px-4 py-3 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-2xl text-xs font-semibold transform transition-all duration-300 translate-y-10 opacity-0 pointer-events-none border border-zinc-800 dark:border-zinc-200';
+            toast.className = 'fixed bottom-20 sm:bottom-5 right-4 sm:right-5 z-[9999] flex items-center gap-2.5 px-4 py-3 rounded-xl bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-2xl text-xs font-semibold transform transition-all duration-300 translate-y-10 opacity-0 pointer-events-none border border-zinc-800 dark:border-zinc-200';
             toast.innerHTML = `
                 <div class="toast-icon-wrap shrink-0">
                     <svg class="toast-icon-success w-4 h-4 text-emerald-400 dark:text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">

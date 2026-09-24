@@ -164,6 +164,14 @@
         });
     }
 
+    // Auto-load mobile navigation & responsive controller if not yet present
+    if (!document.querySelector('script[src*="mobile-nav.js"]')) {
+        const navScript = document.createElement('script');
+        navScript.src = 'mobile-nav.js';
+        navScript.defer = true;
+        document.head.appendChild(navScript);
+    }
+
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initThemeDOM);
     } else {
