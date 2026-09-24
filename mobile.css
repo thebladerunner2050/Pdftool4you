@@ -263,3 +263,53 @@ footer h4 {
     transform: translateX(0) !important;
     visibility: visible !important;
 }
+
+/* ==========================================================================
+   Universal Responsive Live Preview Styling (Mobile, Tablet, Desktop)
+   ========================================================================== */
+
+.preview-canvas-container,
+.preview-stage-box,
+[id*="preview-stage"],
+[id*="preview-box"],
+[id*="preview-container"] {
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+}
+
+.preview-canvas-container canvas,
+.preview-stage-box canvas,
+[id*="preview-canvas"],
+canvas[id*="preview"],
+canvas[id*="inspector"],
+canvas[id*="stage"],
+img[id*="preview-img"],
+img[id*="output-preview"] {
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Live Preview Metadata Strip: Dimensions, Size, Ratio */
+.preview-meta-badge-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.5rem;
+    width: 100%;
+}
+
+@media (max-width: 640px) {
+    .preview-meta-badge-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.375rem;
+    }
+}

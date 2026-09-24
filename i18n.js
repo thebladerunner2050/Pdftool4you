@@ -522,12 +522,16 @@
     }
 
     function applyTranslations(lang) {
-        // 1. Text elements
+        // 1. Text elements (auto-detect if string contains HTML tags such as <strong>, <b>, <br>, <span>, etc.)
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             const val = t(key, lang);
             if (val !== null && val !== undefined) {
-                el.textContent = val;
+                if (typeof val === 'string' && /<[a-z][\s\S]*>/i.test(val)) {
+                    el.innerHTML = val;
+                } else {
+                    el.textContent = val;
+                }
             }
         });
 

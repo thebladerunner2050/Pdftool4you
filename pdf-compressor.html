@@ -558,15 +558,30 @@
 
                     <!-- Right Column: Live Document Preview (5 cols) -->
                     <div class="lg:col-span-5 flex flex-col items-center bg-zinc-50/90 dark:bg-zinc-800/40 rounded-2xl border border-zinc-200/80 dark:border-zinc-700/80 p-4 w-full">
-                        <div class="w-full flex items-center justify-between mb-3 pb-2 border-b border-zinc-200/60 dark:border-zinc-700/60">
-                            <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200 flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                Live Document Preview
-                            </span>
-                            <span id="preview-page-meta" class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">Page 1 of 1</span>
+                        <div class="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-3 pb-2 border-b border-zinc-200/60 dark:border-zinc-700/60">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200">Live Document Preview</span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <span id="preview-dim-badge" class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300">A4 Dimensions</span>
+                                <span id="preview-page-meta" class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">Page 1 of 1</span>
+                            </div>
                         </div>
 
-                        <div class="w-full flex flex-col items-center justify-center min-h-[300px] relative bg-zinc-100/60 dark:bg-zinc-900/60 rounded-xl p-3 border border-zinc-200/60 dark:border-zinc-800/80 overflow-hidden">
+                        <!-- Live Dimension & Size Banner for Mobile & Desktop -->
+                        <div class="w-full grid grid-cols-2 gap-1.5 mb-2.5 text-[10px] font-semibold">
+                            <div class="px-2.5 py-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200/70 dark:border-zinc-750 flex flex-col">
+                                <span class="text-zinc-400 dark:text-zinc-500 uppercase tracking-wider text-[9px]">Document Size</span>
+                                <span id="preview-filesize-stat" class="font-bold text-zinc-800 dark:text-zinc-200 font-mono text-xs">-- KB</span>
+                            </div>
+                            <div class="px-2.5 py-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200/70 dark:border-zinc-750 flex flex-col">
+                                <span class="text-zinc-400 dark:text-zinc-500 uppercase tracking-wider text-[9px]">Page Resolution</span>
+                                <span id="preview-res-stat" class="font-bold text-blue-600 dark:text-blue-400 font-mono text-xs">-- × -- pt</span>
+                            </div>
+                        </div>
+
+                        <div class="w-full flex flex-col items-center justify-center min-h-[260px] sm:min-h-[300px] relative bg-zinc-100/60 dark:bg-zinc-900/60 rounded-xl p-3 border border-zinc-200/60 dark:border-zinc-800/80 overflow-hidden">
                             <div id="doc-preview-loader" class="text-xs font-medium text-zinc-400 dark:text-zinc-500 flex items-center gap-2 py-12">
                                 <svg class="animate-spin h-4 w-4 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24">
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -576,25 +591,25 @@
                             </div>
 
                             <div id="doc-preview-stage" class="hidden flex flex-col items-center w-full">
-                                <div class="max-h-[340px] max-w-full overflow-hidden rounded-lg shadow-md border border-zinc-200 dark:border-zinc-700 bg-white">
-                                    <canvas id="doc-preview-canvas" class="block max-h-[340px] w-auto h-auto object-contain"></canvas>
+                                <div class="max-h-[320px] sm:max-h-[380px] max-w-full overflow-hidden rounded-lg shadow-md border border-zinc-200 dark:border-zinc-700 bg-white">
+                                    <canvas id="doc-preview-canvas" class="block max-h-[320px] sm:max-h-[380px] w-auto h-auto object-contain"></canvas>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Page Navigation Switcher -->
                         <div class="flex items-center justify-between w-full mt-3 pt-2 text-xs">
-                            <button type="button" id="prev-preview-page" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-red-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-2xs font-semibold">
+                            <button type="button" id="prev-preview-page" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-red-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-2xs font-semibold cursor-pointer">
                                 ◀ Prev
                             </button>
                             <span id="preview-page-indicator" class="text-[11px] font-bold text-zinc-700 dark:text-zinc-300">
                                 1 / 1
                             </span>
-                            <button type="button" id="next-preview-page" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-red-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-2xs font-semibold">
+                            <button type="button" id="next-preview-page" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-red-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-2xs font-semibold cursor-pointer">
                                 Next ▶
                             </button>
                         </div>
-                        <p class="text-[10px] text-zinc-400 dark:text-zinc-500 mt-2 text-center">Live preview shows real pages as you configure target sizes</p>
+                        <p class="text-[10px] text-zinc-400 dark:text-zinc-500 mt-2 text-center">Live preview scales responsively on all mobile, tablet & desktop devices</p>
                     </div>
 
                 </div>
@@ -612,16 +627,35 @@
 
                 <!-- Result Quality & Page Inspection Preview Box -->
                 <div class="bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 rounded-xl p-4 flex flex-col items-center">
-                    <div class="w-full flex items-center justify-between mb-3 pb-2 border-b border-zinc-200/70 dark:border-zinc-700/70">
+                    <div class="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-3 pb-2 border-b border-zinc-200/70 dark:border-zinc-700/70">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
                             <span class="text-xs font-bold text-zinc-900 dark:text-white">Compressed PDF Preview</span>
                             <span id="result-page-count-badge" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300">1 Page</span>
                         </div>
-                        <span id="result-page-meta" class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">Page 1</span>
+                        <div class="flex items-center gap-2">
+                            <span id="result-res-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300">A4 Standard</span>
+                            <span id="result-page-meta" class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">Page 1</span>
+                        </div>
                     </div>
 
-                    <div class="w-full flex flex-col items-center justify-center min-h-[280px] bg-zinc-100/70 dark:bg-zinc-900/70 rounded-xl p-3 border border-zinc-200/70 dark:border-zinc-700/70 overflow-hidden">
+                    <!-- Output File Size & Optimization Strip -->
+                    <div class="w-full grid grid-cols-3 gap-1.5 mb-2.5 text-[10px] font-semibold">
+                        <div class="px-2.5 py-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200/70 dark:border-zinc-750 flex flex-col">
+                            <span class="text-zinc-400 dark:text-zinc-500 uppercase tracking-wider text-[9px]">Original</span>
+                            <span id="result-orig-size-val" class="font-bold text-zinc-700 dark:text-zinc-300 font-mono text-xs">--</span>
+                        </div>
+                        <div class="px-2.5 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/70 dark:border-emerald-800/60 flex flex-col">
+                            <span class="text-emerald-700 dark:text-emerald-400 uppercase tracking-wider text-[9px]">Compressed</span>
+                            <span id="result-comp-size-val" class="font-bold text-emerald-700 dark:text-emerald-300 font-mono text-xs">--</span>
+                        </div>
+                        <div class="px-2.5 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/40 border border-blue-200/70 dark:border-blue-800/60 flex flex-col">
+                            <span class="text-blue-700 dark:text-blue-400 uppercase tracking-wider text-[9px]">Savings</span>
+                            <span id="result-savings-val" class="font-bold text-blue-700 dark:text-blue-300 font-mono text-xs">--%</span>
+                        </div>
+                    </div>
+
+                    <div class="w-full flex flex-col items-center justify-center min-h-[260px] sm:min-h-[300px] bg-zinc-100/70 dark:bg-zinc-900/70 rounded-xl p-3 border border-zinc-200/70 dark:border-zinc-700/70 overflow-hidden">
                         <div id="result-preview-loader" class="text-xs font-medium text-zinc-400 dark:text-zinc-500 flex items-center gap-2 py-10">
                             <svg class="animate-spin h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -630,21 +664,21 @@
                             <span>Rendering compressed output preview...</span>
                         </div>
                         <div id="result-preview-stage" class="hidden flex flex-col items-center w-full">
-                            <div class="max-h-[350px] max-w-full overflow-hidden rounded-lg shadow-md border border-zinc-200 dark:border-zinc-700 bg-white">
-                                <canvas id="result-preview-canvas" class="block max-h-[350px] w-auto h-auto object-contain"></canvas>
+                            <div class="max-h-[320px] sm:max-h-[380px] max-w-full overflow-hidden rounded-lg shadow-md border border-zinc-200 dark:border-zinc-700 bg-white">
+                                <canvas id="result-preview-canvas" class="block max-h-[320px] sm:max-h-[380px] w-auto h-auto object-contain"></canvas>
                             </div>
                         </div>
                     </div>
 
                     <!-- Result Navigation Switcher -->
                     <div class="flex items-center justify-between w-full mt-3 pt-1 text-xs">
-                        <button type="button" id="prev-result-page" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-2xs font-semibold">
+                        <button type="button" id="prev-result-page" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-2xs font-semibold cursor-pointer">
                             ◀ Prev Page
                         </button>
                         <span id="result-page-indicator" class="text-xs font-bold text-zinc-700 dark:text-zinc-300">
                             Page 1 of 1
                         </span>
-                        <button type="button" id="next-result-page" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-2xs font-semibold">
+                        <button type="button" id="next-result-page" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-emerald-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-2xs font-semibold cursor-pointer">
                             Next Page ▶
                         </button>
                     </div>
@@ -677,6 +711,94 @@
         <!-- Privacy Assurance Card -->
         <div class="mt-8 text-center text-xs text-zinc-400">
             <span>🔒 Complete Privacy: Files are processed strictly in your browser memory and never uploaded to any remote server.</span>
+        </div>
+
+        <!-- Educational & SEO Content Section -->
+        <div class="mt-14 space-y-10">
+            
+            <!-- How to Convert Steps -->
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 sm:p-8 shadow-sm">
+                <h2 class="text-lg font-bold text-zinc-900 dark:text-white mb-4 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center text-xs font-bold">1</span>
+                    How to Compress PDF Online (Step-by-Step)
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-zinc-600 dark:text-zinc-400">
+                    <div class="p-3.5 bg-zinc-50 dark:bg-zinc-800/40 rounded-xl border border-zinc-200/60 dark:border-zinc-700/60 space-y-1.5">
+                        <div class="font-bold text-zinc-900 dark:text-white text-xs">Step 1: Upload Your PDF</div>
+                        <p>Drag and drop your PDF document into the box or tap to choose a file from your device.</p>
+                    </div>
+                    <div class="p-3.5 bg-zinc-50 dark:bg-zinc-800/40 rounded-xl border border-zinc-200/60 dark:border-zinc-700/60 space-y-1.5">
+                        <div class="font-bold text-zinc-900 dark:text-white text-xs">Step 2: Choose Target Size or Mode</div>
+                        <p>Pick a target limit (e.g. ≤ 200 KB, ≤ 100 KB, ≤ 1 MB) or select Text Clarity / Size Reduction mode.</p>
+                    </div>
+                    <div class="p-3.5 bg-zinc-50 dark:bg-zinc-800/40 rounded-xl border border-zinc-200/60 dark:border-zinc-700/60 space-y-1.5">
+                        <div class="font-bold text-zinc-900 dark:text-white text-xs">Step 3: Compress & Download</div>
+                        <p>Click "Compress PDF", inspect the real-time preview, and download your optimized document.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why Compress PDF Information -->
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 sm:p-8 shadow-sm space-y-4">
+                <h2 class="text-lg font-bold text-zinc-900 dark:text-white">Why Compress PDF Files?</h2>
+                <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    Large PDF documents often exceed strict upload limits on job portals, government websites, university admissions, and email services (which usually cap attachments at 25 MB). Compressing your PDF reduces file size by up to 90% while maintaining crisp readability and layout integrity.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <div class="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/60">
+                        <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <div class="text-xs">
+                            <span class="font-bold text-zinc-900 dark:text-white block">Meet Strict Portal Limits</span>
+                            <span class="text-zinc-500 dark:text-zinc-400">Easily hit exact thresholds like 100 KB, 200 KB, or 500 KB for online applications.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/60">
+                        <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <div class="text-xs">
+                            <span class="font-bold text-zinc-900 dark:text-white block">100% In-Browser Privacy</span>
+                            <span class="text-zinc-500 dark:text-zinc-400">Documents never leave your browser memory. Confidential statements remain safe.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/60">
+                        <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <div class="text-xs">
+                            <span class="font-bold text-zinc-900 dark:text-white block">Crisp & Searchable Text</span>
+                            <span class="text-zinc-500 dark:text-zinc-400">Vector-safe compression preserves text selection, fonts, and hyperlinks intact.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/60">
+                        <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <div class="text-xs">
+                            <span class="font-bold text-zinc-900 dark:text-white block">Fast Email Sharing</span>
+                            <span class="text-zinc-500 dark:text-zinc-400">Quickly send lightweight reports, invoices, and resumes without bounce-backs.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQs -->
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 sm:p-8 shadow-sm">
+                <h2 class="text-lg font-bold text-zinc-900 dark:text-white mb-4">Frequently Asked Questions</h2>
+                <div class="space-y-4 text-xs">
+                    <div>
+                        <h3 class="font-bold text-zinc-900 dark:text-white mb-1">How can I compress a PDF to under 200 KB or 100 KB?</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Simply select the "Target Size" tab and enter or select 200 KB (or 100 KB). Our dual-strategy engine automatically optimizes the file or renders high-DPI raster layers to guarantee your PDF meets the strict limit.</p>
+                    </div>
+                    <div class="pt-3 border-t border-zinc-100 dark:border-zinc-800">
+                        <h3 class="font-bold text-zinc-900 dark:text-white mb-1">Will compressing my PDF reduce text readability?</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">No. Under the "Perfect Text Clarity" mode, all typography and vector lines remain pure vector elements. For heavy image scans, the "Force Size Reduction" mode applies smart multi-DPI balancing to keep letters sharp.</p>
+                    </div>
+                    <div class="pt-3 border-t border-zinc-100 dark:border-zinc-800">
+                        <h3 class="font-bold text-zinc-900 dark:text-white mb-1">Are my confidential PDF documents safe?</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Yes, 100%. PDFTool4You processes all documents directly inside your local web browser memory using JavaScript and WebAssembly. No files or private data are ever uploaded to remote servers.</p>
+                    </div>
+                    <div class="pt-3 border-t border-zinc-100 dark:border-zinc-800">
+                        <h3 class="font-bold text-zinc-900 dark:text-white mb-1">Can I print the compressed PDF directly?</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Yes, click the "Print Document" button after compression to send the document straight to your printer without needing to save and reopen it.</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </main>
@@ -721,6 +843,7 @@
                 <div>
                     <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5 tracking-normal normal-case" data-i18n="footer_image_tools">Image Tools</h4>
                     <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="webp-to-jpg.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_webp2jpg">WebP to JPG</a></li>
                         <li><a href="image-to-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_img2pdf">Image to PDF</a></li>
                         <li><a href="png-to-jpg.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_png2jpg">PNG to JPG</a></li>
                         <li><a href="jpg-to-png.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_jpg2png">JPG to PNG</a></li>
@@ -890,6 +1013,17 @@
 
                 await page.render({ canvasContext: ctx, viewport }).promise;
 
+                const docPreviewDimEl = document.getElementById('doc-preview-dimensions');
+                const docPreviewFileSizeEl = document.getElementById('doc-preview-filesize');
+                if (docPreviewDimEl) {
+                    const widthMm = Math.round(unscaledViewport.width * 25.4 / 72);
+                    const heightMm = Math.round(unscaledViewport.height * 25.4 / 72);
+                    docPreviewDimEl.textContent = `${Math.round(unscaledViewport.width)} × ${Math.round(unscaledViewport.height)} pt (${widthMm}×${heightMm} mm)`;
+                }
+                if (docPreviewFileSizeEl && currentFile) {
+                    docPreviewFileSizeEl.textContent = formatBytes(currentFile.size);
+                }
+
                 previewPageMeta.textContent = `Page ${pageNumber} of ${originalPdfDoc.numPages} · ${Math.round(unscaledViewport.width)}×${Math.round(unscaledViewport.height)} pt`;
                 previewPageIndicator.textContent = `${pageNumber} / ${originalPdfDoc.numPages}`;
                 prevPreviewPageBtn.disabled = pageNumber <= 1;
@@ -924,6 +1058,17 @@
                 ctx.fillRect(0, 0, resultPreviewCanvas.width, resultPreviewCanvas.height);
 
                 await page.render({ canvasContext: ctx, viewport }).promise;
+
+                const resPreviewDimEl = document.getElementById('result-preview-dimensions');
+                const resPreviewFileSizeEl = document.getElementById('result-preview-filesize');
+                if (resPreviewDimEl) {
+                    const widthMm = Math.round(unscaledViewport.width * 25.4 / 72);
+                    const heightMm = Math.round(unscaledViewport.height * 25.4 / 72);
+                    resPreviewDimEl.textContent = `${Math.round(unscaledViewport.width)} × ${Math.round(unscaledViewport.height)} pt (${widthMm}×${heightMm} mm)`;
+                }
+                if (resPreviewFileSizeEl && window.lastCompressedSize) {
+                    resPreviewFileSizeEl.textContent = formatBytes(window.lastCompressedSize);
+                }
 
                 resultPageMeta.textContent = `Page ${pageNumber} of ${compressedPdfDoc.numPages}`;
                 resultPageIndicator.textContent = `Page ${pageNumber} of ${compressedPdfDoc.numPages}`;
@@ -1452,6 +1597,7 @@
         function finalizeResult(compressedPdfBytes, origSize, targetTotalBytes, selectedStrategy = 'vector') {
             let finalBytes = compressedPdfBytes;
             let finalSize = compressedPdfBytes.byteLength;
+            window.lastCompressedSize = finalSize;
 
             // If compressed result somehow exceeded original file size in vector mode:
             if (finalSize >= origSize && selectedStrategy === 'vector') {
