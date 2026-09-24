@@ -284,6 +284,21 @@
                     <p class="font-bold text-sm">✓ Conversion Complete!</p>
                     <p id="conversion-meta" class="text-xs text-emerald-700 dark:text-emerald-300 mt-1 font-medium">Your PNG file is ready for download.</p>
                 </div>
+
+                <!-- Converted PNG Live Output Preview -->
+                <div id="output-png-preview-box" class="bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 rounded-xl p-4 flex flex-col items-center">
+                    <div class="w-full flex items-center justify-between mb-3 pb-2 border-b border-zinc-200/70 dark:border-zinc-700/70">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <span class="text-xs font-bold text-zinc-900 dark:text-white">Converted PNG Image Preview</span>
+                        </div>
+                        <span id="output-png-meta" class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">Lossless PNG</span>
+                    </div>
+
+                    <div class="w-full flex items-center justify-center min-h-[200px] max-h-[360px] bg-zinc-100/70 dark:bg-zinc-900/70 rounded-xl p-3 border border-zinc-200/70 dark:border-zinc-700/70 overflow-hidden">
+                        <img id="output-preview-img" src="" alt="Converted PNG Preview" class="max-h-[330px] max-w-full object-contain rounded-lg shadow-xs">
+                    </div>
+                </div>
                 
                 <div class="flex flex-col sm:flex-row items-center gap-3">
                     <a id="download-link" href="#" download="converted.png" class="flex-1 inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-sm">
@@ -459,6 +474,12 @@
                 downloadLink.href = pngUrl;
                 downloadLink.download = outFileName;
                 conversionMeta.textContent = `Uncompressed, lossless PNG generated successfully.`;
+
+                // Update live output preview
+                const outputPreviewImg = document.getElementById('output-preview-img');
+                const outputPngMeta = document.getElementById('output-png-meta');
+                if (outputPreviewImg) outputPreviewImg.src = pngUrl;
+                if (outputPngMeta) outputPngMeta.textContent = `${canvas.width}×${canvas.height} px · Lossless PNG`;
 
                 downloadSection.classList.remove('hidden');
                 processSection.classList.add('hidden');

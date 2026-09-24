@@ -38,6 +38,13 @@
     <script src="share.js"></script>
     <script src="print.js"></script>
     <script src="mobile-nav.js" defer></script>
+    <!-- PDF Rendering & Splitting Engines -->
+    <script src="pdf.min.js"></script>
+    <script>
+        if (!window.pdfjsLib) {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script>');
+        }
+    </script>
     <script src="pdf-lib.min.js"></script>
     <script>
         if (!window.PDFLib) {
@@ -290,109 +297,196 @@
             </div>
 
             <!-- Split Options Section -->
-            <div id="split-section" class="hidden mt-6 space-y-6">
-                
-                <!-- Mode Selection -->
-                <div>
-                    <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider mb-2.5">Splitting Mode</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="cursor-pointer border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 text-center transition-all bg-zinc-50 dark:bg-zinc-850 hover:bg-white dark:hover:bg-zinc-800 has-[:checked]:border-orange-600 has-[:checked]:bg-orange-50/50 dark:has-[:checked]:bg-orange-950/30 has-[:checked]:ring-1 has-[:checked]:ring-orange-600">
-                            <input type="radio" name="split-mode" value="range" class="sr-only" checked>
-                            <div class="font-bold text-xs text-zinc-900 dark:text-white">Extract Range / Pages</div>
-                            <div class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Select specific pages</div>
-                        </label>
-                        <label class="cursor-pointer border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 text-center transition-all bg-zinc-50 dark:bg-zinc-850 hover:bg-white dark:hover:bg-zinc-800 has-[:checked]:border-orange-600 has-[:checked]:bg-orange-50/50 dark:has-[:checked]:bg-orange-950/30 has-[:checked]:ring-1 has-[:checked]:ring-orange-600">
-                            <input type="radio" name="split-mode" value="all" class="sr-only">
-                            <div class="font-bold text-xs text-zinc-900 dark:text-white">Extract Every Page</div>
-                            <div class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Separate into individual PDFs</div>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Range Configuration (Visible in Range mode) -->
-                <div id="range-config-box" class="space-y-4 bg-zinc-50/80 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 p-4 rounded-xl">
-                    <div>
-                        <div class="flex items-center justify-between mb-1.5">
-                            <label for="range-input" class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Page Range or Numbers</label>
-                            <span class="text-[11px] text-zinc-400 dark:text-zinc-500">e.g. 1-3, 5, 7-9</span>
-                        </div>
-                        <input 
-                            type="text" 
-                            id="range-input" 
-                            class="w-full px-3 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg text-base sm:text-xs font-medium text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
-                            placeholder="Enter page range (e.g. 1-2, 4)"
-                        >
-                    </div>
-
-                    <!-- Quick Select Helpers -->
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">Or tap pages to toggle:</span>
-                            <div class="flex items-center gap-2 text-xs sm:text-[11px]">
-                                <button type="button" id="btn-select-all" class="text-orange-600 dark:text-orange-400 hover:text-orange-800 font-semibold p-1 active:scale-95">All</button>
-                                <span class="text-zinc-300 dark:text-zinc-700">·</span>
-                                <button type="button" id="btn-select-odd" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white font-medium p-1 active:scale-95">Odd</button>
-                                <span class="text-zinc-300 dark:text-zinc-700">·</span>
-                                <button type="button" id="btn-select-even" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white font-medium p-1 active:scale-95">Even</button>
-                                <span class="text-zinc-300 dark:text-zinc-700">·</span>
-                                <button type="button" id="btn-clear-selection" class="text-zinc-400 hover:text-red-600 dark:hover:text-red-400 font-medium p-1 active:scale-95">Clear</button>
+            <div id="split-section" class="hidden mt-6">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    
+                    <!-- Left Column: Controls (7 cols) -->
+                    <div class="lg:col-span-7 space-y-5">
+                        <!-- Mode Selection -->
+                        <div>
+                            <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider mb-2.5">Splitting Mode</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="cursor-pointer border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 text-center transition-all bg-zinc-50 dark:bg-zinc-850 hover:bg-white dark:hover:bg-zinc-800 has-[:checked]:border-orange-600 has-[:checked]:bg-orange-50/50 dark:has-[:checked]:bg-orange-950/30 has-[:checked]:ring-1 has-[:checked]:ring-orange-600">
+                                    <input type="radio" name="split-mode" value="range" class="sr-only" checked>
+                                    <div class="font-bold text-xs text-zinc-900 dark:text-white">Extract Range / Pages</div>
+                                    <div class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Select specific pages</div>
+                                </label>
+                                <label class="cursor-pointer border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 text-center transition-all bg-zinc-50 dark:bg-zinc-850 hover:bg-white dark:hover:bg-zinc-800 has-[:checked]:border-orange-600 has-[:checked]:bg-orange-50/50 dark:has-[:checked]:bg-orange-950/30 has-[:checked]:ring-1 has-[:checked]:ring-orange-600">
+                                    <input type="radio" name="split-mode" value="all" class="sr-only">
+                                    <div class="font-bold text-xs text-zinc-900 dark:text-white">Extract Every Page</div>
+                                    <div class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5">Separate into individual PDFs</div>
+                                </label>
                             </div>
                         </div>
 
-                        <!-- Page Chips Container -->
-                        <div id="pages-grid" class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto p-1 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700">
-                            <!-- Populated with page chips -->
+                        <!-- Range Configuration (Visible in Range mode) -->
+                        <div id="range-config-box" class="space-y-4 bg-zinc-50/80 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700 p-4 rounded-xl">
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <label for="range-input" class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Page Range or Numbers</label>
+                                    <span class="text-[11px] text-zinc-400 dark:text-zinc-500">e.g. 1-3, 5, 7-9</span>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    id="range-input" 
+                                    class="w-full px-3 py-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg text-base sm:text-xs font-medium text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
+                                    placeholder="Enter page range (e.g. 1-2, 4)"
+                                >
+                            </div>
+
+                            <!-- Quick Select Helpers -->
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400">Or tap pages to toggle:</span>
+                                    <div class="flex items-center gap-2 text-xs sm:text-[11px]">
+                                        <button type="button" id="btn-select-all" class="text-orange-600 dark:text-orange-400 hover:text-orange-800 font-semibold p-1 active:scale-95">All</button>
+                                        <span class="text-zinc-300 dark:text-zinc-700">·</span>
+                                        <button type="button" id="btn-select-odd" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white font-medium p-1 active:scale-95">Odd</button>
+                                        <span class="text-zinc-300 dark:text-zinc-700">·</span>
+                                        <button type="button" id="btn-select-even" class="text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white font-medium p-1 active:scale-95">Even</button>
+                                        <span class="text-zinc-300 dark:text-zinc-700">·</span>
+                                        <button type="button" id="btn-clear-selection" class="text-zinc-400 hover:text-red-600 dark:hover:text-red-400 font-medium p-1 active:scale-95">Clear</button>
+                                    </div>
+                                </div>
+
+                                <!-- Page Chips Container -->
+                                <div id="pages-grid" class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto p-1 bg-white dark:bg-zinc-900 rounded-lg border border-zinc-200 dark:border-zinc-700">
+                                    <!-- Populated with page chips -->
+                                </div>
+                            </div>
+
+                            <!-- Output Format for Range -->
+                            <div class="pt-2 border-t border-zinc-200/60 dark:border-zinc-700">
+                                <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">Save Selected Pages As:</label>
+                                <div class="grid grid-cols-2 gap-2 text-xs">
+                                    <label class="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg cursor-pointer hover:border-zinc-300 dark:hover:border-zinc-600">
+                                        <input type="radio" name="range-output-type" value="single" checked class="text-orange-600 focus:ring-orange-500">
+                                        <span class="font-medium text-zinc-800 dark:text-zinc-200">1 Combined PDF</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg cursor-pointer hover:border-zinc-300 dark:hover:border-zinc-600">
+                                        <input type="radio" name="range-output-type" value="separate" class="text-orange-600 focus:ring-orange-500">
+                                        <span class="font-medium text-zinc-800 dark:text-zinc-200">Separate PDF files</span>
+                                    </label>
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Output Format for Range -->
-                    <div class="pt-2 border-t border-zinc-200/60 dark:border-zinc-700">
-                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2">Save Selected Pages As:</label>
-                        <div class="grid grid-cols-2 gap-2 text-xs">
-                            <label class="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg cursor-pointer hover:border-zinc-300 dark:hover:border-zinc-600">
-                                <input type="radio" name="range-output-type" value="single" checked class="text-orange-600 focus:ring-orange-500">
-                                <span class="font-medium text-zinc-800 dark:text-zinc-200">1 Combined PDF</span>
-                            </label>
-                            <label class="flex items-center gap-2 p-2 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg cursor-pointer hover:border-zinc-300 dark:hover:border-zinc-600">
-                                <input type="radio" name="range-output-type" value="separate" class="text-orange-600 focus:ring-orange-500">
-                                <span class="font-medium text-zinc-800 dark:text-zinc-200">Separate PDF files</span>
-                            </label>
+                        <!-- All Pages Mode Note (Visible in All Pages mode) -->
+                        <div id="all-config-box" class="hidden p-4 bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 rounded-xl text-xs text-orange-900 dark:text-orange-200">
+                            <p class="font-bold mb-1">Split all pages individually</p>
+                            <p class="text-orange-700 dark:text-orange-300 leading-relaxed">
+                                Each page will be extracted into its own standalone PDF document. You will be able to download individual pages or a combined ZIP archive.
+                            </p>
                         </div>
-                    </div>
-                </div>
 
-                <!-- All Pages Mode Note (Visible in All Pages mode) -->
-                <div id="all-config-box" class="hidden p-4 bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 rounded-xl text-xs text-orange-900 dark:text-orange-200">
-                    <p class="font-bold mb-1">Split all pages individually</p>
-                    <p class="text-orange-700 dark:text-orange-300 leading-relaxed">
-                        Each page will be extracted into its own standalone PDF document. You will be able to download individual pages or a combined ZIP archive.
-                    </p>
-                </div>
+                        <!-- Progress Bar -->
+                        <div id="progress-container" class="hidden space-y-2">
+                            <div class="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-300">
+                                <span id="progress-text">Extracting pages...</span>
+                                <span id="progress-percent">0%</span>
+                            </div>
+                            <div class="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden">
+                                <div id="progress-bar" class="bg-orange-600 h-2 rounded-full transition-all duration-200" style="width: 0%"></div>
+                            </div>
+                        </div>
 
-                <!-- Progress Bar -->
-                <div id="progress-container" class="hidden space-y-2">
-                    <div class="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-300">
-                        <span id="progress-text">Extracting pages...</span>
-                        <span id="progress-percent">0%</span>
+                        <button id="split-btn" class="w-full py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                            <span>Split & Extract PDF</span>
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </button>
                     </div>
-                    <div class="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden">
-                        <div id="progress-bar" class="bg-orange-600 h-2 rounded-full transition-all duration-200" style="width: 0%"></div>
-                    </div>
-                </div>
 
-                <button id="split-btn" class="w-full py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span>Split & Extract PDF</span>
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                    </svg>
-                </button>
+                    <!-- Right Column: Live Page Inspector (5 cols) -->
+                    <div class="lg:col-span-5 flex flex-col items-center bg-zinc-50/90 dark:bg-zinc-800/40 rounded-2xl border border-zinc-200/80 dark:border-zinc-700/80 p-4 w-full">
+                        <div class="w-full flex items-center justify-between mb-3 pb-2 border-b border-zinc-200/60 dark:border-zinc-700/60">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+                                <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200">Page Inspector</span>
+                            </div>
+                            <span id="inspect-status-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300">Page 1</span>
+                        </div>
+
+                        <div class="w-full flex flex-col items-center justify-center min-h-[300px] relative bg-zinc-100/60 dark:bg-zinc-900/60 rounded-xl p-3 border border-zinc-200/60 dark:border-zinc-800/80 overflow-hidden">
+                            <div id="inspector-loader" class="text-xs font-medium text-zinc-400 dark:text-zinc-500 flex items-center gap-2 py-12">
+                                <svg class="animate-spin h-4 w-4 text-orange-600 dark:text-orange-400" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Rendering page...</span>
+                            </div>
+
+                            <div id="inspector-stage" class="hidden flex flex-col items-center w-full">
+                                <div class="max-h-[330px] max-w-full overflow-hidden rounded-lg shadow-md border border-zinc-200 dark:border-zinc-700 bg-white">
+                                    <canvas id="inspector-canvas" class="block max-h-[330px] w-auto h-auto object-contain"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Inspector Page Nav & Toggle Action -->
+                        <div class="flex items-center justify-between w-full mt-3 pt-2 text-xs">
+                            <button type="button" id="prev-inspect-page" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-orange-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all font-semibold">
+                                ◀ Prev
+                            </button>
+                            <button type="button" id="toggle-inspect-page-btn" class="px-3 py-1 rounded-lg font-bold text-xs bg-orange-600 hover:bg-orange-700 text-white transition-all shadow-2xs">
+                                ✓ Toggle Page
+                            </button>
+                            <button type="button" id="next-inspect-page" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-orange-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all font-semibold">
+                                Next ▶
+                            </button>
+                        </div>
+                        <p class="text-[10px] text-zinc-400 dark:text-zinc-500 mt-2 text-center">Click chips on left or use arrows to inspect any page</p>
+                    </div>
+
+                </div>
             </div>
 
             <!-- Download Results Section -->
-            <div id="download-section" class="hidden mt-6 space-y-4">
+            <div id="download-section" class="hidden mt-6 space-y-5">
                 <div class="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl text-emerald-900 dark:text-emerald-200 text-center">
                     <p class="font-bold text-sm">✓ PDF Successfully Split!</p>
                     <p id="result-summary" class="text-xs text-emerald-700 dark:text-emerald-300 mt-1 font-medium"></p>
+                </div>
+
+                <!-- Extracted Output Preview Box -->
+                <div id="split-result-preview-box" class="bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 rounded-xl p-4 flex flex-col items-center">
+                    <div class="w-full flex items-center justify-between mb-3 pb-2 border-b border-zinc-200/70 dark:border-zinc-700/70">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <span class="text-xs font-bold text-zinc-900 dark:text-white">Extracted Output Preview</span>
+                            <span id="split-result-count-badge" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300">1 Page</span>
+                        </div>
+                        <span id="split-result-meta" class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">Page 1</span>
+                    </div>
+
+                    <div class="w-full flex flex-col items-center justify-center min-h-[280px] bg-zinc-100/70 dark:bg-zinc-900/70 rounded-xl p-3 border border-zinc-200/70 dark:border-zinc-700/70 overflow-hidden">
+                        <div id="split-result-loader" class="text-xs font-medium text-zinc-400 dark:text-zinc-500 flex items-center gap-2 py-10">
+                            <svg class="animate-spin h-4 w-4 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span>Rendering extracted preview...</span>
+                        </div>
+                        <div id="split-result-stage" class="hidden flex flex-col items-center w-full">
+                            <div class="max-h-[350px] max-w-full overflow-hidden rounded-lg shadow-md border border-zinc-200 dark:border-zinc-700 bg-white">
+                                <canvas id="split-result-canvas" class="block max-h-[350px] w-auto h-auto object-contain"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Split Result Navigation Switcher -->
+                    <div class="flex items-center justify-between w-full mt-3 pt-1 text-xs">
+                        <button type="button" id="prev-split-result-page" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-orange-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-2xs font-semibold">
+                            ◀ Prev Page
+                        </button>
+                        <span id="split-result-page-indicator" class="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                            Page 1 of 1
+                        </span>
+                        <button type="button" id="next-split-result-page" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-orange-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-2xs font-semibold">
+                            Next Page ▶
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Single File Download Action -->
@@ -546,8 +640,148 @@
         let currentSingleExtractedUrl = null;
         let createdPageBlobUrls = [];
 
+        // Preview State & Elements
+        let previewPdfDoc = null;
+        let currentInspectPage = 1;
+        let extractedResultDoc = null;
+        let currentExtractedPage = 1;
+
+        const inspectorLoader = document.getElementById('inspector-loader');
+        const inspectorStage = document.getElementById('inspector-stage');
+        const inspectorCanvas = document.getElementById('inspector-canvas');
+        const inspectStatusBadge = document.getElementById('inspect-status-badge');
+        const prevInspectBtn = document.getElementById('prev-inspect-page');
+        const nextInspectBtn = document.getElementById('next-inspect-page');
+        const toggleInspectPageBtn = document.getElementById('toggle-inspect-page-btn');
+
+        const splitResultLoader = document.getElementById('split-result-loader');
+        const splitResultStage = document.getElementById('split-result-stage');
+        const splitResultCanvas = document.getElementById('split-result-canvas');
+        const splitResultCountBadge = document.getElementById('split-result-count-badge');
+        const splitResultMeta = document.getElementById('split-result-meta');
+        const prevSplitResultPage = document.getElementById('prev-split-result-page');
+        const nextSplitResultPage = document.getElementById('next-split-result-page');
+        const splitResultPageIndicator = document.getElementById('split-result-page-indicator');
+
         if (window.attachPrintAction && printSplitBtn) {
             window.attachPrintAction(printSplitBtn, () => currentSingleExtractedUrl, 'application/pdf');
+        }
+
+        prevInspectBtn.addEventListener('click', () => {
+            if (currentInspectPage > 1) {
+                currentInspectPage--;
+                renderInspectorPage(currentInspectPage);
+            }
+        });
+
+        nextInspectBtn.addEventListener('click', () => {
+            if (currentInspectPage < totalPages) {
+                currentInspectPage++;
+                renderInspectorPage(currentInspectPage);
+            }
+        });
+
+        toggleInspectPageBtn.addEventListener('click', () => {
+            if (selectedPageNumbers.has(currentInspectPage)) {
+                selectedPageNumbers.delete(currentInspectPage);
+            } else {
+                selectedPageNumbers.add(currentInspectPage);
+            }
+            updateRangeInputFromSet();
+            renderPageChips();
+            updateInspectBadge();
+        });
+
+        prevSplitResultPage.addEventListener('click', () => {
+            if (currentExtractedPage > 1) {
+                currentExtractedPage--;
+                renderExtractedPage(currentExtractedPage);
+            }
+        });
+
+        nextSplitResultPage.addEventListener('click', () => {
+            if (extractedResultDoc && currentExtractedPage < extractedResultDoc.numPages) {
+                currentExtractedPage++;
+                renderExtractedPage(currentExtractedPage);
+            }
+        });
+
+        function updateInspectBadge() {
+            const isSel = selectedPageNumbers.has(currentInspectPage);
+            inspectStatusBadge.textContent = `Page ${currentInspectPage} of ${totalPages} · ${isSel ? 'Selected' : 'Excluded'}`;
+            if (isSel) {
+                inspectStatusBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-orange-100 dark:bg-orange-950/60 text-orange-700 dark:text-orange-300';
+                toggleInspectPageBtn.textContent = '✕ Deselect Page';
+                toggleInspectPageBtn.className = 'px-3 py-1 rounded-lg font-bold text-xs bg-zinc-200 dark:bg-zinc-700 hover:bg-zinc-300 dark:hover:bg-zinc-600 text-zinc-800 dark:text-zinc-200 transition-all';
+            } else {
+                inspectStatusBadge.className = 'px-2 py-0.5 rounded text-[10px] font-bold bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300';
+                toggleInspectPageBtn.textContent = '✓ Select Page';
+                toggleInspectPageBtn.className = 'px-3 py-1 rounded-lg font-bold text-xs bg-orange-600 hover:bg-orange-700 text-white transition-all shadow-2xs';
+            }
+            prevInspectBtn.disabled = currentInspectPage <= 1;
+            nextInspectBtn.disabled = currentInspectPage >= totalPages;
+        }
+
+        async function renderInspectorPage(pageNumber) {
+            currentInspectPage = pageNumber;
+            updateInspectBadge();
+            if (!previewPdfDoc) return;
+
+            inspectorLoader.classList.remove('hidden');
+            inspectorStage.classList.add('hidden');
+
+            try {
+                const page = await previewPdfDoc.getPage(pageNumber);
+                const unscaled = page.getViewport({ scale: 1.0 });
+                const scale = Math.min(1.4, Math.max(0.4, 320 / unscaled.width));
+                const viewport = page.getViewport({ scale });
+
+                inspectorCanvas.width = Math.round(viewport.width);
+                inspectorCanvas.height = Math.round(viewport.height);
+
+                const ctx = inspectorCanvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, inspectorCanvas.width, inspectorCanvas.height);
+
+                await page.render({ canvasContext: ctx, viewport }).promise;
+
+                inspectorLoader.classList.add('hidden');
+                inspectorStage.classList.remove('hidden');
+            } catch (err) {
+                console.warn('Inspector render error:', err);
+            }
+        }
+
+        async function renderExtractedPage(pageNumber) {
+            if (!extractedResultDoc) return;
+            splitResultLoader.classList.remove('hidden');
+            splitResultStage.classList.add('hidden');
+
+            try {
+                const page = await extractedResultDoc.getPage(pageNumber);
+                const unscaled = page.getViewport({ scale: 1.0 });
+                const scale = Math.min(1.5, Math.max(0.4, 340 / unscaled.width));
+                const viewport = page.getViewport({ scale });
+
+                splitResultCanvas.width = Math.round(viewport.width);
+                splitResultCanvas.height = Math.round(viewport.height);
+
+                const ctx = splitResultCanvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, splitResultCanvas.width, splitResultCanvas.height);
+
+                await page.render({ canvasContext: ctx, viewport }).promise;
+
+                splitResultPageIndicator.textContent = `Page ${pageNumber} of ${extractedResultDoc.numPages}`;
+                splitResultMeta.textContent = `Page ${pageNumber} of ${extractedResultDoc.numPages} · ${Math.round(unscaled.width)}×${Math.round(unscaled.height)} pt`;
+                prevSplitResultPage.disabled = pageNumber <= 1;
+                nextSplitResultPage.disabled = pageNumber >= extractedResultDoc.numPages;
+
+                splitResultLoader.classList.add('hidden');
+                splitResultStage.classList.remove('hidden');
+            } catch (err) {
+                console.warn('Extracted preview render error:', err);
+            }
         }
 
         dropZone.addEventListener('click', () => fileInput.click());
@@ -616,6 +850,17 @@
                 }
                 updateRangeInputFromSet();
                 renderPageChips();
+
+                // Initialize pdfjsLib for Live Page Inspector
+                if (window.pdfjsLib) {
+                    try {
+                        previewPdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+                        currentInspectPage = 1;
+                        renderInspectorPage(1);
+                    } catch (prevErr) {
+                        console.warn('PDF.js inspector preview error:', prevErr);
+                    }
+                }
             } catch (err) {
                 console.error(err);
                 errorText.textContent = 'Failed to load PDF document. The file may be password protected or corrupted.';
@@ -641,6 +886,7 @@
                     }
                     updateRangeInputFromSet();
                     renderPageChips();
+                    renderInspectorPage(i);
                 });
                 pagesGrid.appendChild(chip);
             }
@@ -739,6 +985,10 @@
             fileInput.value = '';
             currentFile = null;
             loadedPdfDoc = null;
+            previewPdfDoc = null;
+            extractedResultDoc = null;
+            currentInspectPage = 1;
+            currentExtractedPage = 1;
             totalPages = 0;
             selectedPageNumbers.clear();
             generatedZipBlob = null;
@@ -804,6 +1054,19 @@
                     resultSummary.textContent = `Extracted ${pagesToExtract.length} page${pagesToExtract.length === 1 ? '' : 's'} into 1 PDF (${formatBytes(pdfBytes.byteLength)}).`;
                     singleDownloadBox.classList.remove('hidden');
                     multipleDownloadBox.classList.add('hidden');
+
+                    if (window.pdfjsLib) {
+                        try {
+                            splitResultCountBadge.textContent = `${pagesToExtract.length} Page${pagesToExtract.length === 1 ? '' : 's'}`;
+                            pdfjsLib.getDocument({ data: pdfBytes.slice(0) }).promise.then(doc => {
+                                extractedResultDoc = doc;
+                                currentExtractedPage = 1;
+                                renderExtractedPage(1);
+                            }).catch(e => console.warn('Could not render single extracted preview:', e));
+                        } catch (e) {
+                            console.warn('PDF.js result preview error:', e);
+                        }
+                    }
                 } else {
                     // Extract into separate PDF files + build ZIP
                     const zip = new JSZip();
@@ -878,6 +1141,19 @@
                     resultSummary.textContent = `Generated ${total} individual PDF file${total === 1 ? '' : 's'} (${formatBytes(generatedZipBlob.size)} total).`;
                     singleDownloadBox.classList.add('hidden');
                     multipleDownloadBox.classList.remove('hidden');
+
+                    if (window.pdfjsLib && createdPageBlobUrls.length > 0) {
+                        try {
+                            splitResultCountBadge.textContent = `${total} Files (${total} Pages)`;
+                            pdfjsLib.getDocument({ url: createdPageBlobUrls[0] }).promise.then(doc => {
+                                extractedResultDoc = doc;
+                                currentExtractedPage = 1;
+                                renderExtractedPage(1);
+                            }).catch(e => console.warn('Could not render multi extracted preview:', e));
+                        } catch (e) {
+                            console.warn('PDF.js result preview error:', e);
+                        }
+                    }
                 }
 
                 progressBar.style.width = '100%';

@@ -293,6 +293,21 @@
                     <p class="font-bold text-sm">✓ Conversion Complete!</p>
                     <p id="conversion-meta" class="text-xs text-emerald-700 dark:text-emerald-300 mt-1 font-medium">Your JPG file is ready for download.</p>
                 </div>
+
+                <!-- Converted JPG Live Output Preview -->
+                <div id="output-jpg-preview-box" class="bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 rounded-xl p-4 flex flex-col items-center">
+                    <div class="w-full flex items-center justify-between mb-3 pb-2 border-b border-zinc-200/70 dark:border-zinc-700/70">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <span class="text-xs font-bold text-zinc-900 dark:text-white">Converted JPG Image Preview</span>
+                        </div>
+                        <span id="output-jpg-meta" class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">JPEG Format</span>
+                    </div>
+
+                    <div class="w-full flex items-center justify-center min-h-[200px] max-h-[360px] bg-zinc-100/70 dark:bg-zinc-900/70 rounded-xl p-3 border border-zinc-200/70 dark:border-zinc-700/70 overflow-hidden">
+                        <img id="output-preview-img" src="" alt="Converted JPG Preview" class="max-h-[330px] max-w-full object-contain rounded-lg shadow-xs">
+                    </div>
+                </div>
                 
                 <div class="flex flex-col sm:flex-row items-center gap-3">
                     <a id="download-link" href="#" download="converted.jpg" class="flex-1 inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl font-bold text-sm text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-sm">
@@ -479,6 +494,12 @@
                 downloadLink.href = jpgUrl;
                 downloadLink.download = outFileName;
                 conversionMeta.textContent = `High-quality JPG generated at ${Math.round(quality * 100)}% quality.`;
+
+                // Update live output preview
+                const outputPreviewImg = document.getElementById('output-preview-img');
+                const outputJpgMeta = document.getElementById('output-jpg-meta');
+                if (outputPreviewImg) outputPreviewImg.src = jpgUrl;
+                if (outputJpgMeta) outputJpgMeta.textContent = `${canvas.width}×${canvas.height} px · JPG (${Math.round(quality * 100)}% quality)`;
 
                 downloadSection.classList.remove('hidden');
                 processSection.classList.add('hidden');

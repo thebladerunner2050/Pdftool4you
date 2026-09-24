@@ -38,6 +38,13 @@
     <script src="share.js"></script>
     <script src="print.js"></script>
     <script src="mobile-nav.js" defer></script>
+    <!-- In-browser PDF Render & Merge Engines -->
+    <script src="pdf.min.js"></script>
+    <script>
+        if (!window.pdfjsLib) {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script>');
+        }
+    </script>
     <script src="pdf-lib.min.js"></script>
     <script>
         if (!window.PDFLib) {
@@ -411,10 +418,50 @@
             </div>
 
             <!-- Download Section -->
-            <div id="download-section" class="hidden mt-6 space-y-4">
+            <div id="download-section" class="hidden mt-6 space-y-5">
                 <div class="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl text-emerald-900 dark:text-emerald-200 text-center">
                     <p class="font-bold text-sm">✓ PDFs Successfully Merged!</p>
                     <p id="merge-meta" class="text-xs text-emerald-700 dark:text-emerald-300 mt-1 font-medium"></p>
+                </div>
+
+                <!-- Live Merged Document Result Preview -->
+                <div class="bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 rounded-xl p-4 flex flex-col items-center">
+                    <div class="w-full flex items-center justify-between mb-3 pb-2 border-b border-zinc-200/70 dark:border-zinc-700/70">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                            <span class="text-xs font-bold text-zinc-900 dark:text-white">Merged PDF Document Preview</span>
+                            <span id="merged-pages-badge" class="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300">0 Pages</span>
+                        </div>
+                        <span id="merged-page-meta" class="text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">Page 1</span>
+                    </div>
+
+                    <div class="w-full flex flex-col items-center justify-center min-h-[300px] bg-zinc-100/70 dark:bg-zinc-900/70 rounded-xl p-3 border border-zinc-200/70 dark:border-zinc-700/70 overflow-hidden">
+                        <div id="merged-preview-loader" class="text-xs font-medium text-zinc-400 dark:text-zinc-500 flex items-center gap-2 py-10">
+                            <svg class="animate-spin h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span>Rendering merged document preview...</span>
+                        </div>
+                        <div id="merged-preview-stage" class="hidden flex flex-col items-center w-full">
+                            <div class="max-h-[360px] max-w-full overflow-hidden rounded-lg shadow-md border border-zinc-200 dark:border-zinc-700 bg-white">
+                                <canvas id="merged-preview-canvas" class="block max-h-[360px] w-auto h-auto object-contain"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Merged Navigation Switcher -->
+                    <div class="flex items-center justify-between w-full mt-3 pt-1 text-xs">
+                        <button type="button" id="prev-merged-page" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-blue-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-2xs font-semibold">
+                            ◀ Prev Page
+                        </button>
+                        <span id="merged-page-indicator" class="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                            Page 1 of 1
+                        </span>
+                        <button type="button" id="next-merged-page" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:text-blue-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-2xs font-semibold">
+                            Next Page ▶
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="flex flex-col sm:flex-row items-center gap-3">
@@ -506,6 +553,35 @@
         </div>
     </footer>
 
+    <!-- Document Quick View Modal -->
+    <div id="quick-view-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+        <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            <div class="flex items-center justify-between p-4 border-b border-zinc-200 dark:border-zinc-800">
+                <div class="truncate pr-2">
+                    <h3 id="modal-doc-title" class="text-xs font-bold text-zinc-900 dark:text-white truncate">Document Preview</h3>
+                    <p id="modal-doc-subtitle" class="text-[11px] text-zinc-500 dark:text-zinc-400">Loading document...</p>
+                </div>
+                <button type="button" id="close-modal-btn" class="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="p-4 flex flex-col items-center justify-center flex-1 overflow-auto bg-zinc-100/50 dark:bg-zinc-950/50 min-h-[300px]">
+                <div id="modal-preview-loader" class="text-xs text-zinc-500 flex items-center gap-2">
+                    <svg class="animate-spin h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    <span>Rendering page preview...</span>
+                </div>
+                <div id="modal-preview-stage" class="hidden max-h-[420px] overflow-hidden rounded-lg shadow-md border border-zinc-200 dark:border-zinc-700 bg-white">
+                    <canvas id="modal-preview-canvas" class="block max-h-[420px] w-auto h-auto object-contain"></canvas>
+                </div>
+            </div>
+            <div class="p-3 border-t border-zinc-200 dark:border-zinc-800 flex items-center justify-between bg-zinc-50 dark:bg-zinc-900/90 text-xs">
+                <button type="button" id="modal-prev-page" class="px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 font-semibold disabled:opacity-40">◀ Prev</button>
+                <span id="modal-page-indicator" class="font-bold text-zinc-700 dark:text-zinc-300">Page 1 of 1</span>
+                <button type="button" id="modal-next-page" class="px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 font-semibold disabled:opacity-40">Next ▶</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
@@ -548,6 +624,185 @@
         let nextOriginalIndex = 0;
         let draggedIndex = null;
         let currentMergedUrl = null;
+
+        // Preview state
+        let modalPdfDoc = null;
+        let modalCurrentPage = 1;
+        let mergedPdfDoc = null;
+        let mergedCurrentPage = 1;
+
+        // Modal Elements
+        const quickViewModal = document.getElementById('quick-view-modal');
+        const modalDocTitle = document.getElementById('modal-doc-title');
+        const modalDocSubtitle = document.getElementById('modal-doc-subtitle');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalPreviewLoader = document.getElementById('modal-preview-loader');
+        const modalPreviewStage = document.getElementById('modal-preview-stage');
+        const modalPreviewCanvas = document.getElementById('modal-preview-canvas');
+        const modalPrevPageBtn = document.getElementById('modal-prev-page');
+        const modalNextPageBtn = document.getElementById('modal-next-page');
+        const modalPageIndicator = document.getElementById('modal-page-indicator');
+
+        // Merged Result Preview Elements
+        const mergedPreviewLoader = document.getElementById('merged-preview-loader');
+        const mergedPreviewStage = document.getElementById('merged-preview-stage');
+        const mergedPreviewCanvas = document.getElementById('merged-preview-canvas');
+        const prevMergedPageBtn = document.getElementById('prev-merged-page');
+        const nextMergedPageBtn = document.getElementById('next-merged-page');
+        const mergedPageIndicator = document.getElementById('merged-page-indicator');
+        const mergedPagesBadge = document.getElementById('merged-pages-badge');
+        const mergedPageMeta = document.getElementById('merged-page-meta');
+
+        closeModalBtn.addEventListener('click', () => {
+            quickViewModal.classList.add('hidden');
+            modalPdfDoc = null;
+        });
+
+        quickViewModal.addEventListener('click', (e) => {
+            if (e.target === quickViewModal) {
+                quickViewModal.classList.add('hidden');
+                modalPdfDoc = null;
+            }
+        });
+
+        modalPrevPageBtn.addEventListener('click', () => {
+            if (modalCurrentPage > 1) {
+                modalCurrentPage--;
+                renderModalPage(modalCurrentPage);
+            }
+        });
+
+        modalNextPageBtn.addEventListener('click', () => {
+            if (modalPdfDoc && modalCurrentPage < modalPdfDoc.numPages) {
+                modalCurrentPage++;
+                renderModalPage(modalCurrentPage);
+            }
+        });
+
+        prevMergedPageBtn.addEventListener('click', () => {
+            if (mergedCurrentPage > 1) {
+                mergedCurrentPage--;
+                renderMergedPage(mergedCurrentPage);
+            }
+        });
+
+        nextMergedPageBtn.addEventListener('click', () => {
+            if (mergedPdfDoc && mergedCurrentPage < mergedPdfDoc.numPages) {
+                mergedCurrentPage++;
+                renderMergedPage(mergedCurrentPage);
+            }
+        });
+
+        async function openQuickView(item) {
+            modalDocTitle.textContent = item.name;
+            modalDocSubtitle.textContent = `${formatBytes(item.size)} · Loading preview...`;
+            quickViewModal.classList.remove('hidden');
+            modalPreviewLoader.classList.remove('hidden');
+            modalPreviewStage.classList.add('hidden');
+
+            try {
+                const arrayBuffer = await item.file.arrayBuffer();
+                modalPdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+                modalCurrentPage = 1;
+                modalDocSubtitle.textContent = `${formatBytes(item.size)} · ${modalPdfDoc.numPages} pages`;
+                renderModalPage(1);
+            } catch (err) {
+                console.warn('Could not open preview for modal:', err);
+                modalPreviewLoader.innerHTML = '<span class="text-xs text-red-500 font-semibold">Could not render document preview</span>';
+            }
+        }
+
+        async function renderModalPage(pageNumber) {
+            if (!modalPdfDoc) return;
+            modalPreviewLoader.classList.remove('hidden');
+            modalPreviewStage.classList.add('hidden');
+
+            try {
+                const page = await modalPdfDoc.getPage(pageNumber);
+                const unscaled = page.getViewport({ scale: 1.0 });
+                const scale = Math.min(1.5, Math.max(0.4, 380 / unscaled.width));
+                const viewport = page.getViewport({ scale });
+
+                modalPreviewCanvas.width = Math.round(viewport.width);
+                modalPreviewCanvas.height = Math.round(viewport.height);
+
+                const ctx = modalPreviewCanvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, modalPreviewCanvas.width, modalPreviewCanvas.height);
+
+                await page.render({ canvasContext: ctx, viewport }).promise;
+
+                modalPageIndicator.textContent = `Page ${pageNumber} of ${modalPdfDoc.numPages}`;
+                modalPrevPageBtn.disabled = pageNumber <= 1;
+                modalNextPageBtn.disabled = pageNumber >= modalPdfDoc.numPages;
+
+                modalPreviewLoader.classList.add('hidden');
+                modalPreviewStage.classList.remove('hidden');
+            } catch (err) {
+                console.warn('Modal page render error:', err);
+            }
+        }
+
+        async function renderMergedPage(pageNumber) {
+            if (!mergedPdfDoc) return;
+            mergedPreviewLoader.classList.remove('hidden');
+            mergedPreviewStage.classList.add('hidden');
+
+            try {
+                const page = await mergedPdfDoc.getPage(pageNumber);
+                const unscaled = page.getViewport({ scale: 1.0 });
+                const scale = Math.min(1.5, Math.max(0.4, 340 / unscaled.width));
+                const viewport = page.getViewport({ scale });
+
+                mergedPreviewCanvas.width = Math.round(viewport.width);
+                mergedPreviewCanvas.height = Math.round(viewport.height);
+
+                const ctx = mergedPreviewCanvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, mergedPreviewCanvas.width, mergedPreviewCanvas.height);
+
+                await page.render({ canvasContext: ctx, viewport }).promise;
+
+                mergedPageIndicator.textContent = `Page ${pageNumber} of ${mergedPdfDoc.numPages}`;
+                mergedPageMeta.textContent = `Page ${pageNumber} of ${mergedPdfDoc.numPages} · ${Math.round(unscaled.width)}×${Math.round(unscaled.height)} pt`;
+                prevMergedPageBtn.disabled = pageNumber <= 1;
+                nextMergedPageBtn.disabled = pageNumber >= mergedPdfDoc.numPages;
+
+                mergedPreviewLoader.classList.add('hidden');
+                mergedPreviewStage.classList.remove('hidden');
+            } catch (err) {
+                console.warn('Merged page render error:', err);
+            }
+        }
+
+        async function renderItemThumbnail(item) {
+            try {
+                if (!window.pdfjsLib) return;
+                const canvas = document.getElementById(`thumb-${item.id}`);
+                const icon = document.getElementById(`thumb-icon-${item.id}`);
+                if (!canvas) return;
+
+                const arrayBuffer = await item.file.arrayBuffer();
+                const doc = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+                const page = await doc.getPage(1);
+                const unscaled = page.getViewport({ scale: 1.0 });
+                const scale = 48 / Math.max(unscaled.width, unscaled.height);
+                const viewport = page.getViewport({ scale });
+
+                canvas.width = Math.round(viewport.width);
+                canvas.height = Math.round(viewport.height);
+
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                await page.render({ canvasContext: ctx, viewport }).promise;
+
+                canvas.classList.remove('hidden');
+                if (icon) icon.classList.add('hidden');
+            } catch (err) {
+                // Keep icon fallback
+            }
+        }
 
         dropZone.addEventListener('click', () => fileInput.click());
         addMoreBtn.addEventListener('click', () => fileInput.click());
@@ -757,11 +1012,14 @@
                                 </select>
                             </div>
 
-                            <!-- PDF Icon -->
-                            <div class="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-950/60 border border-red-200/60 dark:border-red-800/60 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0">
-                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                </svg>
+                            <!-- PDF Thumbnail / Icon with Quick View Click -->
+                            <div class="relative w-9 h-11 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 overflow-hidden flex items-center justify-center shrink-0 cursor-pointer hover:ring-2 hover:ring-blue-500 transition-all select-none shadow-2xs group/thumb" title="Click to preview this document">
+                                <canvas id="thumb-${item.id}" class="w-full h-full object-cover hidden"></canvas>
+                                <div id="thumb-icon-${item.id}" class="w-full h-full flex items-center justify-center text-red-500">
+                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
                             </div>
 
                             <!-- File Details -->
@@ -777,6 +1035,13 @@
 
                         <!-- Action Buttons -->
                         <div class="flex items-center gap-0.5 sm:gap-1 shrink-0">
+                            <!-- Quick Preview Document -->
+                            <button type="button" class="btn-preview p-2 sm:p-1.5 rounded-lg text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors active:scale-95" title="Preview Document Pages">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
                             <!-- Move to Top -->
                             <button type="button" class="btn-top p-2 sm:p-1.5 rounded-lg text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors active:scale-95 ${index === 0 ? 'opacity-20 cursor-not-allowed' : ''}" title="Move to First Position" ${index === 0 ? 'disabled' : ''}>
                                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -839,6 +1104,15 @@
                 row.querySelector('.btn-down').addEventListener('click', () => moveFile(index, 1));
                 row.querySelector('.btn-bottom').addEventListener('click', () => moveFileToPosition(index, selectedFiles.length - 1));
                 row.querySelector('.btn-remove').addEventListener('click', () => removeFile(index));
+
+                // Preview events
+                const thumbBox = row.querySelector('.group\\/thumb');
+                if (thumbBox) thumbBox.addEventListener('click', () => openQuickView(item));
+                const previewBtn = row.querySelector('.btn-preview');
+                if (previewBtn) previewBtn.addEventListener('click', () => openQuickView(item));
+
+                // Render thumbnail async
+                setTimeout(() => renderItemThumbnail(item), 10);
 
                 // Drag & Drop event listeners
                 row.addEventListener('dragstart', (e) => {
@@ -1019,6 +1293,22 @@
 
                 downloadSection.classList.remove('hidden');
                 filesSection.classList.add('hidden');
+
+                // Render Merged PDF Document Preview
+                if (window.pdfjsLib) {
+                    try {
+                        mergedPagesBadge.textContent = `${totalMergedPages} Page${totalMergedPages === 1 ? '' : 's'}`;
+                        pdfjsLib.getDocument({ data: mergedPdfBytes.slice(0) }).promise.then(pdf => {
+                            mergedPdfDoc = pdf;
+                            mergedCurrentPage = 1;
+                            renderMergedPage(1);
+                        }).catch(e => {
+                            console.warn('Could not load merged preview:', e);
+                        });
+                    } catch (prevErr) {
+                        console.warn('Merged preview init error:', prevErr);
+                    }
+                }
             } catch (err) {
                 console.error('Merge error:', err);
                 errorText.textContent = 'Failed to merge documents. One of the PDF files may be password-protected or corrupted.';
