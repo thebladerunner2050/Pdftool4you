@@ -10,6 +10,7 @@
     "build": "echo 'Static app built successfully'"
   },
   "dependencies": {
+    "@pdfsmaller/pdf-decrypt": "^1.0.1",
     "express": "^4.21.2"
   }
 }

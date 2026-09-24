@@ -404,17 +404,17 @@
                     <div id="raster-settings-panel" class="hidden border-t border-zinc-200/60 dark:border-zinc-800/60 pt-3 space-y-2.5">
                         <div class="flex items-center justify-between">
                             <span class="text-[11px] font-bold text-zinc-700 dark:text-zinc-300">Raster Sharpness (DPI):</span>
-                            <span id="dpi-value-label" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 rounded-md">Balanced (150 DPI)</span>
+                            <span id="dpi-value-label" class="text-[11px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 px-2 py-0.5 rounded-md">High Quality (200 DPI)</span>
                         </div>
                         <div class="grid grid-cols-3 gap-2">
-                            <button type="button" data-dpi="100" class="dpi-selector-btn py-1.5 rounded-lg text-xs border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 font-semibold active:scale-95 transition-all">
-                                100 DPI
-                            </button>
-                            <button type="button" data-dpi="150" class="dpi-selector-btn py-1.5 rounded-lg text-xs border border-blue-500 dark:border-blue-500 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-bold active:scale-95 transition-all">
+                            <button type="button" data-dpi="150" class="dpi-selector-btn py-1.5 rounded-lg text-xs border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 font-semibold active:scale-95 transition-all">
                                 150 DPI
                             </button>
-                            <button type="button" data-dpi="200" class="dpi-selector-btn py-1.5 rounded-lg text-xs border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 font-semibold active:scale-95 transition-all">
-                                200 DPI
+                            <button type="button" data-dpi="200" class="dpi-selector-btn py-1.5 rounded-lg text-xs border border-blue-500 dark:border-blue-500 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-bold active:scale-95 transition-all">
+                                200 DPI (Default)
+                            </button>
+                            <button type="button" data-dpi="300" class="dpi-selector-btn py-1.5 rounded-lg text-xs border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 font-semibold active:scale-95 transition-all">
+                                300 DPI
                             </button>
                         </div>
                         <p class="text-[9px] text-zinc-400 dark:text-zinc-500 leading-tight">
@@ -1065,7 +1065,7 @@
                 });
                 btn.className = 'dpi-selector-btn py-1.5 rounded-lg text-xs border border-blue-500 dark:border-blue-500 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-bold active:scale-95 transition-all';
                 const dpi = btn.dataset.dpi;
-                dpiValueLabel.textContent = `${dpi === '100' ? 'Compact' : dpi === '150' ? 'Balanced' : 'Max Sharpness'} (${dpi} DPI)`;
+                dpiValueLabel.textContent = `${dpi === '150' ? 'Balanced' : dpi === '200' ? 'High Quality' : 'HD Crisp / Ultra Sharp'} (${dpi} DPI)`;
                 updateCalculationsAndLabels();
             });
         });
@@ -1320,20 +1320,20 @@
 
                 // Read selected DPI
                 const activeDpiBtn = document.querySelector('.dpi-selector-btn.font-bold');
-                let selectedDpi = activeDpiBtn ? parseInt(activeDpiBtn.dataset.dpi) : 150;
-                let initialScale = selectedDpi / 72; // Map DPI to viewport scale (e.g., 150 DPI = 2.08x scale)
+                let selectedDpi = activeDpiBtn ? parseInt(activeDpiBtn.dataset.dpi) : 200;
+                let initialScale = selectedDpi / 72; // Map DPI to viewport scale (e.g., 200 DPI = 2.77x scale)
 
-                // If budget is extremely small, we adapt starting resolution slightly but never below 100 DPI (1.38x scale)
-                if (budgetPerPage < 15 * 1024 && selectedDpi > 100) {
-                    selectedDpi = 100;
-                    initialScale = 100 / 72;
+                // If budget is extremely small, we adapt starting resolution slightly but never below 150 DPI
+                if (budgetPerPage < 20 * 1024 && selectedDpi > 150) {
+                    selectedDpi = 150;
+                    initialScale = 150 / 72;
                 }
 
                 let initialQuality = 0.75;
                 if (budgetPerPage < 25 * 1024) {
-                    initialQuality = 0.45;
+                    initialQuality = 0.55;
                 } else if (budgetPerPage < 50 * 1024) {
-                    initialQuality = 0.60;
+                    initialQuality = 0.65;
                 } else if (budgetPerPage < 100 * 1024) {
                     initialQuality = 0.75;
                 } else {
@@ -1374,17 +1374,18 @@
                         throw new Error(`Failed to encode image data for page ${pageNum}.`);
                     }
 
-                    // Adaptive JPEG quality reduction down to 0.20 to meet page budget without shrinking layout!
-                    if (jpegBlob.size > budgetPerPage * 1.10 && currentQ > 0.25) {
-                        let targetQ = currentQ * (budgetPerPage / jpegBlob.size);
-                        currentQ = Math.max(0.20, Math.min(currentQ - 0.15, targetQ));
+                    // Adaptive JPEG quality reduction down to 0.45 (replaces low-quality 0.20 floor) to meet budget while maintaining legible text
+                    if (jpegBlob.size > budgetPerPage * 1.10 && currentQ > 0.45) {
+                        let targetQ = currentQ * Math.max(0.65, budgetPerPage / jpegBlob.size);
+                        currentQ = Math.max(0.45, Math.min(currentQ - 0.08, targetQ));
                         const adjustedBlob = await canvasToJpegBlob(canvas, currentQ);
                         if (adjustedBlob) jpegBlob = adjustedBlob;
                     }
 
-                    // Only downscale pixel dimensions if quality reduction down to 0.20 wasn't enough (keeps text crisp!)
-                    if (jpegBlob.size > budgetPerPage * 1.25) {
-                        const downscaleRatio = Math.max(0.65, Math.sqrt(budgetPerPage / jpegBlob.size)); // Floor scale down to protect legibility
+                    // Only downscale dimensions slightly if quality adjustment to 0.45 was insufficient.
+                    // Floor downscaleRatio to 0.75 (never 0.65) to prevent heavy blurring of fine details.
+                    if (jpegBlob.size > budgetPerPage * 1.20) {
+                        const downscaleRatio = Math.max(0.75, Math.sqrt(budgetPerPage / jpegBlob.size));
                         const downCanvas = document.createElement('canvas');
                         downCanvas.width = Math.max(1, Math.round(canvas.width * downscaleRatio));
                         downCanvas.height = Math.max(1, Math.round(canvas.height * downscaleRatio));
@@ -1396,7 +1397,7 @@
                         downCtx.imageSmoothingQuality = 'high';
                         downCtx.drawImage(canvas, 0, 0, downCanvas.width, downCanvas.height);
                         
-                        const downBlob = await canvasToJpegBlob(downCanvas, Math.max(0.18, currentQ * 0.95));
+                        const downBlob = await canvasToJpegBlob(downCanvas, Math.max(0.42, currentQ * 0.92));
                         if (downBlob) jpegBlob = downBlob;
                     }
 

@@ -212,7 +212,35 @@
             "pan_ctrl_reset": "Reset",
             "tool_pan_title": "PAN Card Photo Maker",
             "tool_pan_desc": "Crop and format your photograph and signature to match exact NSDL (Protean) & UTIITSL guidelines under 30 KB / 50 KB limits.",
-            "tool_pan_tag": "NSDL & UTIITSL"
+            "tool_pan_tag": "NSDL & UTIITSL",
+
+            // Tool 8: PDF Password Remover
+            "tool_password_remover_meta_title": "PDF Password Remover — Unlock Password Protected PDF Files | PDFTool4You",
+            "password_remover_title": "PDF Password Remover",
+            "password_remover_subtitle": "Remove passwords, permissions, owner passwords, and security restrictions from your protected PDF files online. Fully client-side with 100% security.",
+            "password_remover_upload_title": "Upload Protected PDF Document",
+            "password_remover_upload_desc": "Drag & drop your password-protected PDF here, or click to browse. Files are decrypted entirely on your device.",
+            "password_remover_enter_pwd": "Enter Password",
+            "password_remover_pwd_placeholder": "Enter PDF user or owner password...",
+            "password_remover_pwd_hint": "Enter the correct password to unlock this PDF and remove its protection permanently.",
+            "password_remover_btn_unlock": "Remove Password & Save",
+            "password_remover_btn_unlocking": "Decrypting document...",
+            "password_remover_success_title": "PDF Unlocked Successfully!",
+            "password_remover_success_desc": "The password and all restrictions have been permanently removed. You can now download the fully decrypted PDF file.",
+            "password_remover_err_not_encrypted": "This PDF is not encrypted or password-protected.",
+            "password_remover_err_invalid_pwd": "Incorrect password. Please try again.",
+            "password_remover_err_failed": "Failed to decrypt. The file might be corrupted.",
+            "password_remover_faq_title": "Frequently Asked Questions",
+            "password_remover_faq_subtitle": "Find answers to common questions about PDF password removal and security.",
+            "password_remover_faq_q1": "How does the browser-side PDF decryption work?",
+            "password_remover_faq_a1": "This tool uses the <strong>Web Crypto API</strong> and custom cryptographic handlers completely within your browser. When you provide the password, it decrypts the document's bytes directly in your browser's memory without uploading the file to any server, guaranteeing absolute privacy.",
+            "password_remover_faq_q2": "What is the difference between User and Owner passwords?",
+            "password_remover_faq_a2": "A <strong>User password</strong> (open password) prevents unauthorized users from opening the file. An <strong>Owner password</strong> (permissions password) restricts actions like printing, editing, or copying text. This tool accepts either password to fully unlock the document and remove both types of protections.",
+            "password_remover_faq_q3": "Can I unlock a PDF if I don't know the password?",
+            "password_remover_faq_a3": "No. To protect document privacy and comply with standard security policies, you must know the correct User or Owner password to decrypt the file. This tool does not perform brute-force cracking; instead, it provides a safe, on-device way to strip password security once you enter it.",
+            "tool_password_remover_card_title": "PDF Password Remover",
+            "tool_password_remover_card_desc": "Remove passwords, owner restrictions, and edit/print blocks from secured PDF files. 100% local, safe browser decryption.",
+            "tool_password_remover_card_tag": "Decryption"
         },
         hi: {
             // Header & Navigation
@@ -417,7 +445,35 @@
             "pan_ctrl_reset": "रीसेट करें",
             "tool_pan_title": "पैन कार्ड फोटो मेकर",
             "tool_pan_desc": "NSDL (Protean) और UTIITSL सरकारी दिशानिर्देशों के अनुसार पासपोर्ट फोटो और हस्ताक्षर क्रॉप और रीसाइज करें (30 KB / 50 KB सीमा में)।",
-            "tool_pan_tag": "NSDL व UTIITSL"
+            "tool_pan_tag": "NSDL व UTIITSL",
+
+            // Tool 8: PDF Password Remover
+            "tool_password_remover_meta_title": "पीडीएफ पासवर्ड रिमूवर — सुरक्षित पीडीएफ अनलॉक करें | PDFTool4You",
+            "password_remover_title": "पीडीएफ पासवर्ड रिमूवर",
+            "password_remover_subtitle": "सुरक्षित पीडीएफ फाइलों से पासवर्ड, प्रिंट प्रतिबंध, और सुरक्षा सीमाओं को आसानी से हटाएं। पूरी तरह से आपके ब्राउज़र में सुरक्षित और गोपनीय।",
+            "password_remover_upload_title": "सुरक्षित पीडीएफ दस्तावेज़ अपलोड करें",
+            "password_remover_upload_desc": "पासवर्ड-सुरक्षित पीडीएफ फाइल को यहाँ खींचें या ब्राउज़ करें। फाइलें आपके ही डिवाइस पर प्रोसेस होती हैं।",
+            "password_remover_enter_pwd": "पासवर्ड दर्ज करें",
+            "password_remover_pwd_placeholder": "पीडीएफ पासवर्ड यहाँ लिखें...",
+            "password_remover_pwd_hint": "पीडीएफ सुरक्षा हटाने के लिए सही यूजर या ओनर पासवर्ड दर्ज करें।",
+            "password_remover_btn_unlock": "सुरक्षा हटाएं और सहेजें",
+            "password_remover_btn_unlocking": "सुरक्षा हटा रहे हैं...",
+            "password_remover_success_title": "पीडीएफ सफलतापूर्वक अनलॉक हो गया!",
+            "password_remover_success_desc": "पासवर्ड और सभी प्रकार के प्रतिबंधों को स्थायी रूप से हटा दिया गया है। अब आप अनलॉक की गई पीडीएफ फाइल डाउनलोड कर सकते हैं।",
+            "password_remover_err_not_encrypted": "यह पीडीएफ सुरक्षित या पासवर्ड-संरक्षित नहीं है।",
+            "password_remover_err_invalid_pwd": "गलत पासवर्ड। कृपया पुनः प्रयास करें।",
+            "password_remover_err_failed": "सुरक्षा हटाने में विफल। फाइल दूषित हो सकती है।",
+            "password_remover_faq_title": "अक्सर पूछे जाने वाले प्रश्न (FAQ)",
+            "password_remover_faq_subtitle": "पीडीएफ पासवर्ड हटाने और सुरक्षा के बारे में सामान्य प्रश्नों के त्वरित उत्तर।",
+            "password_remover_faq_q1": "ब्राउज़र-आधारित पीडीएफ डिक्रिप्शन कैसे काम करता है?",
+            "password_remover_faq_a1": "यह उपकरण आपके ही ब्राउज़र के भीतर सुरक्षित <strong>Web Crypto API</strong> का उपयोग करता है। जब आप पासवर्ड डालते हैं, तो यह सीधे डिवाइस की रैम (RAM) में ही पीडीएफ डिक्रिप्ट कर देता है। आपकी फ़ाइल कभी इंटरनेट पर नहीं भेजी जाती।",
+            "password_remover_faq_q2": "यूज़र (User) और ओनर (Owner) पासवर्ड में क्या अंतर है?",
+            "password_remover_faq_a2": "<strong>यूज़र पासवर्ड</strong> पीडीएफ खोलने से रोकता है। <strong>ओनर पासवर्ड</strong> संपादन, प्रिंटिंग, या टेक्स्ट कॉपी करने पर रोक लगाता है। यह टूल दस्तावेज़ को पूरी तरह अनलॉक करने के लिए दोनों में से कोई भी पासवर्ड स्वीकार कर लेता है।",
+            "password_remover_faq_q3": "क्या मैं पासवर्ड जाने बिना पीडीएफ अनलॉक कर सकता हूँ?",
+            "password_remover_faq_a3": "नहीं। दस्तावेज़ों की गोपनीयता और सुरक्षा नियमों के तहत, आपको पासवर्ड पता होना आवश्यक है। यह टूल हैकिंग या क्रैकिंग नहीं करता है, बल्कि आपको अपनी फाइलों से प्रतिबंध हटाने का एक पूर्ण सुरक्षित और तेज़ विकल्प देता है।",
+            "tool_password_remover_card_title": "पीडीएफ पासवर्ड रिमूवर",
+            "tool_password_remover_card_desc": "सुरक्षित पीडीएफ फाइलों से पासवर्ड, ओनर सुरक्षा और एडिट/प्रिंट ब्लॉक हटाएं। 100% सुरक्षित स्थानीय ब्राउज़र डिक्रिप्शन।",
+            "tool_password_remover_card_tag": "डिक्रिप्शन"
         }
     };
 
