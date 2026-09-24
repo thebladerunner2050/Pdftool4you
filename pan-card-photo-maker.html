@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title data-i18n="tool_pan_meta_title">PAN Card Photo & Signature Resizer — PDFTool4You</title>
+    <meta name="description" content="Prepare and crop passport size photo and signature for NSDL and UTIITSL PAN card applications. Free, 100% private in-browser resizer with target KB compression.">
+    <meta name="keywords" content="pan card photo size, pan card signature size, pan card photo resizer, nsdl photo resizer, utiitsl signature cropper, pan card photo maker">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pdftool4you.in/pan-card-photo-maker.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="PAN Card Photo & Signature Resizer — PDFTool4You">
+    <meta property="og:description" content="Format, crop, and compress your photo & signature to match exact NSDL & UTIITSL guidelines locally.">
+    <meta property="og:url" content="https://pdftool4you.in/pan-card-photo-maker.html">
+    <meta property="og:site_name" content="PDFTool4You">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PAN Card Photo & Signature Resizer",
+      "alternateName": ["PAN Card Photo Maker", "NSDL Photo Resizer", "UTIITSL Photo Signature Cropper"],
+      "url": "https://pdftool4you.in/pan-card-photo-maker.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "All",
+      "description": "Resize and compress passport photos and signatures to match NSDL/UTIITSL guidelines exactly.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      }
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="mobile.css">
+    
+    <!-- Cropper.js CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'system';
+            const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <script src="theme.js"></script>
+    <script src="i18n.js"></script>
+    <script src="share.js"></script>
+    <script src="mobile-nav.js" defer></script>
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: #fafbfc;
+            color: #09090b;
+        }
+        html.dark {
+            color-scheme: dark;
+        }
+        html.dark body {
+            background-color: #09090b;
+            color: #f4f4f5;
+        }
+        /* Custom styling for Cropper container */
+        .cropper-view-box,
+        .cropper-face {
+            border-radius: 4px;
+        }
+        .cropper-line, .cropper-point {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- Minimal Header -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/80 dark:border-zinc-800 transition-colors">
+        <div class="relative max-w-4xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center lg:hidden z-30">
+                <button type="button" data-mobile-drawer-trigger aria-label="Open navigation menu" class="flex items-center justify-center w-9 h-9 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:white active:scale-95 transition-all shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Logo -->
+            <a href="index.html" class="header-logo-responsive flex items-center gap-2 sm:gap-2.5 group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:transform-none z-20">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-sm transition-transform group-hover:scale-105 shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div class="flex items-baseline gap-1">
+                    <span class="font-bold text-base sm:text-lg text-zinc-900 dark:text-white tracking-tight">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                </div>
+            </a>
+
+            <!-- Header Actions -->
+            <div class="flex items-center gap-2.5">
+                <!-- Back Link -->
+                <a href="index.html" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-950 dark:hover:text-white transition-colors">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span data-i18n="nav_back">Back to Tools</span>
+                </a>
+
+                <!-- Share -->
+                <div class="hidden lg:block relative" data-share-container>
+                    <button type="button" data-share-trigger class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium">
+                        <svg class="share-icon-default w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                        </svg>
+                        <svg class="share-icon-copied hidden w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span class="share-btn-text text-xs font-semibold" data-i18n="nav_share">Share</span>
+                    </button>
+                    <!-- Share menu popup content -->
+                    <div data-share-menu class="hidden absolute right-0 mt-2 w-72 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-4 z-50 text-xs">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="font-bold text-zinc-900 dark:text-white text-sm" data-i18n="share_title">Share this Tool</div>
+                            <span class="share-copied-badge hidden text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full" data-i18n="share_copied">Copied!</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 mb-3">
+                            <input type="text" readonly data-share-url-input class="w-full bg-transparent border-0 px-2 text-xs font-mono" value="">
+                            <button type="button" data-share-action="copy" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-xs shadow-sm cursor-pointer">Copy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Language Selection -->
+                <div class="relative" data-lang-menu-container>
+                    <button type="button" data-lang-trigger class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-semibold focus:outline-none">
+                        <svg class="w-4 h-4 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 11.37 7.31 16.19 3 19"/>
+                        </svg>
+                        <span class="lang-current-label">EN</span>
+                        <svg class="w-3 h-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div data-lang-menu class="hidden absolute right-0 mt-2 w-40 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1 z-50 text-xs">
+                        <button type="button" data-lang-value="en" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span data-i18n="lang_name_en">English</span>
+                            <span class="lang-check opacity-0 text-blue-600 dark:text-blue-400">✓</span>
+                        </button>
+                        <button type="button" data-lang-value="hi" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                            <span data-i18n="lang_name_hi">हिन्दी (Hindi)</span>
+                            <span class="lang-check opacity-0 text-blue-600 dark:text-blue-400">✓</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Dark/Light Theme Dropdown -->
+                <div class="relative" data-theme-menu-container>
+                    <button type="button" data-theme-trigger class="flex items-center justify-center w-9 h-9 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all shadow-2xs cursor-pointer">
+                        <!-- Light Icon -->
+                        <svg class="theme-icon-light hidden w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <!-- Dark Icon -->
+                        <svg class="theme-icon-dark hidden w-4 h-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                    </button>
+                    <div data-theme-menu class="hidden absolute right-0 mt-2 w-40 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1 z-50 text-xs">
+                        <button type="button" data-theme-value="system" class="w-full flex items-center justify-between px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-left transition-colors">
+                            <span data-i18n="theme_system">System</span>
+                        </button>
+                        <button type="button" data-theme-value="light" class="w-full flex items-center justify-between px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-left transition-colors">
+                            <span data-i18n="theme_light">Light</span>
+                        </button>
+                        <button type="button" data-theme-value="dark" class="w-full flex items-center justify-between px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-left transition-colors">
+                            <span data-i18n="theme_dark">Dark</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- App Content Wrapper -->
+    <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-8 w-full">
+        <!-- Title & Subtitle Section -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-3" data-i18n="pan_tool_title">
+                PAN Card Photo & Signature Resizer
+            </h1>
+            <p class="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto" data-i18n="pan_tool_subtitle">
+                Crop, resize, and compress your photograph and signature to match the exact guidelines for NSDL (Protean) or UTIITSL application portals completely on your device.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- LEFT COLUMN: Image Upload / Crop Workspace (7 cols) -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-850 p-4 sm:p-6 shadow-sm">
+                    
+                    <!-- Upload Dropzone -->
+                    <div id="dropzone" class="relative group border-2 border-dashed border-zinc-200 dark:border-zinc-800 hover:border-blue-500 dark:hover:border-blue-500 rounded-2xl p-8 sm:p-12 text-center transition-all cursor-pointer bg-zinc-50/50 dark:bg-zinc-900/50">
+                        <input type="file" id="file-input" accept="image/png, image/jpeg, image/jpg, image/webp" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                        <div class="space-y-4">
+                            <div class="w-12 h-12 mx-auto rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 flex items-center justify-center transition-transform group-hover:scale-105 shadow-2xs">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <div class="space-y-1.5">
+                                <h3 class="text-sm font-bold text-zinc-900 dark:text-white" data-i18n="pan_upload_title">Upload Photo or Signature Image</h3>
+                                <p class="text-xs text-zinc-500 dark:text-zinc-400 max-w-xs mx-auto leading-normal" data-i18n="pan_upload_desc">
+                                    Drag & drop your file here, or click to browse. Supports JPG, PNG, and WebP formats.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cropper Panel (Hidden until image loaded) -->
+                    <div id="cropper-container" class="hidden space-y-4">
+                        <div class="relative bg-zinc-100 dark:bg-zinc-950 rounded-xl overflow-hidden aspect-video border border-zinc-200 dark:border-zinc-800 max-h-[360px] flex items-center justify-center">
+                            <img id="cropper-image" src="" alt="Source image for cropping" class="max-w-full max-h-full block">
+                        </div>
+                        
+                        <!-- Cropper Controls -->
+                        <div class="flex flex-wrap items-center justify-center gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                            <button type="button" id="btn-rotate-left" class="p-2 bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-xl border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all text-xs font-bold inline-flex items-center gap-1" title="Rotate Left 90°">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.334 4z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8m0 0l-3 3m3-3L9 1"/>
+                                </svg>
+                                <span>-90°</span>
+                            </button>
+                            <button type="button" id="btn-rotate-right" class="p-2 bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-xl border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all text-xs font-bold inline-flex items-center gap-1" title="Rotate Right 90°">
+                                <span>+90°</span>
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.934 12.8a1 1 0 000-1.6l-5.334-4A1 1 0 005 8v8a1 1 0 001.6.8l5.334-4z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12a8 8 0 00-8-8m0 0l3 3m-3-3l3-3"/>
+                                </svg>
+                            </button>
+                            <button type="button" id="btn-flip-h" class="p-2 bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-xl border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all text-xs font-bold inline-flex items-center gap-1" title="Flip Horizontal">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                                </svg>
+                                <span data-i18n="pan_ctrl_flip_h">Flip H</span>
+                            </button>
+                            <button type="button" id="btn-flip-v" class="p-2 bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-800/80 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-xl border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all text-xs font-bold inline-flex items-center gap-1" title="Flip Vertical">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8v12m0 0l-4-4m4 4l4-4m6 0V4m0 0l4 4m-4-4l-4 4"/>
+                                </svg>
+                                <span data-i18n="pan_ctrl_flip_v">Flip V</span>
+                            </button>
+                            <button type="button" id="btn-reset" class="p-2 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-950 text-red-600 dark:text-red-400 rounded-xl border border-red-200 dark:border-red-900 active:scale-95 transition-all text-xs font-bold inline-flex items-center gap-1" title="Reset Image">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"/>
+                                </svg>
+                                <span data-i18n="pan_ctrl_reset">Reset</span>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Guidance Information Alert -->
+                <div class="bg-blue-50/50 dark:bg-zinc-900 border border-blue-200/60 dark:border-zinc-800 rounded-2xl p-4 sm:p-5">
+                    <h3 class="text-xs font-extrabold text-blue-900 dark:text-blue-400 uppercase tracking-wider mb-2" data-i18n="pan_guidelines_title">PORTAL GUIDELINES</h3>
+                    <ul class="space-y-2 text-xs text-zinc-700 dark:text-zinc-300 leading-normal list-disc pl-4">
+                        <li data-i18n="pan_guide_1"><strong>White Background:</strong> Ensure passport photo has a solid plain white background. Avoid colorful, blurred backgrounds.</li>
+                        <li data-i18n="pan_guide_2"><strong>Black Ink Signature:</strong> Please sign with <strong>black ballpoint ink</strong> on clear white paper. Blue ink is highly discouraged as scanners might distort it.</li>
+                        <li data-i18n="pan_guide_3"><strong>Sharpness:</strong> Face must be straight-facing, with 70% to 80% area coverage. Caps, hats, masks, or dark glasses are strictly rejected.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Resizer Configuration & Live Output (5 cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                
+                <!-- PORTAL PRESET CONTROLLER -->
+                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-850 p-4 sm:p-5 shadow-sm space-y-4">
+                    <h2 class="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider" data-i18n="pan_settings_section">Application Settings</h2>
+                    
+                    <!-- Agency Selection -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider" data-i18n="pan_agency_label">Application Portal</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="relative flex items-center justify-between p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 cursor-pointer transition-all select-none has-[:checked]:border-blue-600 has-[:checked]:ring-1 has-[:checked]:ring-blue-600 has-[:checked]:bg-blue-50/20 dark:has-[:checked]:bg-blue-950/20">
+                                <input type="radio" name="pan-agency" value="nsdl" checked class="sr-only">
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-bold text-zinc-900 dark:text-white">NSDL</span>
+                                    <span class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">Protean e-Gov</span>
+                                </div>
+                                <div class="w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-700 flex items-center justify-center after:content-[''] after:w-2 after:h-2 after:bg-blue-600 after:rounded-full after:opacity-0 peer-checked:after:opacity-100"></div>
+                            </label>
+
+                            <label class="relative flex items-center justify-between p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 cursor-pointer transition-all select-none has-[:checked]:border-blue-600 has-[:checked]:ring-1 has-[:checked]:ring-blue-600 has-[:checked]:bg-blue-50/20 dark:has-[:checked]:bg-blue-950/20">
+                                <input type="radio" name="pan-agency" value="utiitsl" class="sr-only">
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-bold text-zinc-900 dark:text-white">UTIITSL</span>
+                                    <span class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium">Govt Services</span>
+                                </div>
+                                <div class="w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-700 flex items-center justify-center after:content-[''] after:w-2 after:h-2 after:bg-blue-600 after:rounded-full after:opacity-0 peer-checked:after:opacity-100"></div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Document Type -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider" data-i18n="pan_doc_label">Document Type</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="relative flex items-center justify-between p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 cursor-pointer transition-all select-none has-[:checked]:border-blue-600 has-[:checked]:ring-1 has-[:checked]:ring-blue-600 has-[:checked]:bg-blue-50/20 dark:has-[:checked]:bg-blue-950/20">
+                                <input type="radio" name="pan-doctype" value="photo" checked class="sr-only">
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-bold text-zinc-900 dark:text-white" data-i18n="pan_doc_photo_title">Passport Photo</span>
+                                    <span class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium" data-i18n="pan_doc_photo_desc">For card front</span>
+                                </div>
+                                <div class="w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-700 flex items-center justify-center"></div>
+                            </label>
+
+                            <label class="relative flex items-center justify-between p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 cursor-pointer transition-all select-none has-[:checked]:border-blue-600 has-[:checked]:ring-1 has-[:checked]:ring-blue-600 has-[:checked]:bg-blue-50/20 dark:has-[:checked]:bg-blue-950/20">
+                                <input type="radio" name="pan-doctype" value="signature" class="sr-only">
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-bold text-zinc-900 dark:text-white" data-i18n="pan_doc_sig_title">Signature</span>
+                                    <span class="text-[10px] text-zinc-500 dark:text-zinc-400 font-medium" data-i18n="pan_doc_sig_desc">For validation</span>
+                                </div>
+                                <div class="w-4 h-4 rounded-full border border-zinc-300 dark:border-zinc-700 flex items-center justify-center"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PORTAL GUIDELINE SPECIFICATIONS -->
+                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-850 p-4 sm:p-5 shadow-sm space-y-3.5">
+                    <h2 class="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider" data-i18n="pan_specs_title">Target Specifications</h2>
+                    
+                    <div class="space-y-2 text-xs">
+                        <!-- Dimensions -->
+                        <div class="flex items-center justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
+                            <span class="text-zinc-500 dark:text-zinc-400" data-i18n="pan_spec_dims">Required Dimensions:</span>
+                            <span id="spec-dims" class="font-bold text-zinc-900 dark:text-white font-mono">3.5 cm x 2.5 cm</span>
+                        </div>
+                        <!-- DPI -->
+                        <div class="flex items-center justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
+                            <span class="text-zinc-500 dark:text-zinc-400" data-i18n="pan_spec_dpi">Resolution (DPI):</span>
+                            <span id="spec-dpi" class="font-bold text-zinc-900 dark:text-white font-mono">200 DPI</span>
+                        </div>
+                        <!-- Pixel Resolution -->
+                        <div class="flex items-center justify-between py-1.5 border-b border-zinc-100 dark:border-zinc-800">
+                            <span class="text-zinc-500 dark:text-zinc-400" data-i18n="pan_spec_pixels">Calculated Pixels:</span>
+                            <span id="spec-pixels" class="font-bold text-zinc-900 dark:text-white font-mono">197 x 276 px</span>
+                        </div>
+                        <!-- File Size Limit -->
+                        <div class="flex items-center justify-between py-1.5">
+                            <span class="text-zinc-500 dark:text-zinc-400" data-i18n="pan_spec_size">Maximum File Size:</span>
+                            <span id="spec-size" class="font-bold text-emerald-600 dark:text-emerald-400 font-mono bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md">≤ 50 KB</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUALITY AND COMPRESSION CONTROLS -->
+                <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-850 p-4 sm:p-5 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider" data-i18n="pan_compress_settings">Quality & Compress Settings</h2>
+                        <span id="live-file-size" class="text-[10px] font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 px-2 py-0.5 rounded-full">Estimated: 12 KB</span>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- Quality Slider -->
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-xs">
+                                <span class="text-zinc-500 dark:text-zinc-400" data-i18n="pan_quality_label">JPEG Compression Level</span>
+                                <span id="quality-value" class="font-bold text-zinc-900 dark:text-white font-mono">85%</span>
+                            </div>
+                            <input type="range" id="quality-slider" min="10" max="100" value="85" class="w-full h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-500">
+                        </div>
+
+                        <!-- Auto Limit Toggle -->
+                        <label class="flex items-start gap-2.5 cursor-pointer select-none py-1">
+                            <input type="checkbox" id="auto-compress" checked class="mt-0.5 h-3.5 w-3.5 rounded border-zinc-300 text-blue-600 focus:ring-blue-500/20 focus:ring-offset-0 focus:outline-none dark:bg-zinc-900 dark:border-zinc-800 cursor-pointer">
+                            <div class="flex flex-col">
+                                <span class="text-xs font-bold text-zinc-800 dark:text-zinc-200" data-i18n="pan_auto_compress_title">Auto-guarantee size limits</span>
+                                <span class="text-[10px] text-zinc-500 dark:text-zinc-400 mt-0.5 leading-normal" data-i18n="pan_auto_compress_desc">Automatically lowers image quality if the output file exceeds the portal's strict size limit (e.g. 50 KB).</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Downloader & Action button -->
+                    <div class="pt-2">
+                        <button type="button" id="btn-download-jpg" disabled class="w-full py-3 bg-zinc-100 dark:bg-zinc-800 text-zinc-400 dark:text-zinc-600 cursor-not-allowed text-xs font-extrabold uppercase tracking-wider rounded-xl hover:shadow-sm active:scale-98 transition-all flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            <span id="download-text" data-i18n="pan_btn_download_disabled">Upload image to download</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- FAQ Section -->
+        <section class="mt-16 pt-12 border-t border-zinc-200 dark:border-zinc-800">
+            <div class="text-center max-w-xl mx-auto mb-8">
+                <h2 class="text-2xl font-bold text-zinc-900 dark:text-white tracking-tight mb-2" data-i18n="pan_faq_title">Frequently Asked Questions</h2>
+                <p class="text-xs text-zinc-500 dark:text-zinc-400" data-i18n="pan_faq_subtitle">Specific queries about PAN card photo and signature submission.</p>
+            </div>
+
+            <div class="max-w-2xl mx-auto space-y-4">
+                <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
+                    <h3 class="text-xs font-extrabold text-zinc-900 dark:text-white uppercase tracking-wider mb-1" data-i18n="pan_faq_q1">What is the official size requirement for NSDL photo?</h3>
+                    <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed" data-i18n="pan_faq_a1">
+                        For NSDL applications, the passport photo must be exactly <strong>3.5 cm x 2.5 cm</strong>, with a scanning resolution of <strong>200 DPI</strong>. The resulting file size should be strictly <strong>under 50 KB</strong> in JPEG format.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
+                    <h3 class="text-xs font-extrabold text-zinc-900 dark:text-white uppercase tracking-wider mb-1" data-i18n="pan_faq_q2">Why does my signature need to be in black ink?</h3>
+                    <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed" data-i18n="pan_faq_a2">
+                        Online verification systems run high-contrast scanning. <strong>Black ballpoint ink</strong> on clear white paper creates the highest contrast, preventing blurry borders and eliminating rejection risk. Blue ink or pencil marks can fade or drop out during system processing.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-5">
+                    <h3 class="text-xs font-extrabold text-zinc-900 dark:text-white uppercase tracking-wider mb-1" data-i18n="pan_faq_q3">Does UTIITSL use the same requirements as NSDL?</h3>
+                    <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed" data-i18n="pan_faq_a3">
+                        No. UTIITSL has distinct specifications. Photographs must be precisely <strong>213 x 213 pixels</strong> (at 300 DPI) and <strong>under 30 KB</strong>. Signatures must be <strong>400 x 200 pixels</strong> (at 600 DPI) and <strong>under 60 KB</strong>. This tool automatically shifts presets based on your portal selection.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="mt-20 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-colors">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10 text-xs">
+                
+                <!-- Brand Info -->
+                <div class="md:col-span-1 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-xs">
+                            <svg class="w-3.5 h-3.5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <span class="font-bold text-sm text-zinc-900 dark:text-white">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                    </div>
+                    <p class="text-[11px] text-zinc-500 dark:text-zinc-400 leading-relaxed" data-i18n="footer_brand_desc">
+                        High-performance in-browser PDF & image suite. Compress, merge, split, watermark, and convert without uploading files.
+                    </p>
+                    <div class="pt-1 flex items-center gap-2 text-[10px] text-zinc-400 dark:text-zinc-500">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span data-i18n="badge_memory">100% In-Browser Memory</span>
+                    </div>
+                </div>
+
+                <!-- PDF Tools -->
+                <div>
+                    <h4 class="font-semibold text-zinc-900 dark:text-white mb-3.5" data-i18n="footer_pdf_tools">PDF Tools</h4>
+                    <ul class="space-y-2.5 text-zinc-600 dark:text-zinc-400">
+                        <li><a href="pdf-compressor.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_compressor">Compress PDF</a></li>
+                        <li><a href="merge-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_merge">Merge PDF</a></li>
+                        <li><a href="split-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_split">Split PDF</a></li>
+                        <li><a href="pdf-watermarker.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_watermark">Watermark PDF</a></li>
+                    </ul>
+                </div>
+
+                <!-- Image Tools -->
+                <div>
+                    <h4 class="font-semibold text-zinc-900 dark:text-white mb-3.5" data-i18n="footer_image_tools">Image Tools</h4>
+                    <ul class="space-y-2.5 text-zinc-600 dark:text-zinc-400">
+                        <li><a href="image-to-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_img2pdf">Image to PDF</a></li>
+                        <li><a href="png-to-jpg.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_png2jpg">PNG to JPG</a></li>
+                        <li><a href="jpg-to-png.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_jpg2png">JPG to PNG</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal & Trust -->
+                <div>
+                    <h4 class="font-semibold text-zinc-900 dark:text-white mb-3.5" data-i18n="footer_company_legal">Company & Legal</h4>
+                    <ul class="space-y-2.5 text-zinc-600 dark:text-zinc-400">
+                        <li><a href="privacy-policy.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_privacy">Privacy Policy</a></li>
+                        <li><a href="terms-and-conditions.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_terms">Terms & Conditions</a></li>
+                        <li><a href="about-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_about">About Us</a></li>
+                        <li><a href="contact-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_contact">Contact Us</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Copyright -->
+            <div class="pt-8 border-t border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-zinc-400 dark:text-zinc-500">
+                <p data-i18n="footer_copyright">© 2026 PDFTool4You. All rights reserved. 100% Client-Side Processing.</p>
+                <div class="flex items-center gap-4">
+                    <a href="privacy-policy.html" class="hover:underline" data-i18n="footer_privacy">Privacy</a>
+                    <a href="terms-and-conditions.html" class="hover:underline" data-i18n="footer_terms">Terms</a>
+                    <a href="contact-us.html" class="hover:underline" data-i18n="footer_contact">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- CLIENT RESIZER LOGIC -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.getElementById('file-input');
+            const dropzone = document.getElementById('dropzone');
+            const cropperContainer = document.getElementById('cropper-container');
+            const cropperImage = document.getElementById('cropper-image');
+            
+            // Specifications DOM elements
+            const specDims = document.getElementById('spec-dims');
+            const specDpi = document.getElementById('spec-dpi');
+            const specPixels = document.getElementById('spec-pixels');
+            const specSize = document.getElementById('spec-size');
+
+            // Compressor sliders and info
+            const qualitySlider = document.getElementById('quality-slider');
+            const qualityValue = document.getElementById('quality-value');
+            const autoCompress = document.getElementById('auto-compress');
+            const liveFileSize = document.getElementById('live-file-size');
+
+            // Workspace buttons
+            const btnRotateLeft = document.getElementById('btn-rotate-left');
+            const btnRotateRight = document.getElementById('btn-rotate-right');
+            const btnFlipH = document.getElementById('btn-flip-h');
+            const btnFlipV = document.getElementById('btn-flip-v');
+            const btnReset = document.getElementById('btn-reset');
+            const btnDownloadJpg = document.getElementById('btn-download-jpg');
+            const downloadText = document.getElementById('download-text');
+
+            // Cropper state
+            let cropperInstance = null;
+            let currentImageSource = null;
+            let flipH = 1;
+            let flipV = 1;
+
+            // Target Specifications State
+            let targetSpecs = {
+                widthPx: 197,
+                heightPx: 276,
+                dpi: 200,
+                maxSizeKb: 50
+            };
+
+            // Calculate guidelines based on Radio buttons
+            function updateSpecifications() {
+                const selectedPortal = document.querySelector('input[name="pan-agency"]:checked').value;
+                const selectedDocType = document.querySelector('input[name="pan-doctype"]:checked').value;
+
+                if (selectedPortal === 'nsdl') {
+                    if (selectedDocType === 'photo') {
+                        // NSDL Photo: 3.5 cm x 2.5 cm (2.5 W x 3.5 H) at 200 DPI
+                        targetSpecs = {
+                            widthPx: 197, // 2.5 cm / 2.54 * 200 DPI ≈ 197
+                            heightPx: 276, // 3.5 cm / 2.54 * 200 DPI ≈ 276
+                            dpi: 200,
+                            maxSizeKb: 50,
+                            dimensionsText: "3.5 cm x 2.5 cm (Height x Width)"
+                        };
+                    } else {
+                        // NSDL Signature: 2.0 cm x 4.5 cm (4.5 W x 2 H) at 200 DPI
+                        targetSpecs = {
+                            widthPx: 354, // 4.5 cm / 2.54 * 200 DPI ≈ 354
+                            heightPx: 157, // 2 cm / 2.54 * 200 DPI ≈ 157
+                            dpi: 200,
+                            maxSizeKb: 50,
+                            dimensionsText: "2.0 cm x 4.5 cm (Height x Width)"
+                        };
+                    }
+                } else { // utiitsl
+                    if (selectedDocType === 'photo') {
+                        // UTIITSL Photo: 213 px x 213 px at 300 DPI
+                        targetSpecs = {
+                            widthPx: 213,
+                            heightPx: 213,
+                            dpi: 300,
+                            maxSizeKb: 30,
+                            dimensionsText: "213 x 213 px (1:1 Ratio)"
+                        };
+                    } else {
+                        // UTIITSL Signature: 400 px x 200 px at 600 DPI
+                        targetSpecs = {
+                            widthPx: 400,
+                            heightPx: 200,
+                            dpi: 600,
+                            maxSizeKb: 60,
+                            dimensionsText: "400 x 200 px (2:1 Ratio)"
+                        };
+                    }
+                }
+
+                // Update UI Labels
+                specDims.textContent = targetSpecs.dimensionsText;
+                specDpi.textContent = `${targetSpecs.dpi} DPI`;
+                specPixels.textContent = `${targetSpecs.widthPx} x ${targetSpecs.heightPx} px`;
+                specSize.textContent = `≤ ${targetSpecs.maxSizeKb} KB`;
+
+                // Update Cropper configuration if active
+                if (cropperInstance) {
+                    const aspect = targetSpecs.widthPx / targetSpecs.heightPx;
+                    cropperInstance.setAspectRatio(aspect);
+                    triggerLiveCalculation();
+                }
+            }
+
+            // Bind Radio buttons changes
+            document.querySelectorAll('input[name="pan-agency"]').forEach(radio => {
+                radio.addEventListener('change', updateSpecifications);
+            });
+            document.querySelectorAll('input[name="pan-doctype"]').forEach(radio => {
+                radio.addEventListener('change', updateSpecifications);
+            });
+
+            // Initialize on start
+            updateSpecifications();
+
+            // Drag and Drop support
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.classList.add('border-blue-500', 'bg-blue-50/20');
+            });
+
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.classList.remove('border-blue-500', 'bg-blue-50/20');
+            });
+
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.classList.remove('border-blue-500', 'bg-blue-50/20');
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    loadFile(e.dataTransfer.files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files && e.target.files[0]) {
+                    loadFile(e.target.files[0]);
+                }
+            });
+
+            // Load file into source & initialize Cropper.js
+            function loadFile(file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    currentImageSource = event.target.result;
+                    cropperImage.src = currentImageSource;
+                    
+                    // Reset flips
+                    flipH = 1;
+                    flipV = 1;
+
+                    // Destroy old cropper if any
+                    if (cropperInstance) {
+                        cropperInstance.destroy();
+                    }
+
+                    // Show cropper workspace & hide dropzone
+                    dropzone.classList.add('hidden');
+                    cropperContainer.classList.remove('hidden');
+
+                    // Set target aspect ratio
+                    const initialAspect = targetSpecs.widthPx / targetSpecs.heightPx;
+
+                    // Build fresh cropper instance
+                    cropperInstance = new Cropper(cropperImage, {
+                        aspectRatio: initialAspect,
+                        viewMode: 1,
+                        background: true,
+                        autoCropArea: 0.9,
+                        responsive: true,
+                        restore: false,
+                        checkOrientation: false,
+                        cropend() {
+                            triggerLiveCalculation();
+                        },
+                        zoom() {
+                            triggerLiveCalculation();
+                        },
+                        ready() {
+                            triggerLiveCalculation();
+                        }
+                    });
+
+                    // Enable download actions
+                    btnDownloadJpg.disabled = false;
+                    btnDownloadJpg.className = "w-full py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-xs font-extrabold uppercase tracking-wider rounded-xl hover:shadow-md active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer";
+                    
+                    // Update CTA Text based on portal
+                    const lang = document.documentElement.lang || 'en';
+                    downloadText.textContent = lang === 'hi' ? "जेपीजी (JPG) डाउनलोड करें" : "Download Optimized JPG";
+                };
+                reader.readAsDataURL(file);
+            }
+
+            // Crop Action and Real-Time Size Engine
+            let calcTimeout = null;
+            function triggerLiveCalculation() {
+                if (calcTimeout) clearTimeout(calcTimeout);
+                calcTimeout = setTimeout(async () => {
+                    if (!cropperInstance) return;
+                    const sizeBytes = await getResizedBlobSize();
+                    if (sizeBytes) {
+                        const sizeKb = (sizeBytes / 1024).toFixed(1);
+                        liveFileSize.textContent = `Estimated: ${sizeKb} KB`;
+
+                        // Add feedback color based on limit satisfaction
+                        if (parseFloat(sizeKb) <= targetSpecs.maxSizeKb) {
+                            liveFileSize.className = "text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full";
+                        } else {
+                            liveFileSize.className = "text-[10px] font-bold text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/40 px-2 py-0.5 rounded-full";
+                        }
+                    }
+                }, 100);
+            }
+
+            // Quality slider events
+            qualitySlider.addEventListener('input', (e) => {
+                qualityValue.textContent = `${e.target.value}%`;
+                triggerLiveCalculation();
+            });
+
+            autoCompress.addEventListener('change', () => {
+                triggerLiveCalculation();
+            });
+
+            // Get target size blob matching dimensions
+            function getResizedBlobSize() {
+                return new Promise((resolve) => {
+                    if (!cropperInstance) return resolve(0);
+
+                    // Get canvas with exact destination widths/heights
+                    const croppedCanvas = cropperInstance.getCroppedCanvas({
+                        width: targetSpecs.widthPx,
+                        height: targetSpecs.heightPx,
+                        imageSmoothingEnabled: true,
+                        imageSmoothingQuality: 'high'
+                    });
+
+                    if (!croppedCanvas) return resolve(0);
+
+                    const initialQ = parseInt(qualitySlider.value) / 100;
+                    croppedCanvas.toBlob((blob) => {
+                        if (!blob) return resolve(0);
+                        
+                        // If auto compression is requested and blob exceeds maximum size, compress dynamically
+                        if (autoCompress.checked && (blob.size / 1024) > targetSpecs.maxSizeKb) {
+                            adaptiveCompress(croppedCanvas, targetSpecs.maxSizeKb, initialQ).then(finalBlob => {
+                                resolve(finalBlob.size);
+                            });
+                        } else {
+                            resolve(blob.size);
+                        }
+                    }, 'image/jpeg', initialQ);
+                });
+            }
+
+            // Dynamic Adaptive Compressor Loop to hit the target KB portal limit!
+            function adaptiveCompress(canvas, limitKb, startingQ) {
+                return new Promise((resolve) => {
+                    let quality = startingQ;
+                    const checkLoop = () => {
+                        canvas.toBlob((blob) => {
+                            if (!blob) return resolve(blob);
+                            const currentKb = blob.size / 1024;
+                            
+                            if (currentKb <= limitKb || quality <= 0.15) {
+                                resolve(blob);
+                            } else {
+                                // Lower quality slightly
+                                quality -= 0.08;
+                                checkLoop();
+                            }
+                        }, 'image/jpeg', quality);
+                    };
+                    checkLoop();
+                });
+            }
+
+            // Button actions inside the workspace
+            btnRotateLeft.addEventListener('click', () => {
+                if (cropperInstance) {
+                    cropperInstance.rotate(-90);
+                    triggerLiveCalculation();
+                }
+            });
+
+            btnRotateRight.addEventListener('click', () => {
+                if (cropperInstance) {
+                    cropperInstance.rotate(90);
+                    triggerLiveCalculation();
+                }
+            });
+
+            btnFlipH.addEventListener('click', () => {
+                if (cropperInstance) {
+                    flipH = -flipH;
+                    cropperInstance.scaleX(flipH);
+                    triggerLiveCalculation();
+                }
+            });
+
+            btnFlipV.addEventListener('click', () => {
+                if (cropperInstance) {
+                    flipV = -flipV;
+                    cropperInstance.scaleY(flipV);
+                    triggerLiveCalculation();
+                }
+            });
+
+            btnReset.addEventListener('click', () => {
+                if (cropperInstance) {
+                    cropperInstance.reset();
+                    flipH = 1;
+                    flipV = 1;
+                    cropperInstance.scale(1, 1);
+                    qualitySlider.value = 85;
+                    qualityValue.textContent = '85%';
+                    triggerLiveCalculation();
+                }
+            });
+
+            // DOWNLOAD EVENT HANDLER
+            btnDownloadJpg.addEventListener('click', () => {
+                if (!cropperInstance) return;
+
+                const croppedCanvas = cropperInstance.getCroppedCanvas({
+                    width: targetSpecs.widthPx,
+                    height: targetSpecs.heightPx,
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high'
+                });
+
+                if (!croppedCanvas) return;
+
+                const initialQ = parseInt(qualitySlider.value) / 100;
+
+                croppedCanvas.toBlob((blob) => {
+                    if (!blob) return;
+
+                    // Run adaptive compression if checked
+                    if (autoCompress.checked && (blob.size / 1024) > targetSpecs.maxSizeKb) {
+                        adaptiveCompress(croppedCanvas, targetSpecs.maxSizeKb, initialQ).then(finalBlob => {
+                            saveBlobToDisk(finalBlob);
+                        });
+                    } else {
+                        saveBlobToDisk(blob);
+                    }
+                }, 'image/jpeg', initialQ);
+            });
+
+            function saveBlobToDisk(blob) {
+                const selectedPortal = document.querySelector('input[name="pan-agency"]:checked').value.toUpperCase();
+                const selectedDocType = document.querySelector('input[name="pan-doctype"]:checked').value;
+                const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+                
+                const filename = `PAN_${selectedPortal}_${selectedDocType.toUpperCase()}_${timestamp}.jpg`;
+                
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                
+                // Cleanup
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+
+            // Expose function for localization switcher integration
+            window.updateCTAText = function() {
+                if (!cropperInstance) return;
+                const lang = document.documentElement.lang || 'en';
+                downloadText.textContent = lang === 'hi' ? "जेपीजी (JPG) डाउनलोड करें" : "Download Optimized JPG";
+            };
+
+            // Listen to language change to update CTA text
+            window.addEventListener('languagechange', () => {
+                window.updateCTAText();
+            });
+        });
+    </script>
+</body>
+</html>
