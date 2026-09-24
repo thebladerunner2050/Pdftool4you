@@ -50,6 +50,14 @@ app.get('/image-to-pdf', (req, res) => {
   res.sendFile(path.join(__dirname, 'image-to-pdf.html'));
 });
 
+app.get(['/remove-pdf-password', '/unlock-pdf', '/decrypt-pdf'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'remove-pdf-password.html'));
+});
+
+app.get(['/pan-card-photo-maker', '/pan-card-resizer'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'pan-card-photo-maker.html'));
+});
+
 // Important pages for Google AdSense compliance & T&C
 app.get(['/privacy-policy', '/privacy'], (req, res) => {
   res.sendFile(path.join(__dirname, 'privacy-policy.html'));
