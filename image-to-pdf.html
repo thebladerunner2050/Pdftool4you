@@ -3,8 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Image to PDF Converter — PDFTool4You</title>
-    <meta name="description" content="Convert JPG and PNG images into standard PDF documents directly in your browser. 100% private.">
+    <title>Image to PDF Converter — PDFTool | PDFTool4You</title>
+    <meta name="description" content="Convert JPG, PNG, and WebP images to high-quality PDF files online for free with PDFTool. 100% private in-browser conversion with zero server uploads.">
+    <meta name="keywords" content="pdftool, image to pdf, jpg to pdf, png to pdf, convert photos to pdf, pdf tool">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pdftool4you.in/image-to-pdf.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Image to PDF Converter — PDFTool">
+    <meta property="og:description" content="Convert JPG and PNG images into standard PDF documents directly in your browser. 100% private.">
+    <meta property="og:url" content="https://pdftool4you.in/image-to-pdf.html">
+    <meta property="og:site_name" content="PDFTool4You">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Image to PDF Online — PDFTool">
+    <meta name="twitter:description" content="Convert images to PDF directly in your browser with zero uploads.">
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PDFTool Image to PDF Converter",
+      "alternateName": ["Image to PDF", "PDFTool", "JPG to PDF"],
+      "url": "https://pdftool4you.in/image-to-pdf.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "All",
+      "description": "Convert JPG, PNG, and WebP images into standard PDF documents directly in your browser.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -300,9 +330,26 @@
                     </div>
                 </div>
 
-                <button id="convert-btn" class="w-full py-3 px-6 rounded-xl font-bold text-xs sm:text-sm text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 transition-all shadow-sm flex items-center justify-center gap-2">
-                    <span>Generate PDF Document</span>
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <!-- Progress & Loading Indicator -->
+                <div id="progress-container" class="hidden space-y-2 p-3.5 bg-amber-50/70 dark:bg-amber-950/40 border border-amber-200/70 dark:border-amber-800/60 rounded-xl">
+                    <div class="flex justify-between items-center text-xs font-semibold text-amber-900 dark:text-amber-200">
+                        <span id="progress-label" class="flex items-center gap-2">
+                            <svg class="animate-spin h-4 w-4 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span>Processing image & creating PDF...</span>
+                        </span>
+                        <span id="progress-val" class="font-mono text-xs font-bold text-amber-700 dark:text-amber-300">0%</span>
+                    </div>
+                    <div class="w-full bg-zinc-200 dark:bg-zinc-700 h-2 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="bg-gradient-to-r from-amber-500 to-amber-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <button id="convert-btn" class="w-full py-3 px-6 rounded-xl font-bold text-xs sm:text-sm text-white bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 dark:text-zinc-900 transition-all shadow-sm flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer">
+                    <span id="convert-btn-text">Generate PDF Document</span>
+                    <svg id="convert-btn-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
                     </svg>
                 </button>
@@ -452,6 +499,13 @@
         const outputPdfCanvas = document.getElementById('output-pdf-canvas');
         const outputPdfMeta = document.getElementById('output-pdf-meta');
 
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+        const progressLabel = document.getElementById('progress-label');
+        const progressVal = document.getElementById('progress-val');
+        const convertBtnText = document.getElementById('convert-btn-text');
+        const convertBtnIcon = document.getElementById('convert-btn-icon');
+
         let originalFile = null;
         let currentPdfUrl = null;
 
@@ -537,15 +591,34 @@
             }
         }
 
+        function setProgress(percent, text) {
+            if (progressContainer) progressContainer.classList.remove('hidden');
+            if (progressBar) progressBar.style.width = percent + '%';
+            if (progressVal) progressVal.textContent = percent + '%';
+            if (progressLabel && text) {
+                progressLabel.querySelector('span:last-child').textContent = text;
+            }
+        }
+
         convertBtn.addEventListener('click', async () => {
             if (!originalFile) return;
 
             convertBtn.disabled = true;
-            convertBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            convertBtn.classList.add('opacity-75', 'cursor-not-allowed');
+            if (convertBtnText) convertBtnText.textContent = 'Generating PDF...';
+            if (convertBtnIcon) {
+                convertBtnIcon.outerHTML = `<svg id="convert-btn-icon" class="animate-spin w-4 h-4 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+            }
+
+            setProgress(15, 'Reading image data...');
 
             try {
+                await new Promise(r => setTimeout(r, 60));
                 const pdfDoc = await PDFLib.PDFDocument.create();
                 const arrayBuffer = await originalFile.arrayBuffer();
+
+                setProgress(40, 'Embedding image into document...');
+                await new Promise(r => setTimeout(r, 60));
 
                 let embeddedImage;
                 const isPng = originalFile.type === 'image/png' || originalFile.name.toLowerCase().endsWith('.png');
@@ -555,6 +628,7 @@
                     embeddedImage = await pdfDoc.embedJpg(arrayBuffer);
                 }
 
+                setProgress(65, 'Calculating page layout & margins...');
                 const imgWidth = embeddedImage.width;
                 const imgHeight = embeddedImage.height;
 
@@ -601,6 +675,7 @@
                     height: drawHeight
                 });
 
+                setProgress(85, 'Compiling and saving PDF...');
                 const pdfBytes = await pdfDoc.save();
                 const blob = new Blob([pdfBytes], { type: 'application/pdf' });
                 if (currentPdfUrl) {
@@ -608,11 +683,15 @@
                 }
                 currentPdfUrl = URL.createObjectURL(blob);
 
+                setProgress(100, 'Done!');
+                await new Promise(r => setTimeout(r, 100));
+
                 const outFileName = originalFile.name.replace(/\.[^/.]+$/, '') + '.pdf';
                 downloadLink.href = currentPdfUrl;
                 downloadLink.download = outFileName;
                 conversionMeta.textContent = `Generated clean PDF document (${formatBytes(pdfBytes.byteLength)}).`;
 
+                if (progressContainer) progressContainer.classList.add('hidden');
                 downloadSection.classList.remove('hidden');
                 processSection.classList.add('hidden');
 
@@ -620,11 +699,17 @@
                 renderOutputPdfPreview(pdfBytes);
             } catch (err) {
                 console.error(err);
+                if (progressContainer) progressContainer.classList.add('hidden');
                 errorMsg.querySelector('#error-text').textContent = 'Error building PDF. Please check the image file.';
                 errorMsg.classList.remove('hidden');
             } finally {
                 convertBtn.disabled = false;
-                convertBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                convertBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+                const btnIconNow = document.getElementById('convert-btn-icon');
+                if (convertBtnText) convertBtnText.textContent = 'Generate PDF Document';
+                if (btnIconNow) {
+                    btnIconNow.outerHTML = `<svg id="convert-btn-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>`;
+                }
             }
         });
 

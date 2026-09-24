@@ -8,6 +8,17 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Explicit SEO routes with exact Content-Type headers
+app.get(['/sitemap.xml', '/sitemap', '/sitemap_index.xml'], (req, res) => {
+  res.type('application/xml; charset=utf-8');
+  res.sendFile(path.join(__dirname, 'sitemap.xml'));
+});
+
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain; charset=utf-8');
+  res.sendFile(path.join(__dirname, 'robots.txt'));
+});
+
 app.use(express.static(__dirname));
 
 // Route handlers for HTML files without .html extension if accessed
