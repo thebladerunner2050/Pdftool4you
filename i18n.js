@@ -130,12 +130,31 @@
             "faq_q3": "Does the PDF Compressor add watermarks?",
             "faq_a3": "Never. Your output documents remain 100% clean and watermark-free, fully compliant for government, job, or academic portals.",
 
-            // Footer
+            // Footer Brand & Badges
+            "footer_brand_desc": "High-performance in-browser PDF & image suite. Compress, merge, split, watermark, and convert without uploading files.",
+            "badge_in_browser_memory": "100% In-Browser Memory",
             "footer_tagline": "High-performance in-browser PDF & image suite. Compress, merge, split, watermark, and convert without uploading files.",
+
+            // Footer Column Titles
+            "footer_pdf_tools": "PDF Tools",
             "footer_col_pdf": "PDF Tools",
+            "footer_image_tools": "Image Tools",
             "footer_col_img": "Image Tools",
+            "footer_company_legal": "Company & Legal",
             "footer_col_legal": "Company & Legal",
+
+            // Footer Clean Tool Names
+            "footer_tool_compressor": "Compress PDF",
+            "footer_tool_merge": "Merge PDF",
+            "footer_tool_split": "Split PDF",
+            "footer_tool_watermark": "Watermark PDF",
+            "footer_tool_img2pdf": "Image to PDF",
+            "footer_tool_png2jpg": "PNG to JPG",
+            "footer_tool_jpg2png": "JPG to PNG",
+
+            // Footer Legal & Links
             "footer_rights": "© 2026 PDFTool4You. All rights reserved. 100% Client-Side Processing.",
+            "footer_copyright": "© 2026 PDFTool4You. All rights reserved. 100% Client-Side Processing.",
             "footer_privacy": "Privacy Policy",
             "footer_terms": "Terms & Conditions",
             "footer_about": "About Us",
@@ -276,12 +295,31 @@
             "faq_q3": "क्या पीडीएफ कंप्रेसर कोई वॉटरमार्क लगाता है?",
             "faq_a3": "कभी नहीं। आपके दस्तावेज़ 100% साफ़ और बिना किसी वॉटरमार्क के डाउनलोड होते हैं, जो सरकारी फॉर्म, UPSC, SSC या किसी भी पोर्टल के लिए पूरी तरह मान्य हैं।",
 
-            // Footer
+            // Footer Brand & Badges
+            "footer_brand_desc": "उच्च-प्रदर्शन इन-ब्राउज़र पीडीएफ व इमेज टूल सुइट। बिना फ़ाइल अपलोड किए कंप्रेस, मर्ज, स्प्लिट और कन्वर्ट करें।",
+            "badge_in_browser_memory": "100% ब्राउज़र मेमोरी में प्रोसेस",
             "footer_tagline": "उच्च-प्रदर्शन इन-ब्राउज़र पीडीएफ व इमेज टूल सुइट। बिना फ़ाइल अपलोड किए कंप्रेस, मर्ज, स्प्लिट और कन्वर्ट करें।",
-            "footer_col_pdf": "पीडीएफ उपकरण",
-            "footer_col_img": "तस्वीर उपकरण",
+
+            // Footer Column Titles
+            "footer_pdf_tools": "पीडीएफ टूल्स",
+            "footer_col_pdf": "पीडीएफ टूल्स",
+            "footer_image_tools": "इमेज टूल्स",
+            "footer_col_img": "इमेज टूल्स",
+            "footer_company_legal": "कंपनी और नियम",
             "footer_col_legal": "कंपनी और नियम",
+
+            // Footer Clean Tool Names
+            "footer_tool_compressor": "कंप्रेस पीडीएफ (Compress PDF)",
+            "footer_tool_merge": "मर्ज पीडीएफ (Merge PDF)",
+            "footer_tool_split": "स्प्लिट पीडीएफ (Split PDF)",
+            "footer_tool_watermark": "वॉटरमार्क पीडीएफ (Watermark PDF)",
+            "footer_tool_img2pdf": "इमेज से पीडीएफ (Image to PDF)",
+            "footer_tool_png2jpg": "पीएनजी से जेपीजी (PNG to JPG)",
+            "footer_tool_jpg2png": "जेपीजी से पीएनजी (JPG to PNG)",
+
+            // Footer Legal & Links
             "footer_rights": "© 2026 PDFTool4You. सर्वाधिकार सुरक्षित। 100% क्लाइंट-साइड प्रोसेसिंग।",
+            "footer_copyright": "© 2026 PDFTool4You. सर्वाधिकार सुरक्षित। 100% क्लाइंट-साइड प्रोसेसिंग।",
             "footer_privacy": "गोपनीयता नीति (Privacy)",
             "footer_terms": "नियम व शर्तें (Terms)",
             "footer_about": "हमारे बारे में (About)",
@@ -320,8 +358,11 @@
 
     function t(key, lang) {
         const current = lang || getLang();
-        const dict = translations[current] || translations[DEFAULT_LANG];
-        return dict[key] !== undefined ? dict[key] : (translations[DEFAULT_LANG][key] || key);
+        const dict = translations[current];
+        if (dict && dict[key] !== undefined) return dict[key];
+        const defaultDict = translations[DEFAULT_LANG];
+        if (defaultDict && defaultDict[key] !== undefined) return defaultDict[key];
+        return null;
     }
 
     function applyTranslations(lang) {
@@ -329,7 +370,7 @@
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
             const val = t(key, lang);
-            if (val !== undefined) {
+            if (val !== null && val !== undefined) {
                 el.textContent = val;
             }
         });
@@ -338,7 +379,7 @@
         document.querySelectorAll('[data-i18n-html]').forEach(el => {
             const key = el.getAttribute('data-i18n-html');
             const val = t(key, lang);
-            if (val !== undefined) {
+            if (val !== null && val !== undefined) {
                 el.innerHTML = val;
             }
         });
@@ -347,7 +388,7 @@
         document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
             const key = el.getAttribute('data-i18n-placeholder');
             const val = t(key, lang);
-            if (val !== undefined) {
+            if (val !== null && val !== undefined) {
                 el.setAttribute('placeholder', val);
             }
         });
@@ -356,7 +397,7 @@
         document.querySelectorAll('[data-i18n-title]').forEach(el => {
             const key = el.getAttribute('data-i18n-title');
             const val = t(key, lang);
-            if (val !== undefined) {
+            if (val !== null && val !== undefined) {
                 el.setAttribute('title', val);
             }
         });
@@ -365,7 +406,7 @@
         document.querySelectorAll('[data-i18n-aria]').forEach(el => {
             const key = el.getAttribute('data-i18n-aria');
             const val = t(key, lang);
-            if (val !== undefined) {
+            if (val !== null && val !== undefined) {
                 el.setAttribute('aria-label', val);
             }
         });

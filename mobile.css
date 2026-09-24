@@ -196,6 +196,14 @@ a:not(:disabled):active,
     }
 }
 
+/* Footer Column Headers: Clean, natural typography instead of harsh uppercase tracking */
+footer h4 {
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+}
+
 /* Slide-Over Drawer Container & Panel (Independent of Tailwind dynamic compiling) */
 #mobile-drawer-container {
     position: fixed !important;
