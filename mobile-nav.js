@@ -299,6 +299,19 @@
                         </div>
 
                         <div class="space-y-1">
+                            <a href="webp-to-jpg.html" class="flex items-center justify-between p-2.5 rounded-xl ${currentPage === 'webp-to-jpg.html' ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-bold' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200'} transition-all active:scale-[0.98]">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                                        <span class="text-[10px] font-bold">WEBP</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold leading-tight">WebP to JPG</p>
+                                        <p class="text-[10px] text-zinc-400 leading-tight">Universal JPG output</p>
+                                    </div>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+
                             <a href="image-to-pdf.html" class="flex items-center justify-between p-2.5 rounded-xl ${currentPage === 'image-to-pdf.html' ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 font-bold' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200'} transition-all active:scale-[0.98]">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-7 h-7 rounded-lg bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
@@ -307,6 +320,19 @@
                                     <div>
                                         <p class="text-xs font-bold leading-tight">Image to PDF</p>
                                         <p class="text-[10px] text-zinc-400 leading-tight">JPG/PNG to document</p>
+                                    </div>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+
+                            <a href="png-to-jpg.html" class="flex items-center justify-between p-2.5 rounded-xl ${currentPage === 'png-to-jpg.html' ? 'bg-cyan-50 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-300 font-bold' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200'} transition-all active:scale-[0.98]">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-7 h-7 rounded-lg bg-cyan-100 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
+                                        <span class="text-[10px] font-bold">JPG</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold leading-tight">PNG to JPG</p>
+                                        <p class="text-[10px] text-zinc-400 leading-tight">High quality compression</p>
                                     </div>
                                 </div>
                                 <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
@@ -325,14 +351,14 @@
                                 <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </a>
 
-                            <a href="png-to-jpg.html" class="flex items-center justify-between p-2.5 rounded-xl ${currentPage === 'png-to-jpg.html' ? 'bg-cyan-50 dark:bg-cyan-950/40 text-cyan-700 dark:text-cyan-300 font-bold' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200'} transition-all active:scale-[0.98]">
+                            <a href="pan-card-photo-maker.html" class="flex items-center justify-between p-2.5 rounded-xl ${currentPage === 'pan-card-photo-maker.html' ? 'bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300 font-bold' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200'} transition-all active:scale-[0.98]">
                                 <div class="flex items-center gap-2.5">
-                                    <div class="w-7 h-7 rounded-lg bg-cyan-100 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 flex items-center justify-center shrink-0">
-                                        <span class="text-[10px] font-bold">JPG</span>
+                                    <div class="w-7 h-7 rounded-lg bg-teal-100 dark:bg-teal-950/60 text-teal-600 dark:text-teal-400 flex items-center justify-center shrink-0">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     </div>
                                     <div>
-                                        <p class="text-xs font-bold leading-tight">PNG to JPG</p>
-                                        <p class="text-[10px] text-zinc-400 leading-tight">High quality compression</p>
+                                        <p class="text-xs font-bold leading-tight">PAN Card Photo Maker</p>
+                                        <p class="text-[10px] text-zinc-400 leading-tight">NSDL & UTIITSL resizer</p>
                                     </div>
                                 </div>
                                 <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>

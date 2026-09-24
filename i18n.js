@@ -106,6 +106,12 @@
             "tool_jpg2png_tag": "Zero quality loss",
             "tool_jpg2png_tag2": "Instant",
 
+            // Tool 8: WebP to JPG
+            "tool_webp2jpg_title": "WebP to JPG Converter",
+            "tool_webp2jpg_desc": "Convert modern WebP images to widely compatible JPG format instantly with adjustable quality and background fill.",
+            "tool_webp2jpg_tag": "Universal JPG",
+            "tool_webp2jpg_tag2": "Fast canvas",
+
             // General Tool Card Action
             "btn_open_tool": "Open Tool",
 
@@ -150,6 +156,7 @@
             "footer_tool_watermark": "Watermark PDF",
             "footer_tool_remover": "Remove PDF Password",
             "footer_tool_img2pdf": "Image to PDF",
+            "footer_tool_webp2jpg": "WebP to JPG",
             "footer_tool_png2jpg": "PNG to JPG",
             "footer_tool_jpg2png": "JPG to PNG",
             "footer_tool_pan": "PAN Card Photo Maker",
@@ -342,6 +349,12 @@
             "tool_jpg2png_tag": "शून्य गुणवत्ता हानि",
             "tool_jpg2png_tag2": "तुरंत",
 
+            // Tool 8: WebP to JPG
+            "tool_webp2jpg_title": "WebP से JPG कन्वर्टर",
+            "tool_webp2jpg_desc": "आधुनिक WebP तस्वीरों को सार्वभौमिक JPG प्रारूप में तुरंत बदलें। पारदर्शी बैकग्राउंड और गुणवत्ता नियंत्रण के साथ।",
+            "tool_webp2jpg_tag": "सार्वभौमिक JPG",
+            "tool_webp2jpg_tag2": "फास्ट कैनवास",
+
             // General Tool Card Action
             "btn_open_tool": "उपकरण खोलें",
 
@@ -386,6 +399,7 @@
             "footer_tool_watermark": "वॉटरमार्क पीडीएफ (Watermark PDF)",
             "footer_tool_remover": "पासवर्ड हटाएं (Remove Password)",
             "footer_tool_img2pdf": "इमेज से पीडीएफ (Image to PDF)",
+            "footer_tool_webp2jpg": "वेबपी से जेपीजी (WebP to JPG)",
             "footer_tool_png2jpg": "पीएनजी से जेपीजी (PNG to JPG)",
             "footer_tool_jpg2png": "जेपीजी से पीएनजी (JPG to PNG)",
             "footer_tool_pan": "पैन कार्ड फोटो मेकर (PAN Card Photo Maker)",
