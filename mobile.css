@@ -150,11 +150,49 @@ a:not(:disabled):active,
         margin: 0 !important;
         z-index: 20;
     }
+
+    /* Back button on all mobile and tablet devices (< 1024px):
+       Displays ONLY the back arrow icon as a compact square (w-9 h-9).
+       Hides the full text label to avoid cluttering or colliding with the centered logo. */
+    .back-btn-responsive,
+    a[aria-label="Back to Tools"] {
+        width: 2.25rem !important; /* 36px / w-9 */
+        height: 2.25rem !important; /* 36px / h-9 */
+        min-width: 2.25rem !important;
+        max-width: 2.25rem !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0 !important;
+    }
+
+    .back-btn-responsive .back-btn-text,
+    .back-btn-responsive span,
+    a[aria-label="Back to Tools"] span {
+        display: none !important;
+    }
+
+    .back-btn-responsive svg,
+    a[aria-label="Back to Tools"] svg {
+        width: 1rem !important;
+        height: 1rem !important;
+        margin: 0 !important;
+    }
 }
 @media (min-width: 1024px) {
     .header-logo-responsive {
         position: static !important;
         transform: none !important;
+    }
+
+    .back-btn-responsive {
+        width: auto !important;
+        max-width: none !important;
+        min-width: 0 !important;
     }
 }
 
