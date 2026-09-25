@@ -1078,8 +1078,10 @@
                 basePageWidth = unscaledViewport.width || 595;
                 basePageHeight = unscaledViewport.height || 842;
 
-                // Scale for preview display (fit nicely around max 380px width)
-                const scale = Math.min(380 / basePageWidth, 480 / basePageHeight, 1.2);
+                // Scale for preview display: dynamically scales any format (2x2 square, landscape, portrait, banner, etc.)
+                const targetMaxW = Math.min(window.innerWidth < 640 ? Math.max(260, window.innerWidth - 64) : 380, 420);
+                const targetMaxH = 460;
+                const scale = Math.min(targetMaxW / basePageWidth, targetMaxH / basePageHeight, 3.0);
                 const viewport = page.getViewport({ scale });
 
                 baseCanvasOffscreen = document.createElement('canvas');
@@ -1092,7 +1094,18 @@
                 previewCanvas.width = baseCanvasOffscreen.width;
                 previewCanvas.height = baseCanvasOffscreen.height;
 
-                if (previewPageLabel) previewPageLabel.textContent = `Page ${pageNum} representation`;
+                // Format ratio description
+                const ratio = (basePageWidth / basePageHeight);
+                let formatTag = '';
+                if (Math.abs(ratio - 1.0) < 0.05) {
+                    formatTag = ' (1:1 Square / 2×2)';
+                } else if (ratio > 1.2) {
+                    formatTag = ' (Landscape)';
+                } else {
+                    formatTag = ' (Portrait)';
+                }
+
+                if (previewPageLabel) previewPageLabel.textContent = `Page ${pageNum} · ${Math.round(basePageWidth)}×${Math.round(basePageHeight)} pt${formatTag}`;
                 if (previewPageIndicator) previewPageIndicator.textContent = `Page ${pageNum} of ${pdfJsDoc.numPages}`;
                 if (prevPreviewPageBtn) prevPreviewPageBtn.disabled = pageNum <= 1;
                 if (nextPreviewPageBtn) nextPreviewPageBtn.disabled = pageNum >= pdfJsDoc.numPages;
