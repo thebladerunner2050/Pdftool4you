@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Blog & Guides – PDFTool4You Document Tutorials & Technical Insights</title>
+    <meta name="description" content="Read in-depth guides, document processing tutorials, and format conversion tips. Learn how to compress, watermark, split, merge, and convert PDFs safely.">
+    <link rel="canonical" href="https://pdftool4you.in/blog.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Blog & Guides – PDFTool4You">
+    <meta property="og:description" content="Explore expert articles, PDF optimization tips, security guidelines, and image conversion tutorials.">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Blog & Guides – PDFTool4You">
+    <meta name="twitter:description" content="Explore expert articles, PDF optimization tips, security guidelines, and image conversion tutorials.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="mobile.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'system';
+            const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <script src="theme.js"></script>
+    <script src="mobile-nav.js" defer></script>
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "PDFTool4You Document & PDF Processing Blog",
+      "description": "Educational articles, step-by-step tutorials, and technical insights on PDF compression, watermarking, image conversions, and document privacy.",
+      "url": "https://pdftool4you.in/blog.html",
+      "publisher": {
+        "@type": "Organization",
+        "name": "PDFTool4You",
+        "url": "https://pdftool4you.in"
+      }
+    }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: #fafbfc;
+            color: #09090b;
+        }
+        html.dark {
+            color-scheme: dark;
+        }
+        html.dark body {
+            background-color: #09090b;
+            color: #f4f4f5;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/80 dark:border-zinc-800 transition-colors">
+        <div class="relative max-w-6xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between">
+            <!-- Left: Three-line hamburger menu (mobile & tablet only) -->
+            <div class="flex items-center lg:hidden z-30">
+                <button type="button" data-mobile-drawer-trigger aria-label="Open navigation menu" class="flex items-center justify-center w-9 h-9 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white active:scale-95 transition-all shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Logo: Centered on mobile & tablets, left-aligned on PC -->
+            <a href="index.html" class="header-logo-responsive flex items-center gap-2 sm:gap-2.5 group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:transform-none z-20">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-sm transition-transform group-hover:scale-105 shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div class="flex items-baseline gap-1">
+                    <span class="font-bold text-base sm:text-lg text-zinc-900 dark:text-white tracking-tight">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <nav class="hidden lg:flex items-center gap-5 text-xs font-semibold text-zinc-600 dark:text-zinc-300 mr-2">
+                    <a href="index.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Tools</a>
+                    <a href="blog.html" class="text-blue-600 dark:text-blue-400 font-bold">Blog & Guides</a>
+                    <a href="about-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About Us</a>
+                    <a href="contact-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact</a>
+                </nav>
+
+                <!-- Theme Toggle Dropdown -->
+                <div class="hidden lg:block relative" data-theme-menu-container>
+                    <button type="button" data-theme-trigger aria-label="Toggle color theme" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none">
+                        <svg class="theme-icon-system w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        <span class="theme-label hidden sm:inline text-xs font-semibold">Theme</span>
+                    </button>
+                    <div data-theme-menu class="hidden absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1.5 z-50 text-xs">
+                        <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Appearance</div>
+                        <button type="button" data-theme-value="system" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"><span>System default</span></button>
+                        <button type="button" data-theme-value="light" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"><span>Light</span></button>
+                        <button type="button" data-theme-value="dark" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"><span>Dark</span></button>
+                    </div>
+                </div>
+
+                <a href="index.html" aria-label="Back to Tools" class="back-btn-responsive flex items-center justify-center gap-1.5 w-9 h-9 lg:w-auto px-0 lg:px-3 py-0 lg:py-1.5 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white font-semibold text-xs shadow-2xs transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer">
+                    <svg class="w-4 h-4 lg:w-3.5 lg:h-3.5 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="back-btn-text hidden lg:inline font-semibold text-xs whitespace-nowrap">Home</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Hero & Blog Listing -->
+    <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 py-10 w-full">
+        
+        <!-- Header Introduction -->
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200/60 dark:border-blue-800/60 text-blue-700 dark:text-blue-300 text-xs font-semibold mb-3">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                <span>Educational Articles & Technical Tutorials</span>
+            </div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-3">
+                Document Guides & PDF Insights
+            </h1>
+            <p class="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                Step-by-step tutorials, compliance specifications for government forms, technical optimization strategies, and client-side data privacy guides.
+            </p>
+        </div>
+
+        <!-- Featured Banner Post -->
+        <div class="mb-12">
+            <a href="how-to-compress-pdf.html" class="group block relative bg-gradient-to-br from-zinc-900 to-zinc-950 text-white rounded-3xl p-6 sm:p-10 overflow-hidden shadow-xl border border-zinc-800 hover:border-red-500/50 transition-all duration-300">
+                <div class="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-red-600/15 blur-3xl group-hover:bg-red-600/25 transition-all"></div>
+                <div class="absolute -left-16 -bottom-16 w-80 h-80 rounded-full bg-blue-600/10 blur-3xl"></div>
+                
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <div class="lg:col-span-7 space-y-4">
+                        <div class="flex items-center gap-2">
+                            <span class="px-2.5 py-1 rounded-full bg-red-500/20 border border-red-500/40 text-red-400 text-xs font-bold uppercase tracking-wider">
+                                Featured Guide
+                            </span>
+                            <span class="text-xs text-zinc-400 font-medium">6 min read · Updated 2026</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight group-hover:text-red-400 transition-colors leading-tight">
+                            How to Compress PDF to 200KB or Specific Target Sizes Without Quality Loss
+                        </h2>
+                        <p class="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+                            Discover the technical difference between vector stream compression and high-DPI rasterization. Learn how to meet strict file size upload limits for government portals, job applications, and university admissions.
+                        </p>
+                        <div class="flex items-center gap-3 pt-2">
+                            <span class="inline-flex items-center gap-1.5 text-xs font-bold text-red-400 group-hover:underline">
+                                <span>Read Full Tutorial</span>
+                                <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Visual Diagram Graphic -->
+                    <div class="lg:col-span-5 flex justify-center">
+                        <div class="w-full max-w-sm bg-zinc-900/90 rounded-2xl p-5 border border-zinc-800 shadow-inner space-y-3">
+                            <div class="flex items-center justify-between text-xs pb-2 border-b border-zinc-800 text-zinc-400 font-mono">
+                                <span>ORIGINAL: 4.8 MB</span>
+                                <span class="text-emerald-400 font-bold">COMPRESSED: 184 KB (-96%)</span>
+                            </div>
+                            <div class="space-y-2 text-xs">
+                                <div class="flex justify-between text-zinc-300">
+                                    <span>Vector Streams (FlateDecode)</span>
+                                    <span class="text-blue-400 font-semibold">100% Crisp</span>
+                                </div>
+                                <div class="w-full bg-zinc-800 rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full" style="width: 100%"></div>
+                                </div>
+                                <div class="flex justify-between text-zinc-300">
+                                    <span>Visual Clarity & OCR</span>
+                                    <span class="text-emerald-400 font-semibold">Lossless</span>
+                                </div>
+                                <div class="w-full bg-zinc-800 rounded-full h-2">
+                                    <div class="bg-emerald-500 h-2 rounded-full" style="width: 95%"></div>
+                                </div>
+                            </div>
+                            <div class="pt-2 text-[11px] text-zinc-400 text-center font-semibold">
+                                ✓ 100% In-Browser Local Memory Processing
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Article Grid Section -->
+        <div class="space-y-6">
+            <div class="flex items-center justify-between pb-3 border-b border-zinc-200 dark:border-zinc-800">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white">All Tool Tutorials & Guides</h2>
+                <span class="text-xs text-zinc-500 dark:text-zinc-400 font-medium">6 Articles</span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Article 1: PDF Compressor -->
+                <article class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col hover:shadow-md hover:border-red-300 dark:hover:border-red-700/50 transition-all group">
+                    <div class="h-44 bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/30 dark:to-orange-950/20 p-5 flex flex-col justify-between border-b border-zinc-100 dark:border-zinc-800 relative">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-md bg-red-100 dark:bg-red-900/60 text-red-700 dark:text-red-300 text-[11px] font-bold">
+                                Optimization
+                            </span>
+                            <span class="text-[11px] text-zinc-400 font-medium">5 min read</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-red-600 dark:text-red-400 shrink-0">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-zinc-900 dark:text-white">PDF Size Optimization</p>
+                                <p class="text-[11px] text-zinc-500">200KB limit solutions</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <h3 class="font-bold text-base text-zinc-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors leading-snug">
+                                <a href="how-to-compress-pdf.html">How to Compress PDF Without Losing Quality</a>
+                            </h3>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed">
+                                Complete walkthrough on reducing PDF file sizes for email attachments and portal uploads while maintaining sharp font rendering and searchable vector text.
+                            </p>
+                        </div>
+                        <div class="pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-xs">
+                            <a href="how-to-compress-pdf.html" class="font-bold text-red-600 dark:text-red-400 hover:underline inline-flex items-center gap-1">
+                                <span>Read Article</span>
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                            <a href="pdf-compressor.html" class="text-[11px] text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">Open Tool →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Article 2: PDF Watermarker -->
+                <article class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col hover:shadow-md hover:border-purple-300 dark:hover:border-purple-700/50 transition-all group">
+                    <div class="h-44 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/30 dark:to-indigo-950/20 p-5 flex flex-col justify-between border-b border-zinc-100 dark:border-zinc-800 relative">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/60 text-purple-700 dark:text-purple-300 text-[11px] font-bold">
+                                Security & Privacy
+                            </span>
+                            <span class="text-[11px] text-zinc-400 font-medium">4 min read</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-purple-600 dark:text-purple-400 shrink-0">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13c2.5 0 4-1.5 4-4V4a2 2 0 00-4 0 2 2 0 00-4 0v5c0 2.5 1.5 4 4 4z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 13h10v4H7z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-zinc-900 dark:text-white">Watermark Protection</p>
+                                <p class="text-[11px] text-zinc-500">Confidential & Logo stamps</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <h3 class="font-bold text-base text-zinc-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors leading-snug">
+                                <a href="how-to-watermark-pdf.html">How to Watermark PDF Documents Online Safely</a>
+                            </h3>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed">
+                                Learn how to stamp confidential notices, draft markers, and corporate logos across single or multiple pages without transmitting unencrypted data.
+                            </p>
+                        </div>
+                        <div class="pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-xs">
+                            <a href="how-to-watermark-pdf.html" class="font-bold text-purple-600 dark:text-purple-400 hover:underline inline-flex items-center gap-1">
+                                <span>Read Article</span>
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                            <a href="pdf-watermarker.html" class="text-[11px] text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">Open Tool →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Article 3: PAN Card Resizer -->
+                <article class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700/50 transition-all group">
+                    <div class="h-44 bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-950/30 dark:to-sky-950/20 p-5 flex flex-col justify-between border-b border-zinc-100 dark:border-zinc-800 relative">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 text-[11px] font-bold">
+                                Government Portal
+                            </span>
+                            <span class="text-[11px] text-zinc-400 font-medium">5 min read</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-zinc-900 dark:text-white">NSDL & UTIITSL Specs</p>
+                                <p class="text-[11px] text-zinc-500">213×213 px · 300 DPI</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <h3 class="font-bold text-base text-zinc-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-snug">
+                                <a href="pan-card-photo-resizer-guide.html">PAN Card Photo & Signature Guidelines (2026)</a>
+                            </h3>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed">
+                                Exact dimension requirements, DPI configurations, file weight limits, and signature guidelines to prevent rejection on NSDL and UTIITSL portals.
+                            </p>
+                        </div>
+                        <div class="pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-xs">
+                            <a href="pan-card-photo-resizer-guide.html" class="font-bold text-blue-600 dark:text-blue-400 hover:underline inline-flex items-center gap-1">
+                                <span>Read Article</span>
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                            <a href="pan-card-photo-maker.html" class="text-[11px] text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">Open Tool →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Article 4: Password Remover -->
+                <article class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col hover:shadow-md hover:border-emerald-300 dark:hover:border-emerald-700/50 transition-all group">
+                    <div class="h-44 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/30 dark:to-teal-950/20 p-5 flex flex-col justify-between border-b border-zinc-100 dark:border-zinc-800 relative">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold">
+                                Document Decryption
+                            </span>
+                            <span class="text-[11px] text-zinc-400 font-medium">4 min read</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-emerald-600 dark:text-emerald-400 shrink-0">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-zinc-900 dark:text-white">PDF Decryption</p>
+                                <p class="text-[11px] text-zinc-500">Remove print & edit locks</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <h3 class="font-bold text-base text-zinc-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors leading-snug">
+                                <a href="how-to-remove-pdf-password.html">How to Safely Unlock & Remove PDF Passwords</a>
+                            </h3>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed">
+                                Understand user encryption vs owner restrictions on bank statements and salary slips. Decrypt your documents securely in browser memory without third-party exposure.
+                            </p>
+                        </div>
+                        <div class="pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-xs">
+                            <a href="how-to-remove-pdf-password.html" class="font-bold text-emerald-600 dark:text-emerald-400 hover:underline inline-flex items-center gap-1">
+                                <span>Read Article</span>
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                            <a href="remove-pdf-password.html" class="text-[11px] text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">Open Tool →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Article 5: Merge & Split PDF -->
+                <article class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-700/50 transition-all group">
+                    <div class="h-44 bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-950/30 dark:to-blue-950/20 p-5 flex flex-col justify-between border-b border-zinc-100 dark:border-zinc-800 relative">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-md bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-[11px] font-bold">
+                                Document Assembly
+                            </span>
+                            <span class="text-[11px] text-zinc-400 font-medium">5 min read</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 3h7l5 5v11a2 2 0 01-2 2H7a2 2 0 01-2-2V5a2 2 0 012-2z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-zinc-900 dark:text-white">Page Management</p>
+                                <p class="text-[11px] text-zinc-500">Combine & extract ranges</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <h3 class="font-bold text-base text-zinc-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug">
+                                <a href="merge-and-split-pdf-guide.html">Complete Guide to Merging and Splitting PDFs</a>
+                            </h3>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed">
+                                How to assemble multi-part reports, remove unwanted pages, and reorder document page streams without losing vector typography or internal bookmarks.
+                            </p>
+                        </div>
+                        <div class="pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-xs">
+                            <a href="merge-and-split-pdf-guide.html" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1">
+                                <span>Read Article</span>
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                            <a href="merge-pdf.html" class="text-[11px] text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">Open Tool →</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Article 6: Image to PDF & Format Conversions -->
+                <article class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 shadow-sm overflow-hidden flex flex-col hover:shadow-md hover:border-amber-300 dark:hover:border-amber-700/50 transition-all group">
+                    <div class="h-44 bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/20 p-5 flex flex-col justify-between border-b border-zinc-100 dark:border-zinc-800 relative">
+                        <div class="flex items-center justify-between">
+                            <span class="px-2.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 text-[11px] font-bold">
+                                Image Formats
+                            </span>
+                            <span class="text-[11px] text-zinc-400 font-medium">4 min read</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-xl bg-white dark:bg-zinc-800 shadow-sm flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0">
+                                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-zinc-900 dark:text-white">WebP, PNG & JPG</p>
+                                <p class="text-[11px] text-zinc-500">Lossless vs Lossy</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <div class="space-y-2">
+                            <h3 class="font-bold text-base text-zinc-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors leading-snug">
+                                <a href="image-to-pdf-conversion-guide.html">WebP vs PNG vs JPG: Which Image Format is Best for PDFs?</a>
+                            </h3>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed">
+                                Understand the compression differences, alpha transparency channels, and print resolutions when compiling photos or receipts into PDF documents.
+                            </p>
+                        </div>
+                        <div class="pt-3 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-xs">
+                            <a href="image-to-pdf-conversion-guide.html" class="font-bold text-amber-600 dark:text-amber-400 hover:underline inline-flex items-center gap-1">
+                                <span>Read Article</span>
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                            <a href="image-to-pdf.html" class="text-[11px] text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200">Open Tool →</a>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+
+        <!-- AdSense Editorial & Trust Banner -->
+        <div class="mt-16 p-8 bg-zinc-100/70 dark:bg-zinc-900/50 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 text-center max-w-3xl mx-auto space-y-3">
+            <h3 class="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-wider">Editorial Standards & Client-Side Privacy</h3>
+            <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                All articles on PDFTool4You are researched and authored by our document engineering team. We advocate for local in-browser computation (WebAssembly and JavaScript) to guarantee zero server telemetry, zero storage of personal files, and complete data sovereignty.
+            </p>
+            <div class="pt-2 flex items-center justify-center gap-4 text-xs font-semibold text-blue-600 dark:text-blue-400">
+                <a href="about-us.html" class="hover:underline">About Our Team</a>
+                <span>·</span>
+                <a href="privacy-policy.html" class="hover:underline">Privacy Policy</a>
+                <span>·</span>
+                <a href="contact-us.html" class="hover:underline">Contact Editorial</a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="mt-20 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-colors">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+                
+                <!-- Brand Info -->
+                <div class="md:col-span-1 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-xs">
+                            <svg class="w-3.5 h-3.5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <span class="font-bold text-base text-zinc-900 dark:text-white">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                    </div>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        High-performance in-browser PDF & image suite. Compress, merge, split, watermark, and convert without uploading files.
+                    </p>
+                </div>
+
+                <!-- PDF Tools -->
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5 tracking-normal normal-case">PDF Tools</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="pdf-compressor.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Compress PDF</a></li>
+                        <li><a href="merge-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Merge PDF</a></li>
+                        <li><a href="split-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Split PDF</a></li>
+                        <li><a href="pdf-watermarker.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Watermark PDF</a></li>
+                        <li><a href="remove-pdf-password.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Remove PDF Password</a></li>
+                    </ul>
+                </div>
+
+                <!-- Image Tools & Guides -->
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5 tracking-normal normal-case">Guides & Articles</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="how-to-compress-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Compress PDF Guide</a></li>
+                        <li><a href="how-to-watermark-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Watermark Tutorial</a></li>
+                        <li><a href="pan-card-photo-resizer-guide.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PAN Card Guidelines</a></li>
+                        <li><a href="how-to-remove-pdf-password.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Unlock PDF Tutorial</a></li>
+                        <li><a href="blog.html" class="text-blue-600 dark:text-blue-400 font-semibold">View All Articles →</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal & Company -->
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5 tracking-normal normal-case">Company & Legal</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="privacy-policy.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy Policy</a></li>
+                        <li><a href="terms-and-conditions.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms & Conditions</a></li>
+                        <li><a href="about-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About Us</a></li>
+                        <li><a href="contact-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Us</a></li>
+                        <li><a href="disclaimer.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Disclaimer</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Disclaimer & Copyright -->
+            <div class="pt-8 border-t border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400 dark:text-zinc-500">
+                <p>© 2026 PDFTool4You. All rights reserved. 100% Client-Side Processing.</p>
+                <div class="flex items-center gap-4">
+                    <a href="privacy-policy.html" class="hover:underline">Privacy</a>
+                    <a href="terms-and-conditions.html" class="hover:underline">Terms</a>
+                    <a href="blog.html" class="hover:underline">Blog</a>
+                    <a href="contact-us.html" class="hover:underline">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

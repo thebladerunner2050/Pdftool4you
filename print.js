@@ -1,114 +1,97 @@
 /**
  * print.js — High-performance, client-side direct printing for PDFTool4You
  * Supports direct in-browser printing for processed PDF documents and converted images.
- * Operates without opening new windows or violating iframe sandbox policies.
+ * Operates flawlessly across mobile, tablet, and desktop without popup blockers or iframe issues.
  */
 
 (function () {
-    let printFrame = null;
+    'use strict';
 
-    function getOrCreatePrintFrame() {
-        if (!printFrame || !document.body.contains(printFrame)) {
-            printFrame = document.createElement('iframe');
-            printFrame.id = 'pdftool-print-frame';
-            printFrame.setAttribute('aria-hidden', 'true');
-            printFrame.style.position = 'fixed';
-            printFrame.style.right = '0';
-            printFrame.style.bottom = '0';
-            printFrame.style.width = '0';
-            printFrame.style.height = '0';
-            printFrame.style.border = '0';
-            printFrame.style.opacity = '0';
-            printFrame.style.pointerEvents = 'none';
-            document.body.appendChild(printFrame);
-        }
-        return printFrame;
-    }
-
-    /**
-     * Prints an image blob or URL directly via an iframe print template.
-     */
-    function printImage(url, title = 'Document') {
-        return new Promise((resolve) => {
-            const frame = getOrCreatePrintFrame();
-            const frameDoc = frame.contentDocument || frame.contentWindow.document;
-
-            frameDoc.open();
-            frameDoc.write(`<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>${title}</title>
-    <style>
-        @page {
-            size: auto;
-            margin: 8mm;
-        }
-        * {
-            box-sizing: border-box;
-        }
-        html, body {
-            margin: 0;
-            padding: 0;
-            background: #ffffff !important;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-        img {
-            max-width: 100%;
-            max-height: 98vh;
-            object-fit: contain;
-            display: block;
-            margin: auto;
-        }
-    </style>
-</head>
-<body>
-    <img id="print-img" src="${url}" alt="Print Preview" />
-</body>
-</html>`);
-            frameDoc.close();
-
-            const img = frameDoc.getElementById('print-img');
-            const triggerPrint = () => {
-                setTimeout(() => {
-                    try {
-                        frame.contentWindow.focus();
-                        frame.contentWindow.print();
-                    } catch (e) {
-                        console.warn('Frame print notice:', e);
+    // Inject required CSS for print media hiding
+    function ensurePrintStyles() {
+        if (!document.getElementById('pdftool-print-styles')) {
+            const style = document.createElement('style');
+            style.id = 'pdftool-print-styles';
+            style.textContent = `
+                @media print {
+                    body > *:not(#pdftool-print-area) {
+                        display: none !important;
                     }
-                    resolve();
-                }, 250);
-            };
-
-            if (img.complete) {
-                triggerPrint();
-            } else {
-                img.onload = triggerPrint;
-                img.onerror = () => {
-                    console.error('Failed to load image into print frame');
-                    resolve();
-                };
-            }
-        });
+                    #pdftool-print-area {
+                        display: block !important;
+                        position: absolute !important;
+                        left: 0 !important;
+                        top: 0 !important;
+                        width: 100% !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        background: #ffffff !important;
+                        z-index: 999999 !important;
+                    }
+                    #pdftool-print-area .print-page {
+                        display: block !important;
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        height: auto !important;
+                        page-break-after: always !important;
+                        break-after: page !important;
+                        margin: 0 auto !important;
+                    }
+                    #pdftool-print-area .print-page:last-child {
+                        page-break-after: avoid !important;
+                        break-after: avoid !important;
+                    }
+                }
+                @media screen {
+                    #pdftool-print-area {
+                        display: none !important;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
     }
 
-    /**
-     * Ensures pdfjsLib is loaded for rendering fallback
-     */
+    ensurePrintStyles();
+
+    function getOrCreatePrintArea() {
+        let area = document.getElementById('pdftool-print-area');
+        if (!area) {
+            area = document.createElement('div');
+            area.id = 'pdftool-print-area';
+            document.body.appendChild(area);
+        } else {
+            area.innerHTML = '';
+        }
+        return area;
+    }
+
     async function ensurePdfJs() {
-        if (window.pdfjsLib) return window.pdfjsLib;
+        if (window.pdfjsLib) {
+            if (!window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+            }
+            return window.pdfjsLib;
+        }
+
         return new Promise((resolve) => {
             const script = document.createElement('script');
             script.src = 'pdf.min.js';
-            script.onload = () => resolve(window.pdfjsLib);
+            script.onload = () => {
+                if (window.pdfjsLib && !window.pdfjsLib.GlobalWorkerOptions.workerSrc) {
+                    window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+                }
+                resolve(window.pdfjsLib);
+            };
             script.onerror = () => {
                 const cdnScript = document.createElement('script');
                 cdnScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-                cdnScript.onload = () => resolve(window.pdfjsLib);
+                cdnScript.onload = () => {
+                    if (window.pdfjsLib) {
+                        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                    }
+                    resolve(window.pdfjsLib);
+                };
                 cdnScript.onerror = () => resolve(null);
                 document.head.appendChild(cdnScript);
             };
@@ -116,191 +99,144 @@
         });
     }
 
-    /**
-     * Fallback PDF printer using pdf.js to render pages into printable HTML
-     * in case the browser blocks direct PDF plugin printing in sandboxed iframes.
-     */
-    async function printPdfViaRenderer(pdfSource, title = 'PDF Document') {
-        const pdfjs = await ensurePdfJs();
-        if (!pdfjs) {
-            console.warn('PDF renderer library could not be loaded, using standard print');
-            window.print();
-            return;
-        }
-
-        const frame = getOrCreatePrintFrame();
-        const frameDoc = frame.contentDocument || frame.contentWindow.document;
-
-        frameDoc.open();
-        frameDoc.write(`<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <title>${title}</title>
-    <style>
-        @page {
-            size: auto;
-            margin: 0;
-        }
-        body {
-            margin: 0;
-            padding: 0;
-            background: #fff;
-        }
-        .pdf-page {
-            display: block;
-            width: 100%;
-            page-break-after: always;
-            break-after: page;
-        }
-        .pdf-page:last-child {
-            page-break-after: avoid;
-            break-after: avoid;
-        }
-        img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-    </style>
-</head>
-<body><div id="pages-container"></div></body>
-</html>`);
-        frameDoc.close();
-
-        const container = frameDoc.getElementById('pages-container');
-
-        try {
-            let data;
-            if (typeof pdfSource === 'string') {
-                const resp = await fetch(pdfSource);
-                data = await resp.arrayBuffer();
-            } else if (pdfSource instanceof Blob) {
-                data = await pdfSource.arrayBuffer();
-            } else {
-                data = pdfSource;
-            }
-
-            const pdf = await window.pdfjsLib.getDocument({ data }).promise;
-            const total = pdf.numPages;
-
-            for (let i = 1; i <= total; i++) {
-                const page = await pdf.getPage(i);
-                // Render at high DPI for crisp print output (1.8 scale)
-                const viewport = page.getViewport({ scale: 1.8 });
-                const canvas = document.createElement('canvas');
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
-                const ctx = canvas.getContext('2d', { alpha: false });
-                ctx.fillStyle = '#ffffff';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                await page.render({ canvasContext: ctx, viewport }).promise;
-
-                const img = document.createElement('img');
-                img.className = 'pdf-page';
-                img.src = canvas.toDataURL('image/jpeg', 0.95);
-                container.appendChild(img);
-            }
-
-            setTimeout(() => {
-                frame.contentWindow.focus();
-                frame.contentWindow.print();
-            }, 300);
-        } catch (err) {
-            console.error('PDF rendering print fallback error:', err);
-            // Ultimate fallback to standard print
-            window.print();
-        }
-    }
-
-    /**
-     * Primary print entry point for any processed document (PDF or Image).
-     * @param {string|Blob} source - The blob URL or Blob object
-     * @param {string} mimeType - 'application/pdf', 'image/jpeg', 'image/png'
-     * @param {string} [title] - Optional document title for print header
-     */
     window.printProcessedDocument = async function (source, mimeType = 'application/pdf', title = 'Document') {
         if (!source) {
             console.warn('printProcessedDocument called with empty source');
             return;
         }
 
-        const isPdf = mimeType.includes('pdf') || (typeof source === 'string' && source.endsWith('.pdf'));
+        ensurePrintStyles();
+        const area = getOrCreatePrintArea();
+
+        const isPdf = mimeType.includes('pdf') || 
+                      (typeof source === 'string' && (source.includes('pdf') || source.endsWith('.pdf'))) ||
+                      (source instanceof Blob && source.type.includes('pdf'));
 
         if (isPdf) {
-            let url = typeof source === 'string' ? source : URL.createObjectURL(source);
-            const frame = getOrCreatePrintFrame();
+            const pdfjs = await ensurePdfJs();
+            let data;
 
-            let directPrintSucceeded = false;
+            try {
+                if (typeof source === 'string') {
+                    const resp = await fetch(source);
+                    data = await resp.arrayBuffer();
+                } else if (source instanceof Blob) {
+                    data = await source.arrayBuffer();
+                } else if (source instanceof ArrayBuffer) {
+                    data = source;
+                } else if (ArrayBuffer.isView(source)) {
+                    data = source.buffer;
+                }
 
-            // Attempt direct PDF iframe print
-            const tryDirectPrint = new Promise((resolve) => {
-                frame.onload = () => {
-                    setTimeout(() => {
-                        try {
-                            frame.contentWindow.focus();
-                            frame.contentWindow.print();
-                            directPrintSucceeded = true;
-                            resolve(true);
-                        } catch (e) {
-                            console.warn('Direct PDF iframe print blocked or failed, switching to high-res renderer:', e);
-                            resolve(false);
-                        }
-                    }, 400);
-                };
+                if (pdfjs && data) {
+                    const pdfDoc = await pdfjs.getDocument({ data: data.slice(0) }).promise;
+                    const numPages = pdfDoc.numPages;
 
-                // Guard timeout
-                setTimeout(() => {
-                    if (!directPrintSucceeded) resolve(false);
-                }, 2000);
+                    for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+                        const page = await pdfDoc.getPage(pageNum);
+                        const viewport = page.getViewport({ scale: 2.0 });
+                        const canvas = document.createElement('canvas');
+                        canvas.width = viewport.width;
+                        canvas.height = viewport.height;
+                        const ctx = canvas.getContext('2d', { alpha: false });
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                frame.src = url;
-            });
+                        await page.render({ canvasContext: ctx, viewport }).promise;
 
-            const success = await tryDirectPrint;
-            if (!success) {
-                await printPdfViaRenderer(source, title);
+                        const img = document.createElement('img');
+                        img.className = 'print-page';
+                        img.src = canvas.toDataURL('image/jpeg', 0.95);
+                        area.appendChild(img);
+                    }
+                }
+            } catch (err) {
+                console.warn('PDF page rendering for print warning:', err);
             }
         } else {
-            // Images (PNG/JPG)
-            const url = typeof source === 'string' ? source : URL.createObjectURL(source);
-            await printImage(url, title);
+            // Image print
+            let imgUrl = typeof source === 'string' ? source : (source instanceof Blob ? URL.createObjectURL(source) : '');
+            if (imgUrl) {
+                const img = document.createElement('img');
+                img.className = 'print-page';
+                img.src = imgUrl;
+                area.appendChild(img);
+
+                if (!img.complete) {
+                    await new Promise((res) => {
+                        img.onload = res;
+                        img.onerror = res;
+                    });
+                }
+            }
         }
+
+        // Trigger native print dialog
+        setTimeout(() => {
+            try {
+                window.focus();
+                window.print();
+            } catch (e) {
+                console.error('Print call failed:', e);
+            } finally {
+                setTimeout(() => {
+                    area.innerHTML = '';
+                }, 1000);
+            }
+        }, 150);
     };
 
-    /**
-     * Helper to wire up a print button with loading state feedback
-     */
     window.attachPrintAction = function (buttonElement, getSourceCallback, mimeType = 'application/pdf') {
         if (!buttonElement) return;
 
+        buttonElement.setAttribute('data-print-bound', 'true');
+
         buttonElement.addEventListener('click', async (e) => {
             e.preventDefault();
-            const source = getSourceCallback();
-            if (!source) return;
+            e.stopPropagation();
 
-            const originalHtml = buttonElement.innerHTML;
-            buttonElement.disabled = true;
-            buttonElement.classList.add('opacity-75', 'cursor-wait');
-            
-            // Set temporary printing label
-            const labelEl = buttonElement.querySelector('.print-btn-label');
-            if (labelEl) {
-                labelEl.textContent = window.i18n ? window.i18n.t('btn_printing') || 'Preparing...' : 'Preparing...';
+            const source = getSourceCallback ? getSourceCallback() : (window.currentDownloadUrl || window.currentPdfUrl);
+            if (!source) {
+                console.warn('No document available to print yet.');
+                return;
             }
 
+            const originalContent = buttonElement.innerHTML;
+            buttonElement.disabled = true;
+            buttonElement.classList.add('opacity-75', 'cursor-wait');
+
+            const labelEl = buttonElement.querySelector('.print-btn-label') || buttonElement;
+            const originalText = labelEl.textContent;
+            labelEl.textContent = 'Preparing print...';
+
             try {
-                await window.printProcessedDocument(source, mimeType, document.title || 'Document');
+                await window.printProcessedDocument(source, mimeType, document.title || 'Print Document');
             } catch (err) {
                 console.error('Print action error:', err);
             } finally {
                 setTimeout(() => {
                     buttonElement.disabled = false;
                     buttonElement.classList.remove('opacity-75', 'cursor-wait');
-                    buttonElement.innerHTML = originalHtml;
-                }, 1000);
+                    buttonElement.innerHTML = originalContent;
+                }, 800);
             }
         });
     };
+
+    // Auto-delegate print buttons when clicked
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('#print-doc-btn, #print-pdf-btn, [data-action="print"], .btn-print-doc');
+        if (!btn) return;
+
+        if (btn.hasAttribute('data-print-bound')) return;
+
+        let source = window.currentDownloadUrl || window.currentPdfUrl || window.currentWatermarkedUrl || window.currentMergedPdfUrl || window.currentSplitPdfUrl || window.currentDecryptedPdfUrl || window.currentOutputBlob || window.currentOutputFile;
+        
+        if (source) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.printProcessedDocument(source, 'application/pdf', document.title);
+        }
+    }, true);
+
 })();

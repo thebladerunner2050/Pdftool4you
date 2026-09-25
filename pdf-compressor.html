@@ -289,11 +289,11 @@
                     </div>
                 </div>
 
-                <a href="index.html" aria-label="Back to Tools" class="back-btn-responsive flex items-center justify-center gap-1.5 w-9 h-9 lg:w-auto px-0 lg:px-3 py-0 lg:py-1.5 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white font-semibold text-xs shadow-2xs transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer">
+                <a href="index.html" aria-label="Back" class="back-btn-responsive flex items-center justify-center gap-1.5 w-9 h-9 lg:w-auto px-0 lg:px-3 py-0 lg:py-1.5 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white font-semibold text-xs shadow-2xs transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer">
                     <svg class="w-4 h-4 lg:w-3.5 lg:h-3.5 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                     </svg>
-                    <span class="back-btn-text hidden lg:inline font-semibold text-xs whitespace-nowrap" data-i18n="nav_back">Back to Tools</span>
+                    <span class="back-btn-text hidden lg:inline font-semibold text-xs whitespace-nowrap" data-i18n="nav_back">Back</span>
                 </a>
             </div>
         </div>
@@ -1449,121 +1449,103 @@
                 } else {
                     const checkedRadio = document.querySelector('input[name="compression-level"]:checked');
                     const level = checkedRadio ? checkedRadio.value : 'medium';
-                    if (level === 'low') targetTotalBytes = currentFile.size * 0.75;
-                    else if (level === 'medium') targetTotalBytes = currentFile.size * 0.45;
-                    else targetTotalBytes = currentFile.size * 0.25;
+                    if (level === 'low') targetTotalBytes = currentFile.size * 0.65;
+                    else if (level === 'medium') targetTotalBytes = currentFile.size * 0.40;
+                    else targetTotalBytes = currentFile.size * 0.20;
                 }
 
                 // STRATEGY 1: VECTOR-SAFE COMPRESSION (PERFECT TEXT CLARITY)
                 if (selectedStrategy === 'vector') {
-                    progressText.textContent = 'Performing lossless vector stream optimization...';
-                    progressBar.style.width = '45%';
-                    progressPercent.textContent = '45%';
+                    progressText.textContent = 'Testing vector stream optimization...';
+                    progressBar.style.width = '35%';
+                    progressPercent.textContent = '35%';
 
                     try {
                         const origPdfDoc = await PDFLib.PDFDocument.load(arrayBuffer.slice(0), { ignoreEncryption: true });
-                        progressBar.style.width = '75%';
-                        progressPercent.textContent = '75%';
+                        const vectorBytes = await origPdfDoc.save({ useObjectStreams: true });
                         
-                        const compressedPdfBytes = await origPdfDoc.save({ useObjectStreams: true });
-                        finalizeResult(compressedPdfBytes, currentFile.size, targetTotalBytes, 'vector');
-                        return;
+                        // Vector mode is accepted if it genuinely reduced size below original AND satisfies target (if in target mode)
+                        const vectorMetTarget = currentMode === 'target' ? vectorBytes.byteLength <= targetTotalBytes * 1.05 : vectorBytes.byteLength < currentFile.size * 0.95;
+
+                        if (vectorMetTarget) {
+                            progressBar.style.width = '90%';
+                            progressPercent.textContent = '90%';
+                            finalizeResult(vectorBytes, currentFile.size, targetTotalBytes, 'vector');
+                            return;
+                        } else {
+                            console.log('Vector optimization alone was insufficient for target size limit. Switching to adaptive raster compression.');
+                        }
                     } catch (vectorErr) {
                         console.warn('Vector compression failed, falling back to raster:', vectorErr);
-                        // fall through to raster mode if loading in pdf-lib failed
                     }
                 }
 
-                // STRATEGY 2: RASTERIZATION MODE (FORCE SIZE REDUCTION)
-                // Reserve overhead for PDF metadata and structure (~1.5KB base + 800B per page)
-                const overheadBytes = 1500 + (numPages * 800);
-                const imageBudgetTotal = Math.max(4000 * numPages, (targetTotalBytes - overheadBytes) * 0.95);
+                // STRATEGY 2: ADAPTIVE RASTERIZATION COMPRESSION (GUARANTEED TARGET SIZE FIT)
+                const overheadBytes = Math.min(2500, 1000 + (numPages * 400));
+                const imageBudgetTotal = Math.max(1500 * numPages, targetTotalBytes - overheadBytes);
                 const budgetPerPage = imageBudgetTotal / numPages;
 
-                // Read selected DPI
-                const activeDpiBtn = document.querySelector('.dpi-selector-btn.font-bold');
-                let selectedDpi = activeDpiBtn ? parseInt(activeDpiBtn.dataset.dpi) : 200;
-                let initialScale = selectedDpi / 72; // Map DPI to viewport scale (e.g., 200 DPI = 2.77x scale)
+                // Helper to render and encode page at given scale and quality
+                async function renderAndEncodePage(pdfPage, scale, quality) {
+                    const viewport = pdfPage.getViewport({ scale });
+                    const canvas = document.createElement('canvas');
+                    canvas.width = Math.max(1, Math.round(viewport.width));
+                    canvas.height = Math.max(1, Math.round(viewport.height));
 
-                // If budget is extremely small, we adapt starting resolution slightly but never below 150 DPI
-                if (budgetPerPage < 20 * 1024 && selectedDpi > 150) {
-                    selectedDpi = 150;
-                    initialScale = 150 / 72;
+                    const ctx = canvas.getContext('2d', { alpha: false });
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+
+                    await pdfPage.render({ canvasContext: ctx, viewport }).promise;
+                    const blob = await canvasToJpegBlob(canvas, quality);
+                    return { blob, width: viewport.width, height: viewport.height };
                 }
 
-                let initialQuality = 0.75;
-                if (budgetPerPage < 25 * 1024) {
-                    initialQuality = 0.55;
-                } else if (budgetPerPage < 50 * 1024) {
-                    initialQuality = 0.65;
-                } else if (budgetPerPage < 100 * 1024) {
-                    initialQuality = 0.75;
+                // Compute starting parameters based on page budget
+                let initialScale, initialQuality;
+                if (budgetPerPage >= 150 * 1024) {
+                    initialScale = 1.8; initialQuality = 0.80;
+                } else if (budgetPerPage >= 80 * 1024) {
+                    initialScale = 1.4; initialQuality = 0.75;
+                } else if (budgetPerPage >= 40 * 1024) {
+                    initialScale = 1.1; initialQuality = 0.68;
+                } else if (budgetPerPage >= 20 * 1024) {
+                    initialScale = 0.85; initialQuality = 0.58;
                 } else {
-                    initialQuality = 0.85;
+                    initialScale = 0.65; initialQuality = 0.48;
                 }
 
                 const newPdf = await PDFLib.PDFDocument.create();
 
                 for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-                    const percent = Math.round(5 + ((pageNum - 1) / numPages) * 85);
+                    const percent = Math.round(10 + ((pageNum - 1) / numPages) * 80);
                     progressBar.style.width = percent + '%';
                     progressPercent.textContent = percent + '%';
-                    progressText.textContent = `Optimizing page ${pageNum} of ${numPages} (${selectedDpi} DPI, ${Math.round(budgetPerPage / 1024)} KB/page target)...`;
+                    progressText.textContent = `Compressing page ${pageNum} of ${numPages} (Target: ≤ ${formatBytes(targetTotalBytes)})...`;
 
                     const page = await pdf.getPage(pageNum);
-                    const viewport = page.getViewport({ scale: initialScale });
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d', { alpha: false });
-                    
-                    canvas.width = Math.max(1, Math.round(viewport.width));
-                    canvas.height = Math.max(1, Math.round(viewport.height));
-
-                    // CRITICAL: Fill with solid white background so transparent PDF areas do NOT turn black in JPEG!
-                    ctx.fillStyle = '#ffffff';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                    // High-quality image rendering filters
-                    ctx.imageSmoothingEnabled = true;
-                    ctx.imageSmoothingQuality = 'high';
-
-                    await page.render({ canvasContext: ctx, viewport }).promise;
-
-                    // Compress to JPEG
+                    let currentScale = initialScale;
                     let currentQ = initialQuality;
-                    let jpegBlob = await canvasToJpegBlob(canvas, currentQ);
 
-                    if (!jpegBlob) {
+                    let pageRes = await renderAndEncodePage(page, currentScale, currentQ);
+
+                    // Adaptive iterative loop downscaling until JPEG blob fits within budgetPerPage
+                    let pass = 0;
+                    while (pageRes.blob && pageRes.blob.size > budgetPerPage * 1.02 && pass < 5) {
+                        pass++;
+                        const ratio = Math.sqrt(budgetPerPage / pageRes.blob.size);
+                        currentScale = Math.max(0.25, currentScale * Math.min(0.85, ratio));
+                        currentQ = Math.max(0.18, currentQ * 0.85);
+                        pageRes = await renderAndEncodePage(page, currentScale, currentQ);
+                    }
+
+                    if (!pageRes.blob) {
                         throw new Error(`Failed to encode image data for page ${pageNum}.`);
                     }
 
-                    // Adaptive JPEG quality reduction down to 0.45 (replaces low-quality 0.20 floor) to meet budget while maintaining legible text
-                    if (jpegBlob.size > budgetPerPage * 1.10 && currentQ > 0.45) {
-                        let targetQ = currentQ * Math.max(0.65, budgetPerPage / jpegBlob.size);
-                        currentQ = Math.max(0.45, Math.min(currentQ - 0.08, targetQ));
-                        const adjustedBlob = await canvasToJpegBlob(canvas, currentQ);
-                        if (adjustedBlob) jpegBlob = adjustedBlob;
-                    }
-
-                    // Only downscale dimensions slightly if quality adjustment to 0.45 was insufficient.
-                    // Floor downscaleRatio to 0.75 (never 0.65) to prevent heavy blurring of fine details.
-                    if (jpegBlob.size > budgetPerPage * 1.20) {
-                        const downscaleRatio = Math.max(0.75, Math.sqrt(budgetPerPage / jpegBlob.size));
-                        const downCanvas = document.createElement('canvas');
-                        downCanvas.width = Math.max(1, Math.round(canvas.width * downscaleRatio));
-                        downCanvas.height = Math.max(1, Math.round(canvas.height * downscaleRatio));
-                        const downCtx = downCanvas.getContext('2d', { alpha: false });
-                        
-                        downCtx.fillStyle = '#ffffff';
-                        downCtx.fillRect(0, 0, downCanvas.width, downCanvas.height);
-                        downCtx.imageSmoothingEnabled = true;
-                        downCtx.imageSmoothingQuality = 'high';
-                        downCtx.drawImage(canvas, 0, 0, downCanvas.width, downCanvas.height);
-                        
-                        const downBlob = await canvasToJpegBlob(downCanvas, Math.max(0.42, currentQ * 0.92));
-                        if (downBlob) jpegBlob = downBlob;
-                    }
-
-                    const jpegBytes = await jpegBlob.arrayBuffer();
+                    const jpegBytes = await pageRes.blob.arrayBuffer();
                     const embeddedImage = await newPdf.embedJpg(jpegBytes);
 
                     const origViewport = page.getViewport({ scale: 1.0 });
@@ -1576,7 +1558,7 @@
                     });
                 }
 
-                progressText.textContent = 'Finalizing compressed PDF package...';
+                progressText.textContent = 'Finalizing compressed PDF document...';
                 progressBar.style.width = '95%';
                 progressPercent.textContent = '95%';
 
@@ -1599,17 +1581,13 @@
             let finalSize = compressedPdfBytes.byteLength;
             window.lastCompressedSize = finalSize;
 
-            // If compressed result somehow exceeded original file size in vector mode:
-            if (finalSize >= origSize && selectedStrategy === 'vector') {
-                console.log('Original was already optimal. Preserving original file content.');
-            }
-
             const finalBlob = new Blob([finalBytes], { type: 'application/pdf' });
             
             if (currentDownloadUrl) {
                 URL.revokeObjectURL(currentDownloadUrl);
             }
             currentDownloadUrl = URL.createObjectURL(finalBlob);
+            window.currentDownloadUrl = currentDownloadUrl;
 
             downloadLink.href = currentDownloadUrl;
             downloadLink.download = 'compressed-' + (currentFile ? currentFile.name : 'document.pdf');
@@ -1617,6 +1595,12 @@
             const savings = ((1 - (finalSize / origSize)) * 100).toFixed(1);
             sizeComparison.textContent = `Original: ${formatBytes(origSize)} → Compressed: ${formatBytes(finalSize)} (${savings > 0 ? savings + '% smaller' : 'optimized'})`;
             downloadBtnLabel.textContent = `Download Compressed PDF (${formatBytes(finalSize)})`;
+
+            // Wire up print button
+            const printDocBtn = document.getElementById('print-doc-btn');
+            if (window.attachPrintAction && printDocBtn) {
+                window.attachPrintAction(printDocBtn, () => currentDownloadUrl, 'application/pdf');
+            }
 
             if (selectedStrategy === 'vector') {
                 targetAchievementBadge.className = 'mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/40 border border-blue-200/60 dark:border-blue-850 text-xs font-bold text-blue-800 dark:text-blue-300';

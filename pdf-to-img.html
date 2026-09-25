@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>PDF to Image Converter Online – Convert PDF Pages to JPG, PNG & WebP Safely</title>
+    <meta name="description" content="Free online PDF to Image converter. Convert PDF pages to high-quality JPG, PNG, or WebP images at 150/300 DPI. 100% private, client-side WebAssembly processing in your browser memory. No file size limits.">
+    <meta name="keywords" content="pdf to image, pdf to jpg, pdf to png, pdf to webp, convert pdf to photo, extract pages from pdf as images, high dpi pdf converter, online pdf to image">
+    <link rel="canonical" href="https://pdftool4you.in/pdf-to-img.html">
+
+    <!-- OpenGraph Social Cards -->
+    <meta property="og:title" content="PDF to Image Converter Online – Fast, High-Resolution PDF Page Extraction">
+    <meta property="og:description" content="Convert PDF documents into JPG, PNG, or WebP images safely on your device. Choose 150/300 DPI, select page ranges, and download individual pages or a bulk ZIP file. 100% private.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://pdftool4you.in/pdf-to-img.html">
+    <meta property="og:site_name" content="PDFTool4You">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PDF to Image Converter Online – 100% In-Browser Privacy">
+    <meta name="twitter:description" content="Extract high-resolution JPG, PNG, or WebP pictures from PDF files. No uploads, fast local conversion.">
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "PDF to Image Converter",
+        "url": "https://pdftool4you.in/pdf-to-img.html",
+        "description": "Convert PDF pages to JPG, PNG, and WebP images directly in your web browser with 150 or 300 DPI high-resolution options.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "All",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "author": {
+            "@type": "Organization",
+            "name": "PDFTool4You"
+        }
+    }
+    </script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        zinc: {
+                            750: '#202023',
+                            850: '#141417',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'system';
+            const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <script src="theme.js"></script>
+    <script src="i18n.js"></script>
+    <script src="share.js"></script>
+    <script src="print.js"></script>
+    <script src="mobile-nav.js" defer></script>
+
+    <!-- PDF.js Engine -->
+    <script src="pdf.min.js"></script>
+    <script>
+        if (!window.pdfjsLib) {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script>');
+        }
+    </script>
+
+    <!-- JSZip for Bulk ZIP Downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: #fafbfc;
+            color: #09090b;
+        }
+        html.dark {
+            color-scheme: dark;
+        }
+        html.dark body {
+            background-color: #09090b;
+            color: #f4f4f5;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-purple-100 selection:text-purple-900">
+
+    <!-- Minimal Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/80 dark:border-zinc-800 transition-colors">
+        <div class="relative max-w-5xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between">
+            <!-- Left: Mobile Hamburger Menu Trigger -->
+            <div class="flex items-center lg:hidden z-30 pointer-events-auto">
+                <button type="button" data-mobile-drawer-trigger aria-label="Open navigation menu" class="flex items-center justify-center w-9 h-9 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white active:scale-95 transition-all shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                    <svg class="w-5 h-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Logo: Centered on mobile & tablets, left-aligned on PC -->
+            <a href="index.html" class="header-logo-responsive flex items-center gap-2 sm:gap-2.5 group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:transform-none z-20">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-sm transition-transform group-hover:scale-105 shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div class="flex items-baseline gap-1">
+                    <span class="font-bold text-base sm:text-lg text-zinc-900 dark:text-white tracking-tight">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-2 sm:gap-2.5">
+                <!-- Share Button -->
+                <div class="hidden lg:block relative" data-share-container>
+                    <button type="button" data-share-trigger aria-label="Share tool or copy link" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none">
+                        <svg class="share-icon-default w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                        </svg>
+                        <span class="share-btn-text hidden sm:inline text-xs font-semibold" data-i18n="nav_share">Share</span>
+                    </button>
+                    <div data-share-menu class="hidden absolute right-0 mt-2 w-72 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-4 z-50 text-xs">
+                        <div class="font-bold text-zinc-900 dark:text-white text-sm mb-1" data-i18n="share_title">Share this Tool</div>
+                        <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-3" data-i18n="share_desc">Free, private, 100% on-device PDF & image utilities.</p>
+                        <div class="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700">
+                            <input type="text" readonly data-share-url-input class="w-full bg-transparent border-0 px-2 text-xs text-zinc-700 dark:text-zinc-200 focus:outline-none truncate select-all font-mono" value="">
+                            <button type="button" data-share-action="copy" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-xs shrink-0 cursor-pointer">
+                                <span data-i18n="share_copy_btn">Copy</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Language Switcher -->
+                <div class="hidden lg:block relative" data-lang-menu-container>
+                    <button type="button" data-lang-trigger aria-label="Switch language" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none">
+                        <span class="lang-current-label text-xs font-semibold">EN</span>
+                    </button>
+                    <div data-lang-menu class="hidden absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1.5 z-50 text-xs">
+                        <button type="button" data-lang-value="en" class="w-full px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800">English</button>
+                        <button type="button" data-lang-value="hi" class="w-full px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800">हिन्दी (Hindi)</button>
+                    </div>
+                </div>
+
+                <!-- Theme Toggle -->
+                <div class="hidden lg:block relative" data-theme-menu-container>
+                    <button type="button" data-theme-trigger aria-label="Toggle color theme" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none">
+                        <svg class="w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <span class="theme-label hidden sm:inline text-xs font-semibold">Theme</span>
+                    </button>
+                    <div data-theme-menu class="hidden absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1.5 z-50 text-xs">
+                        <button type="button" data-theme-value="system" class="w-full px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800">System default</button>
+                        <button type="button" data-theme-value="light" class="w-full px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800">Light</button>
+                        <button type="button" data-theme-value="dark" class="w-full px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800">Dark</button>
+                    </div>
+                </div>
+
+                <!-- Back Button -->
+                <a href="index.html" aria-label="Back" class="back-btn-responsive flex items-center justify-center gap-1.5 w-9 h-9 lg:w-auto px-0 lg:px-3 py-0 lg:py-1.5 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white font-semibold text-xs shadow-2xs transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer">
+                    <svg class="w-4 h-4 lg:w-3.5 lg:h-3.5 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="back-btn-text hidden lg:inline font-semibold text-xs whitespace-nowrap" data-i18n="nav_back">Back</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-10 w-full">
+        
+        <!-- Header Info -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-purple-950/40 border border-purple-200/60 dark:border-purple-800/60 text-purple-700 dark:text-purple-300 text-xs font-semibold mb-3">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span>100% In-Browser PDF Page Extractor</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight mb-2">
+                Convert PDF to Image (JPG, PNG, WebP)
+            </h1>
+            <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 max-w-xl mx-auto leading-relaxed">
+                Extract PDF pages into high-resolution JPG, PNG, or WebP images. Choose 150/300 DPI, select custom page ranges, and download individual pages or a bulk ZIP archive.
+            </p>
+        </div>
+
+        <!-- Main Converter Tool Area -->
+        <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-4 sm:p-8 shadow-sm space-y-6">
+            
+            <!-- File Drop Zone -->
+            <div id="drop-zone" class="border-2 border-dashed border-zinc-300 dark:border-zinc-700 hover:border-purple-500 dark:hover:border-purple-500 rounded-2xl p-8 sm:p-12 text-center transition-all bg-zinc-50/50 dark:bg-zinc-850/50 hover:bg-purple-50/30 dark:hover:bg-purple-950/20 cursor-pointer group">
+                <input type="file" id="file-input" accept="application/pdf,.pdf" class="hidden">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform shadow-2xs">
+                    <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                </div>
+                <h3 class="text-sm sm:text-base font-bold text-zinc-900 dark:text-white mb-1">
+                    Drag and drop your PDF document here
+                </h3>
+                <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-4">or click to select file from your device</p>
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs font-semibold text-zinc-700 dark:text-zinc-200 shadow-2xs">
+                    <span>Supports all PDF documents</span>
+                </div>
+            </div>
+
+            <!-- Error Banner -->
+            <div id="error-msg" class="hidden p-4 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 text-xs font-medium flex items-center gap-2">
+                <svg class="w-4 h-4 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span id="error-text">Please select a valid PDF document.</span>
+            </div>
+
+            <!-- Active Document & Settings Section -->
+            <div id="process-section" class="hidden space-y-6">
+                
+                <!-- Selected File Banner -->
+                <div class="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 truncate">
+                        <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                            PDF
+                        </div>
+                        <div class="truncate">
+                            <h4 id="file-name" class="font-bold text-sm text-zinc-900 dark:text-white truncate">document.pdf</h4>
+                            <p id="file-meta" class="text-xs text-zinc-500 dark:text-zinc-400 font-medium">0 KB · 1 page</p>
+                        </div>
+                    </div>
+                    <button type="button" id="change-file-btn" class="px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white text-xs font-semibold shadow-2xs cursor-pointer shrink-0">
+                        Change File
+                    </button>
+                </div>
+
+                <!-- Conversion Configuration Panel -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-2xl bg-zinc-50/70 dark:bg-zinc-850/50 border border-zinc-200/80 dark:border-zinc-800">
+                    
+                    <!-- Output Format Selector -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">Output Format</label>
+                        <select id="format-select" class="w-full py-2 px-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500/20">
+                            <option value="jpg" selected>JPG / JPEG (Standard Image)</option>
+                            <option value="png">PNG (Lossless / High Detail)</option>
+                            <option value="webp">WebP (Modern Lightweight Web)</option>
+                        </select>
+                    </div>
+
+                    <!-- Quality / Resolution DPI -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">Resolution (DPI)</label>
+                        <select id="dpi-select" class="w-full py-2 px-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500/20">
+                            <option value="150" selected>150 DPI (Balanced / Fast)</option>
+                            <option value="300">300 DPI (HD Print Quality / Crisp)</option>
+                            <option value="96">96 DPI (Web Small Size)</option>
+                        </select>
+                    </div>
+
+                    <!-- Page Range Input -->
+                    <div class="space-y-1.5">
+                        <label class="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">Pages to Convert</label>
+                        <input type="text" id="page-range-input" placeholder="All (or e.g. 1, 3, 5-8)" class="w-full py-2 px-3 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-purple-500/20" value="all">
+                    </div>
+
+                </div>
+
+                <!-- JPEG Quality Slider (shown when JPG format is active) -->
+                <div id="jpg-quality-box" class="p-3.5 rounded-xl bg-zinc-50/70 dark:bg-zinc-850/50 border border-zinc-200/80 dark:border-zinc-800 space-y-1.5">
+                    <div class="flex justify-between text-xs">
+                        <span class="font-bold text-zinc-700 dark:text-zinc-300">JPEG Image Quality</span>
+                        <span id="jpg-quality-val" class="font-bold text-purple-600 dark:text-purple-400 font-mono">88%</span>
+                    </div>
+                    <input type="range" id="jpg-quality-slider" min="30" max="100" value="88" class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-purple-600">
+                </div>
+
+                <!-- Progress Bar Container -->
+                <div id="progress-container" class="hidden space-y-2">
+                    <div class="flex justify-between text-xs font-semibold text-zinc-600 dark:text-zinc-300">
+                        <span id="progress-label">Converting pages...</span>
+                        <span id="progress-val">0%</span>
+                    </div>
+                    <div class="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-2 overflow-hidden">
+                        <div id="progress-bar" class="bg-purple-600 h-2 rounded-full transition-all duration-300 style='width: 0%'"></div>
+                    </div>
+                </div>
+
+                <!-- Convert Trigger Button -->
+                <button type="button" id="convert-btn" class="w-full py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm text-white bg-purple-600 hover:bg-purple-700 transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span id="convert-btn-text">Convert PDF to Images</span>
+                </button>
+
+            </div>
+
+            <!-- Download & Thumbnail Grid Section -->
+            <div id="download-section" class="hidden space-y-6">
+                
+                <!-- Success Banner & Bulk Download Actions -->
+                <div class="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                    <div>
+                        <h4 class="font-bold text-sm text-emerald-900 dark:text-emerald-200">✓ PDF Pages Successfully Converted!</h4>
+                        <p id="conversion-summary-meta" class="text-xs text-emerald-700 dark:text-emerald-300 mt-0.5 font-medium">Extracted 1 page into JPG format.</p>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+                        <button type="button" id="btn-download-all-zip" class="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition-all cursor-pointer">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            <span>Download All Images (ZIP)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Page Images Output Grid -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between pb-2 border-b border-zinc-200/80 dark:border-zinc-800">
+                        <span class="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider">Converted Page Images</span>
+                        <span id="page-count-indicator" class="text-xs font-bold text-purple-600 dark:text-purple-400">1 Page</span>
+                    </div>
+
+                    <div id="output-images-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <!-- Dynamically populated page image cards -->
+                    </div>
+                </div>
+
+                <div class="text-center pt-2">
+                    <button type="button" id="convert-another-btn" class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer">
+                        ← Convert another PDF document
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Privacy Assurance Note -->
+        <div class="mt-8 text-center text-xs text-zinc-400">
+            <span>🔒 Complete Privacy: All PDF rendering occurs 100% locally in your browser memory via WebAssembly. Files are never uploaded.</span>
+        </div>
+
+        <!-- Educational & AdSense SEO Content Section -->
+        <div class="mt-14 space-y-10">
+            
+            <!-- How to Convert Steps -->
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 sm:p-8 shadow-sm">
+                <h2 class="text-lg font-bold text-zinc-900 dark:text-white mb-4 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded-lg bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xs font-bold">1</span>
+                    How to Convert PDF to Images Online (Step-by-Step)
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs text-zinc-600 dark:text-zinc-400">
+                    <div class="p-3.5 bg-zinc-50 dark:bg-zinc-800/40 rounded-xl border border-zinc-200/60 dark:border-zinc-700/60 space-y-1.5">
+                        <div class="font-bold text-zinc-900 dark:text-white text-xs">Step 1: Upload PDF File</div>
+                        <p>Drag and drop your PDF document into the upload area or click to select from your file storage.</p>
+                    </div>
+                    <div class="p-3.5 bg-zinc-50 dark:bg-zinc-800/40 rounded-xl border border-zinc-200/60 dark:border-zinc-700/60 space-y-1.5">
+                        <div class="font-bold text-zinc-900 dark:text-white text-xs">Step 2: Choose Format & DPI</div>
+                        <p>Select target image format (JPG, PNG, WebP) and resolution (150 DPI balanced or 300 DPI HD quality).</p>
+                    </div>
+                    <div class="p-3.5 bg-zinc-50 dark:bg-zinc-800/40 rounded-xl border border-zinc-200/60 dark:border-zinc-700/60 space-y-1.5">
+                        <div class="font-bold text-zinc-900 dark:text-white text-xs">Step 3: Convert & Download</div>
+                        <p>Click "Convert PDF to Images". Download individual page photos or save all images in a single ZIP archive.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Why Convert PDF to Image Info -->
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 sm:p-8 shadow-sm space-y-4">
+                <h2 class="text-lg font-bold text-zinc-900 dark:text-white">Why Extract PDF Pages into Images?</h2>
+                <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    Converting PDF pages into standard image formats (JPG, PNG, WebP) allows you to embed document pages into presentations, share single receipts over messaging apps like WhatsApp, publish document excerpts on websites, and upload identity photos to application portals that reject PDF files.
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                    <div class="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/60">
+                        <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <div class="text-xs">
+                            <span class="font-bold text-zinc-900 dark:text-white block">300 DPI High Resolution</span>
+                            <span class="text-zinc-500 dark:text-zinc-400">Renders razor-sharp text and graphics suitable for professional printing and archival.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/60">
+                        <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <div class="text-xs">
+                            <span class="font-bold text-zinc-900 dark:text-white block">Multi-Format Options</span>
+                            <span class="text-zinc-500 dark:text-zinc-400">Supports JPG for small file sizes, PNG for lossless detail, and WebP for web performance.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/60">
+                        <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <div class="text-xs">
+                            <span class="font-bold text-zinc-900 dark:text-white block">Bulk ZIP Download</span>
+                            <span class="text-zinc-500 dark:text-zinc-400">Download all rendered document pages at once in a organized zip archive.</span>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 dark:border-zinc-700/60">
+                        <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        <div class="text-xs">
+                            <span class="font-bold text-zinc-900 dark:text-white block">Zero Cloud Uploads</span>
+                            <span class="text-zinc-500 dark:text-zinc-400">Processing runs strictly in local device RAM using WebAssembly and PDF.js.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQs -->
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-6 sm:p-8 shadow-sm">
+                <h2 class="text-lg font-bold text-zinc-900 dark:text-white mb-4">Frequently Asked Questions</h2>
+                <div class="space-y-4 text-xs">
+                    <div>
+                        <h3 class="font-bold text-zinc-900 dark:text-white mb-1">What is the difference between 150 DPI and 300 DPI?</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">150 DPI offers standard clarity with smaller image file sizes suitable for digital sharing. 300 DPI provides double pixel density for crisp typography and high-definition printing.</p>
+                    </div>
+                    <div class="pt-3 border-t border-zinc-100 dark:border-zinc-800">
+                        <h3 class="font-bold text-zinc-900 dark:text-white mb-1">Can I extract only specific pages from a long PDF?</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Yes! In the "Pages to Convert" field, enter specific page numbers or ranges (e.g. 1, 3, 5-8) to convert only the exact pages you need.</p>
+                    </div>
+                    <div class="pt-3 border-t border-zinc-100 dark:border-zinc-800">
+                        <h3 class="font-bold text-zinc-900 dark:text-white mb-1">Are my sensitive documents safe?</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">Yes, 100%. The conversion runs completely inside your web browser. No PDF file or extracted image is ever transmitted across the network or stored on any server.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="mt-20 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-colors">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-10">
+                
+                <!-- Brand Info -->
+                <div class="md:col-span-1 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-xs">
+                            <svg class="w-3.5 h-3.5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <span class="font-bold text-base text-zinc-900 dark:text-white">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                    </div>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed" data-i18n="footer_brand_desc">
+                        High-performance in-browser PDF & image suite. Compress, merge, split, watermark, and convert without uploading files.
+                    </p>
+                    <div class="pt-1 flex items-center gap-2 text-[11px] text-zinc-400 dark:text-zinc-500">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span data-i18n="badge_in_browser_memory">100% In-Browser Memory</span>
+                    </div>
+                </div>
+
+                <!-- PDF Tools -->
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5 tracking-normal normal-case" data-i18n="footer_pdf_tools">PDF Tools</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="pdf-compressor.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_compressor">Compress PDF</a></li>
+                        <li><a href="merge-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_merge">Merge PDF</a></li>
+                        <li><a href="split-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_split">Split PDF</a></li>
+                        <li><a href="pdf-to-img.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-semibold text-purple-600 dark:text-purple-400">PDF to Image</a></li>
+                        <li><a href="pdf-watermarker.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_watermark">Watermark PDF</a></li>
+                        <li><a href="remove-pdf-password.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_remover">Remove PDF Password</a></li>
+                    </ul>
+                </div>
+
+                <!-- Image Tools -->
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5 tracking-normal normal-case" data-i18n="footer_image_tools">Image Tools</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="webp-to-jpg.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_webp2jpg">WebP to JPG</a></li>
+                        <li><a href="image-to-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_img2pdf">Image to PDF</a></li>
+                        <li><a href="png-to-jpg.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_png2jpg">PNG to JPG</a></li>
+                        <li><a href="jpg-to-png.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_jpg2png">JPG to PNG</a></li>
+                        <li><a href="pan-card-photo-maker.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_tool_pan">PAN Card Photo Maker</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal & Trust -->
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5 tracking-normal normal-case" data-i18n="footer_company_legal">Company & Legal</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="privacy-policy.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_privacy">Privacy Policy</a></li>
+                        <li><a href="terms-and-conditions.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_terms">Terms & Conditions</a></li>
+                        <li><a href="about-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_about">About Us</a></li>
+                        <li><a href="contact-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_contact">Contact Us</a></li>
+                        <li><a href="disclaimer.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_disclaimer">Disclaimer</a></li>
+                        <li><a href="cookie-policy.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors" data-i18n="footer_cookies">Cookie Policy</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-8 border-t border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400 dark:text-zinc-500">
+                <p data-i18n="footer_copyright">© 2026 PDFTool4You. All rights reserved. 100% Client-Side Processing.</p>
+                <div class="flex items-center gap-4">
+                    <a href="privacy-policy.html" class="hover:underline" data-i18n="footer_privacy">Privacy</a>
+                    <a href="terms-and-conditions.html" class="hover:underline" data-i18n="footer_terms">Terms</a>
+                    <a href="cookie-policy.html" class="hover:underline" data-i18n="footer_cookies">Cookies</a>
+                    <a href="contact-us.html" class="hover:underline" data-i18n="footer_contact">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Client-Side Engine Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+            const processSection = document.getElementById('process-section');
+            const downloadSection = document.getElementById('download-section');
+            
+            const fileNameEl = document.getElementById('file-name');
+            const fileMetaEl = document.getElementById('file-meta');
+            const changeFileBtn = document.getElementById('change-file-btn');
+            
+            const formatSelect = document.getElementById('format-select');
+            const dpiSelect = document.getElementById('dpi-select');
+            const pageRangeInput = document.getElementById('page-range-input');
+            
+            const jpgQualityBox = document.getElementById('jpg-quality-box');
+            const jpgQualitySlider = document.getElementById('jpg-quality-slider');
+            const jpgQualityVal = document.getElementById('jpg-quality-val');
+            
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressLabel = document.getElementById('progress-label');
+            const progressVal = document.getElementById('progress-val');
+            
+            const convertBtn = document.getElementById('convert-btn');
+            const convertBtnText = document.getElementById('convert-btn-text');
+            
+            const errorMsg = document.getElementById('error-msg');
+            const errorText = document.getElementById('error-text');
+            
+            const conversionSummaryMeta = document.getElementById('conversion-summary-meta');
+            const pageCountIndicator = document.getElementById('page-count-indicator');
+            const outputImagesGrid = document.getElementById('output-images-grid');
+            const btnDownloadAllZip = document.getElementById('btn-download-all-zip');
+            const convertAnotherBtn = document.getElementById('convert-another-btn');
+
+            let activeFile = null;
+            let loadedPdfDoc = null;
+            let totalPdfPages = 0;
+            let convertedImagesList = []; // { pageNum, blob, dataUrl, filename, width, height, bytes }
+
+            // Format change listener
+            formatSelect.addEventListener('change', () => {
+                if (formatSelect.value === 'jpg') {
+                    jpgQualityBox.classList.remove('hidden');
+                } else {
+                    jpgQualityBox.classList.add('hidden');
+                }
+            });
+
+            jpgQualitySlider.addEventListener('input', () => {
+                jpgQualityVal.textContent = jpgQualitySlider.value + '%';
+            });
+
+            // File selection
+            dropZone.addEventListener('click', () => fileInput.click());
+            changeFileBtn.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelected);
+
+            dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-purple-500', 'bg-purple-50/30'); });
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-purple-500', 'bg-purple-50/30'));
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-purple-500', 'bg-purple-50/30');
+                if (e.dataTransfer.files.length > 0) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFileSelected();
+                }
+            });
+
+            function formatBytes(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+
+            async function handleFileSelected() {
+                const file = fileInput.files[0];
+                if (!file || (!file.type.includes('pdf') && !file.name.toLowerCase().endsWith('.pdf'))) {
+                    errorText.textContent = 'Please select a valid PDF file (.pdf).';
+                    errorMsg.classList.remove('hidden');
+                    return;
+                }
+
+                activeFile = file;
+                errorMsg.classList.add('hidden');
+
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    if (!window.pdfjsLib) {
+                        throw new Error('PDF.js library loading...');
+                    }
+                    if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
+                        pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+                    }
+
+                    loadedPdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+                    totalPdfPages = loadedPdfDoc.numPages || 1;
+
+                    fileNameEl.textContent = file.name;
+                    fileMetaEl.textContent = `${formatBytes(file.size)} · ${totalPdfPages} page${totalPdfPages === 1 ? '' : 's'}`;
+
+                    dropZone.classList.add('hidden');
+                    processSection.classList.remove('hidden');
+                    downloadSection.classList.add('hidden');
+                } catch (err) {
+                    console.error('PDF load error:', err);
+                    errorText.textContent = 'Failed to load PDF file. It might be password-protected or corrupted.';
+                    errorMsg.classList.remove('hidden');
+                }
+            }
+
+            // Parse custom page ranges (e.g. "1, 3, 5-8")
+            function parsePageRanges(rangeStr, totalPages) {
+                if (!rangeStr || rangeStr.trim().toLowerCase() === 'all') {
+                    return Array.from({ length: totalPages }, (_, i) => i + 1);
+                }
+                const pages = new Set();
+                const parts = rangeStr.split(',');
+                parts.forEach(part => {
+                    const clean = part.trim();
+                    if (clean.includes('-')) {
+                        const [start, end] = clean.split('-').map(n => parseInt(n.trim()));
+                        if (!isNaN(start) && !isNaN(end)) {
+                            for (let p = Math.max(1, start); p <= Math.min(totalPages, end); p++) {
+                                pages.add(p);
+                            }
+                        }
+                    } else {
+                        const p = parseInt(clean);
+                        if (!isNaN(p) && p >= 1 && p <= totalPages) {
+                            pages.add(p);
+                        }
+                    }
+                });
+                return pages.size > 0 ? Array.from(pages).sort((a, b) => a - b) : Array.from({ length: totalPages }, (_, i) => i + 1);
+            }
+
+            // Conversion logic
+            convertBtn.addEventListener('click', async () => {
+                if (!loadedPdfDoc || !activeFile) return;
+
+                const selectedFormat = formatSelect.value; // 'jpg', 'png', 'webp'
+                const targetDpi = parseInt(dpiSelect.value) || 150;
+                const scale = targetDpi / 72; // Map DPI to scale (150 DPI = 2.08x, 300 DPI = 4.16x)
+                const quality = (selectedFormat === 'jpg') ? (parseInt(jpgQualitySlider.value) / 100) : 0.92;
+
+                const pagesToProcess = parsePageRanges(pageRangeInput.value, totalPdfPages);
+
+                convertBtn.disabled = true;
+                progressContainer.classList.remove('hidden');
+                progressBar.style.width = '5%';
+                progressVal.textContent = '5%';
+                progressLabel.textContent = `Extracting ${pagesToProcess.length} page${pagesToProcess.length === 1 ? '' : 's'} at ${targetDpi} DPI...`;
+
+                convertedImagesList = [];
+                outputImagesGrid.innerHTML = '';
+
+                try {
+                    const baseName = activeFile.name.replace(/\.[^/.]+$/, '');
+
+                    for (let index = 0; i < pagesToProcess.length; index++) {
+                        const pageNum = pagesToProcess[index];
+                        const percent = Math.round(5 + ((index + 1) / pagesToProcess.length) * 90);
+                        
+                        progressBar.style.width = percent + '%';
+                        progressVal.textContent = percent + '%';
+                        progressLabel.textContent = `Rendering page ${pageNum} of ${totalPdfPages} (${selectedFormat.toUpperCase()}, ${targetDpi} DPI)...`;
+
+                        const page = await loadedPdfDoc.getPage(pageNum);
+                        const viewport = page.getViewport({ scale });
+                        
+                        const canvas = document.createElement('canvas');
+                        canvas.width = Math.max(1, Math.round(viewport.width));
+                        canvas.height = Math.max(1, Math.round(viewport.height));
+
+                        const ctx = canvas.getContext('2d', { alpha: selectedFormat === 'png' });
+                        if (selectedFormat !== 'png') {
+                            ctx.fillStyle = '#ffffff';
+                            ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        }
+                        ctx.imageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = 'high';
+
+                        await page.render({ canvasContext: ctx, viewport }).promise;
+
+                        const mimeType = selectedFormat === 'png' ? 'image/png' : (selectedFormat === 'webp' ? 'image/webp' : 'image/jpeg');
+                        
+                        const blob = await new Promise(resolve => canvas.toBlob(resolve, mimeType, quality));
+                        const dataUrl = canvas.toDataURL(mimeType, quality);
+                        const outFilename = `${baseName}_page_${pageNum}.${selectedFormat}`;
+
+                        convertedImagesList.push({
+                            pageNum,
+                            blob,
+                            dataUrl,
+                            filename: outFilename,
+                            width: canvas.width,
+                            height: canvas.height,
+                            bytes: blob ? blob.size : 0
+                        });
+                    }
+
+                    // Populate UI Thumbnail Grid
+                    renderConvertedImagesGrid();
+
+                    conversionSummaryMeta.textContent = `Converted ${convertedImagesList.length} page${convertedImagesList.length === 1 ? '' : 's'} into ${selectedFormat.toUpperCase()} (${targetDpi} DPI).`;
+                    pageCountIndicator.textContent = `${convertedImagesList.length} Image${convertedImagesList.length === 1 ? '' : 's'}`;
+
+                    progressBar.style.width = '100%';
+                    progressVal.textContent = '100%';
+
+                    downloadSection.classList.remove('hidden');
+                    processSection.classList.add('hidden');
+
+                } catch (err) {
+                    console.error('Conversion error:', err);
+                    errorText.textContent = 'Error rendering PDF pages into images. The file might be corrupted.';
+                    errorMsg.classList.remove('hidden');
+                } finally {
+                    convertBtn.disabled = false;
+                    progressContainer.classList.add('hidden');
+                    progressBar.style.width = '0%';
+                }
+            });
+
+            function renderConvertedImagesGrid() {
+                outputImagesGrid.innerHTML = '';
+
+                convertedImagesList.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'flex flex-col bg-zinc-50 dark:bg-zinc-800/60 rounded-xl border border-zinc-200/80 dark:border-zinc-700 p-3 space-y-3';
+                    
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between text-xs pb-1.5 border-b border-zinc-200/60 dark:border-zinc-700/60">
+                            <span class="font-bold text-zinc-900 dark:text-white">Page ${item.pageNum}</span>
+                            <span class="text-[10px] font-mono text-zinc-500 dark:text-zinc-400">${item.width}×${item.height} px · ${formatBytes(item.bytes)}</span>
+                        </div>
+
+                        <div class="flex items-center justify-center min-h-[160px] max-h-[220px] bg-white dark:bg-zinc-900 rounded-lg p-2 border border-zinc-200/60 dark:border-zinc-700 overflow-hidden">
+                            <img src="${item.dataUrl}" alt="Page ${item.pageNum}" class="max-h-[200px] max-w-full object-contain rounded shadow-2xs">
+                        </div>
+
+                        <div class="flex items-center gap-2 pt-1">
+                            <button type="button" class="btn-dl-single flex-1 py-2 px-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-bold transition-all shadow-2xs flex items-center justify-center gap-1 cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                </svg>
+                                <span>Download</span>
+                            </button>
+
+                            <button type="button" class="btn-print-single p-2 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white transition-colors cursor-pointer" title="Print this image page">
+                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    `;
+
+                    // Bind download action
+                    const dlBtn = card.querySelector('.btn-dl-single');
+                    dlBtn.addEventListener('click', () => {
+                        const a = document.createElement('a');
+                        a.href = item.dataUrl;
+                        a.download = item.filename;
+                        a.click();
+                    });
+
+                    // Bind print action
+                    const printBtn = card.querySelector('.btn-print-single');
+                    printBtn.addEventListener('click', () => {
+                        if (window.printProcessedDocument) {
+                            const mime = formatSelect.value === 'png' ? 'image/png' : (formatSelect.value === 'webp' ? 'image/webp' : 'image/jpeg');
+                            window.printProcessedDocument(item.dataUrl, mime, item.filename);
+                        }
+                    });
+
+                    outputImagesGrid.appendChild(card);
+                });
+            }
+
+            // Bulk ZIP Download
+            btnDownloadAllZip.addEventListener('click', async () => {
+                if (convertedImagesList.length === 0) return;
+
+                if (convertedImagesList.length === 1) {
+                    const item = convertedImagesList[0];
+                    const a = document.createElement('a');
+                    a.href = item.dataUrl;
+                    a.download = item.filename;
+                    a.click();
+                    return;
+                }
+
+                if (!window.JSZip) {
+                    alert('ZIP compressor engine is loading, please try again in a moment.');
+                    return;
+                }
+
+                const origHtml = btnDownloadAllZip.innerHTML;
+                btnDownloadAllZip.disabled = true;
+                btnDownloadAllZip.innerHTML = '<span>Creating ZIP archive...</span>';
+
+                try {
+                    const zip = new JSZip();
+                    convertedImagesList.forEach(item => {
+                        zip.file(item.filename, item.blob);
+                    });
+
+                    const zipBlob = await zip.generateAsync({ type: 'blob' });
+                    const baseName = activeFile ? activeFile.name.replace(/\.[^/.]+$/, '') : 'pdf-images';
+                    const zipUrl = URL.createObjectURL(zipBlob);
+
+                    const a = document.createElement('a');
+                    a.href = zipUrl;
+                    a.download = `${baseName}_converted_images.zip`;
+                    a.click();
+
+                    setTimeout(() => URL.revokeObjectURL(zipUrl), 1000);
+                } catch (e) {
+                    console.error('ZIP generation error:', e);
+                } finally {
+                    btnDownloadAllZip.disabled = false;
+                    btnDownloadAllZip.innerHTML = origHtml;
+                }
+            });
+
+            // Convert another PDF
+            convertAnotherBtn.addEventListener('click', () => {
+                activeFile = null;
+                loadedPdfDoc = null;
+                totalPdfPages = 0;
+                convertedImagesList = [];
+                fileInput.value = '';
+
+                downloadSection.classList.add('hidden');
+                processSection.classList.add('hidden');
+                dropZone.classList.remove('hidden');
+                errorMsg.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -286,6 +286,19 @@
                                 </div>
                                 <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                             </a>
+
+                            <a href="pdf-to-img.html" class="flex items-center justify-between p-2.5 rounded-xl ${currentPage === 'pdf-to-img.html' ? 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 font-bold' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200'} transition-all active:scale-[0.98]">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-7 h-7 rounded-lg bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold leading-tight">PDF to Image</p>
+                                        <p class="text-[10px] text-zinc-400 leading-tight">JPG, PNG, WebP 300 DPI</p>
+                                    </div>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
                         </div>
                     </div>
 
@@ -366,14 +379,48 @@
                         </div>
                     </div>
 
+                    <!-- Educational Guides & Blog Articles -->
+                    <div>
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-2 flex items-center justify-between">
+                            <span class="flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                                </svg>
+                                <span>Guides & Blog</span>
+                            </span>
+                            <a href="blog.html" class="text-[10px] text-blue-600 dark:text-blue-400 hover:underline">View All</a>
+                        </div>
+
+                        <div class="space-y-1 text-xs">
+                            <a href="how-to-compress-pdf.html" class="flex items-center justify-between p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                                <span>Compress PDF to 200KB Guide</span>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                            <a href="pan-card-photo-resizer-guide.html" class="flex items-center justify-between p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                                <span>PAN Photo & Signature Guide</span>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                            <a href="how-to-watermark-pdf.html" class="flex items-center justify-between p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                                <span>Watermark PDF Tutorial</span>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                            <a href="how-to-remove-pdf-password.html" class="flex items-center justify-between p-2 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-300">
+                                <span>Unlock PDF Password Guide</span>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+                        </div>
+                    </div>
+
                     <!-- Company & Legal Pages -->
                     <div class="pt-2 border-t border-zinc-200/80 dark:border-zinc-800">
                         <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 mb-2">Company & Legal</div>
                         <div class="grid grid-cols-2 gap-2 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                            <a href="blog.html" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors font-bold text-blue-600 dark:text-blue-400">Blog Hub</a>
                             <a href="about-us.html" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">About Us</a>
                             <a href="contact-us.html" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">Contact</a>
                             <a href="privacy-policy.html" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">Privacy Policy</a>
                             <a href="terms-and-conditions.html" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">Terms of Use</a>
+                            <a href="disclaimer.html" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">Disclaimer</a>
                         </div>
                     </div>
 
@@ -576,6 +623,34 @@
             }, { passive: true });
         });
     }
+
+    // Global Smart Back Navigation Handler
+    // When users click the back button in header, return to the exact page they opened it from
+    document.addEventListener('click', function (e) {
+        const backBtn = e.target.closest('.back-btn-responsive, a[aria-label="Back"], a[aria-label="Back to Tools"], a[data-action="back"]');
+        if (!backBtn) return;
+
+        const referrer = document.referrer;
+        const currentUrl = window.location.href;
+        const origin = window.location.origin;
+
+        // Check if the user came from a page on the same domain and it's not the exact current URL
+        const isSameDomainReferrer = referrer && (
+            referrer.startsWith(origin) || 
+            referrer.startsWith(window.location.protocol + '//' + window.location.host)
+        );
+
+        if (isSameDomainReferrer && referrer !== currentUrl) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.history.back();
+        } else if (window.history.length > 1 && isSameDomainReferrer) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.history.back();
+        }
+        // Otherwise, fallback to the default link href
+    }, true);
 
     // Expose Global Helper & Functions
     window.openMobileDrawer = openDrawer;

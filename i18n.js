@@ -15,7 +15,7 @@
             "nav_about": "About Us",
             "nav_contact": "Contact",
             "nav_privacy": "Privacy",
-            "nav_back": "Back to Tools",
+            "nav_back": "Back",
             "badge_in_browser": "100% In-Browser",
             "badge_memory": "100% In-Browser Memory",
             "lang_label": "EN",
@@ -250,7 +250,12 @@
             "password_remover_faq_a3": "No. To protect document privacy and comply with standard security policies, you must know the correct User or Owner password to decrypt the file. This tool does not perform brute-force cracking; instead, it provides a safe, on-device way to strip password security once you enter it.",
             "tool_password_remover_card_title": "PDF Password Remover",
             "tool_password_remover_card_desc": "Remove passwords, owner restrictions, and edit/print blocks from secured PDF files. 100% local, safe browser decryption.",
-            "tool_password_remover_card_tag": "Decryption"
+            "tool_password_remover_card_tag": "Decryption",
+
+            // Tool: PDF to Image Converter
+            "tool_pdf2img_title": "PDF to Image Converter",
+            "tool_pdf2img_desc": "Convert PDF pages to high-resolution JPG, PNG, or WebP images at 150/300 DPI. Download individual page photos or a bulk ZIP archive.",
+            "tool_pdf2img_tag": "JPG / PNG / WebP"
         },
         hi: {
             // Header & Navigation
@@ -258,7 +263,7 @@
             "nav_about": "हमारे बारे में",
             "nav_contact": "संपर्क करें",
             "nav_privacy": "गोपनीयता",
-            "nav_back": "उपकरणों पर वापस जाएँ",
+            "nav_back": "वापस",
             "badge_in_browser": "100% ब्राउज़र में सुरक्षित",
             "badge_memory": "100% इन-डिवाइस मेमोरी",
             "lang_label": "हिन्दी",
@@ -493,7 +498,12 @@
             "password_remover_faq_a3": "नहीं। दस्तावेज़ों की गोपनीयता और सुरक्षा नियमों के तहत, आपको पासवर्ड पता होना आवश्यक है। यह टूल हैकिंग या क्रैकिंग नहीं करता है, बल्कि आपको अपनी फाइलों से प्रतिबंध हटाने का एक पूर्ण सुरक्षित और तेज़ विकल्प देता है।",
             "tool_password_remover_card_title": "पीडीएफ पासवर्ड रिमूवर",
             "tool_password_remover_card_desc": "सुरक्षित पीडीएफ फाइलों से पासवर्ड, ओनर सुरक्षा और एडिट/प्रिंट ब्लॉक हटाएं। 100% सुरक्षित स्थानीय ब्राउज़र डिक्रिप्शन।",
-            "tool_password_remover_card_tag": "डिक्रिप्शन"
+            "tool_password_remover_card_tag": "डिक्रिप्शन",
+
+            // Tool: PDF to Image Converter
+            "tool_pdf2img_title": "पीडीएफ से फोटो कनवर्टर",
+            "tool_pdf2img_desc": "पीडीएफ पन्नों को 150/300 DPI में उच्च-गुणवत्ता वाली JPG, PNG या WebP तस्वीरों में बदलें। एकल फ़ोटो या ZIP डाउनलोड करें।",
+            "tool_pdf2img_tag": "JPG / PNG / WebP"
         }
     };
 

@@ -155,6 +155,7 @@ a:not(:disabled):active,
        Displays ONLY the back arrow icon as a compact square (w-9 h-9).
        Hides the full text label to avoid cluttering or colliding with the centered logo. */
     .back-btn-responsive,
+    a[aria-label="Back"],
     a[aria-label="Back to Tools"] {
         width: 2.25rem !important; /* 36px / w-9 */
         height: 2.25rem !important; /* 36px / h-9 */
@@ -172,11 +173,13 @@ a:not(:disabled):active,
 
     .back-btn-responsive .back-btn-text,
     .back-btn-responsive span,
+    a[aria-label="Back"] span,
     a[aria-label="Back to Tools"] span {
         display: none !important;
     }
 
     .back-btn-responsive svg,
+    a[aria-label="Back"] svg,
     a[aria-label="Back to Tools"] svg {
         width: 1rem !important;
         height: 1rem !important;
