@@ -19,7 +19,8 @@ app.get('/robots.txt', (req, res) => {
   res.sendFile(path.join(__dirname, 'robots.txt'));
 });
 
-app.use(express.static(__dirname));
+// Serve static assets and resolve clean URLs with html extension
+app.use(express.static(__dirname, { extensions: ['html'] }));
 
 // Route handlers for HTML files without .html extension if accessed
 app.get('/png-to-jpg', (req, res) => {
