@@ -146,7 +146,7 @@
 
                         const img = document.createElement('img');
                         img.className = 'print-page';
-                        img.src = canvas.toDataURL('image/jpeg', 0.95);
+                        img.src = canvas.toDataURL('image/jpeg', 0.92);
                         area.appendChild(img);
                     }
                 }
@@ -161,29 +161,40 @@
                 img.className = 'print-page';
                 img.src = imgUrl;
                 area.appendChild(img);
-
-                if (!img.complete) {
-                    await new Promise((res) => {
-                        img.onload = res;
-                        img.onerror = res;
-                    });
-                }
             }
         }
 
-        // Trigger native print dialog
-        setTimeout(() => {
-            try {
-                window.focus();
-                window.print();
-            } catch (e) {
-                console.error('Print call failed:', e);
-            } finally {
-                setTimeout(() => {
-                    area.innerHTML = '';
-                }, 1000);
-            }
-        }, 150);
+        // Wait for all print images to decode and finish loading
+        const printImages = Array.from(area.querySelectorAll('img'));
+        if (printImages.length > 0) {
+            await Promise.all(printImages.map(img => {
+                if (img.decode) {
+                    return img.decode().catch(() => {});
+                }
+                if (img.complete) return Promise.resolve();
+                return new Promise((res) => {
+                    img.onload = res;
+                    img.onerror = res;
+                });
+            }));
+        }
+
+        // Mobile-friendly Print Execution
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                try {
+                    window.focus();
+                    window.print();
+                } catch (e) {
+                    console.error('Print call failed:', e);
+                } finally {
+                    setTimeout(() => {
+                        area.innerHTML = '';
+                        resolve();
+                    }, 1200);
+                }
+            }, 200);
+        });
     };
 
     window.attachPrintAction = function (buttonElement, getSourceCallback, mimeType = 'application/pdf') {

@@ -8,6 +8,18 @@
        <changefreq>weekly</changefreq>
   </url>
   <url>
+       <loc>https://pdftool4you.in/rotate-pdf.html</loc>
+       <lastmod>2026-09-25T01:15:00+00:00</lastmod>
+       <priority>0.9000</priority>
+       <changefreq>weekly</changefreq>
+  </url>
+  <url>
+       <loc>https://pdftool4you.in/pdf-crop.html</loc>
+       <lastmod>2026-09-25T01:00:00+00:00</lastmod>
+       <priority>0.9000</priority>
+       <changefreq>weekly</changefreq>
+  </url>
+  <url>
        <loc>https://pdftool4you.in/pdf-compressor.html</loc>
        <lastmod>2026-09-24T10:13:38+00:00</lastmod>
        <priority>0.9000</priority>

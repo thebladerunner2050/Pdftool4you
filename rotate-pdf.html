@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Rotate PDF Pages Online — Free PDF Rotation Tool — PDFTool4You</title>
+    <meta name="description" content="Rotate individual or all pages of a PDF document by 90, 180, or 270 degrees online for free. Visual page grid, instant previews, zero quality loss, and 100% browser privacy.">
+    <meta name="keywords" content="rotate pdf, rotate pdf pages, turn pdf pages, rotate pdf online, flip pdf pages, permantently rotate pdf, free pdf rotator, pdftool4you">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pdftool4you.in/rotate-pdf.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Rotate PDF Pages Online — Free PDF Rotation Tool — PDFTool4You">
+    <meta property="og:description" content="Rotate individual or all PDF pages by 90°, 180°, or 270° with visual thumbnail previews. 100% free and client-side private.">
+    <meta property="og:url" content="https://pdftool4you.in/rotate-pdf.html">
+    <meta property="og:site_name" content="PDFTool4You">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rotate PDF Pages Online — PDFTool4You">
+    <meta name="twitter:description" content="Rotate individual or all PDF pages by 90, 180, or 270 degrees locally with zero server uploads.">
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PDFTool Rotate Tool",
+      "alternateName": ["Rotate PDF", "PDF Rotator", "Turn PDF Pages"],
+      "url": "https://pdftool4you.in/rotate-pdf.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "All",
+      "description": "Rotate individual pages or all pages of a PDF document visually with live thumbnail previews.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="mobile.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'system';
+            const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <script src="theme.js"></script>
+    <script src="i18n.js"></script>
+    <script src="share.js"></script>
+    <script src="print.js"></script>
+    <script src="mobile-nav.js" defer></script>
+    <script src="pdf-lib.min.js"></script>
+    <script>
+        if (!window.PDFLib) {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"><\/script>');
+        }
+    </script>
+    <script src="pdf.min.js"></script>
+    <script>
+        if (!window.pdfjsLib) {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script>');
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: #fafbfc;
+            color: #09090b;
+        }
+        html.dark body {
+            background-color: #09090b;
+            color: #f4f4f5;
+        }
+        .thumbnail-canvas-container {
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900 pb-16 lg:pb-0">
+
+    <!-- Minimal Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/80 dark:border-zinc-800 transition-colors">
+        <div class="relative max-w-6xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between">
+            <!-- Left: Mobile Drawer Hamburger -->
+            <div class="flex items-center lg:hidden z-30">
+                <button type="button" data-mobile-drawer-trigger aria-label="Open navigation menu" class="flex items-center justify-center w-9 h-9 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white active:scale-95 transition-all shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Logo -->
+            <a href="index.html" class="header-logo-responsive flex items-center gap-2 sm:gap-2.5 group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:transform-none z-20">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-sm transition-transform group-hover:scale-105 shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div class="flex items-baseline gap-1">
+                    <span class="font-bold text-base sm:text-lg text-zinc-900 dark:text-white tracking-tight">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                </div>
+            </a>
+
+            <!-- Right Header Controls -->
+            <div class="flex items-center gap-2.5">
+                <!-- Share Dropdown -->
+                <div class="hidden lg:block relative" data-share-container>
+                    <button type="button" data-share-trigger aria-label="Share tool or copy link" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        <svg class="share-icon-default w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                        </svg>
+                        <svg class="share-icon-copied hidden w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span class="share-btn-text hidden sm:inline text-xs font-semibold" data-i18n="nav_share">Share</span>
+                        <svg class="w-3 h-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div data-share-menu class="hidden absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-4 z-50 text-xs">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="font-bold text-zinc-900 dark:text-white text-sm" data-i18n="share_title">Share this Tool</div>
+                            <span class="share-copied-badge hidden text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full" data-i18n="share_copied">Copied!</span>
+                        </div>
+                        <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-3" data-i18n="share_desc">Free, private, 100% on-device PDF & image utilities.</p>
+                        <div class="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 mb-3">
+                            <input type="text" readonly data-share-url-input class="w-full bg-transparent border-0 px-2 text-xs text-zinc-700 dark:text-zinc-200 focus:outline-none truncate select-all font-mono" value="">
+                            <button type="button" data-share-action="copy" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-xs transition-colors shrink-0 shadow-sm cursor-pointer">
+                                <span data-i18n="share_copy_btn">Copy</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme Menu -->
+                <div class="hidden lg:block relative" data-theme-menu-container>
+                    <button type="button" data-theme-trigger aria-label="Toggle color theme" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none">
+                        <svg class="theme-icon-system w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        <span class="theme-label hidden md:inline text-xs font-semibold">Theme</span>
+                    </button>
+                    <div data-theme-menu class="hidden absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1.5 z-50 text-xs">
+                        <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Appearance</div>
+                        <button type="button" data-theme-value="system" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"><span>System default</span></button>
+                        <button type="button" data-theme-value="light" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"><span>Light</span></button>
+                        <button type="button" data-theme-value="dark" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"><span>Dark</span></button>
+                    </div>
+                </div>
+
+                <!-- Back to Home -->
+                <a href="index.html" aria-label="Back to Tools" class="back-btn-responsive flex items-center justify-center gap-1.5 w-9 h-9 lg:w-auto px-0 lg:px-3 py-0 lg:py-1.5 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white font-semibold text-xs shadow-2xs transition-all active:scale-95 cursor-pointer">
+                    <svg class="w-4 h-4 lg:w-3.5 lg:h-3.5 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="back-btn-text hidden lg:inline font-semibold text-xs whitespace-nowrap">Home</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace Section -->
+    <main class="flex-1 max-w-6xl mx-auto px-3 sm:px-6 py-6 sm:py-12 w-full">
+        
+        <!-- Hero Title -->
+        <div class="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200/60 dark:border-blue-800/60 text-blue-700 dark:text-blue-300 text-xs font-semibold mb-3">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+                <span>Visual Page Rotation Editor</span>
+            </div>
+            <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-2 sm:mb-3">
+                Rotate PDF Pages Online
+            </h1>
+            <p class="text-xs sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed px-2">
+                Rotate individual pages or all pages of a PDF document by 90°, 180°, or 270° with live visual thumbnail previews and zero quality loss.
+            </p>
+        </div>
+
+        <!-- File Upload Dropzone -->
+        <div id="drop-zone" class="max-w-2xl mx-auto bg-white dark:bg-zinc-900 rounded-3xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 p-6 sm:p-12 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-all cursor-pointer shadow-sm group relative">
+            <input type="file" id="file-input" accept=".pdf,application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-5 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                </svg>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-zinc-900 dark:text-white mb-1.5 sm:mb-2">
+                Click to select a PDF file or drag & drop here
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-5">
+                Supports all standard PDF documents. Processed 100% inside your browser memory.
+            </p>
+            <div class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-xs transition-colors">
+                <span>Choose PDF File</span>
+            </div>
+        </div>
+
+        <!-- Error Message Banner -->
+        <div id="error-msg" class="hidden max-w-2xl mx-auto mt-6 p-4 rounded-2xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/80 text-red-700 dark:text-red-300 text-xs font-medium flex items-center gap-3">
+            <svg class="w-5 h-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span id="error-text">An error occurred while loading the PDF file.</span>
+        </div>
+
+        <!-- Interactive Rotation Workspace (Hidden by Default) -->
+        <div id="workspace-section" class="hidden space-y-6">
+            
+            <!-- File Info Header Bar -->
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-3.5 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                        PDF
+                    </div>
+                    <div class="min-w-0">
+                        <h3 id="pdf-filename" class="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white truncate">document.pdf</h3>
+                        <p id="pdf-filedetails" class="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400">0 KB · 0 Pages</p>
+                    </div>
+                </div>
+
+                <button type="button" id="btn-change-file" class="px-3.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer active:scale-95">
+                    Change File
+                </button>
+            </div>
+
+            <!-- Global Bulk Rotation Controls Bar -->
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-4 shadow-sm space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-3">
+                    <h4 class="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white flex items-center gap-1.5">
+                        <span>Bulk Rotate Controls</span>
+                    </h4>
+                    <span id="rotation-summary-badge" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">
+                        No pages rotated
+                    </span>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" id="btn-rotate-all-left" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-semibold transition-all cursor-pointer active:scale-95">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                        <span>Rotate All Left (-90°)</span>
+                    </button>
+                    <button type="button" id="btn-rotate-all-right" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-semibold transition-all cursor-pointer active:scale-95">
+                        <span>Rotate All Right (+90°)</span>
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </button>
+                    <button type="button" id="btn-flip-all-180" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-xs font-semibold transition-all cursor-pointer active:scale-95">
+                        <span>Flip All 180°</span>
+                    </button>
+                    <button type="button" id="btn-reset-all-rotations" class="px-3.5 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-xs font-medium transition-all cursor-pointer active:scale-95 ml-auto">
+                        Reset All
+                    </button>
+                </div>
+
+                <!-- Page Filter Presets -->
+                <div class="pt-2 flex flex-wrap items-center gap-2 text-xs">
+                    <span class="text-zinc-500 font-medium">Quick Select & Rotate:</span>
+                    <button type="button" id="btn-rotate-even" class="px-2.5 py-1 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer">
+                        Even Pages (2, 4...)
+                    </button>
+                    <button type="button" id="btn-rotate-odd" class="px-2.5 py-1 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer">
+                        Odd Pages (1, 3...)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Page Thumbnail Grid -->
+            <div id="pages-grid-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-5">
+                <!-- Dynamic page cards rendered via JavaScript -->
+            </div>
+
+            <!-- Save Action Button -->
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-5 shadow-sm space-y-3 max-w-xl mx-auto">
+                <button type="button" id="btn-save-pdf" class="w-full py-3.5 px-6 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    <span>Rotate & Download PDF</span>
+                </button>
+
+                <div id="progress-container" class="hidden space-y-1.5">
+                    <div class="flex justify-between text-xs text-zinc-500 font-semibold">
+                        <span id="progress-text">Applying page rotations...</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="w-full h-2 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-200" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Download & Output Result Section (Hidden Initially) -->
+        <div id="download-section" class="hidden max-w-3xl mx-auto bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 p-6 sm:p-8 text-center space-y-5 sm:space-y-6 shadow-xl">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl shadow-sm">
+                ✓
+            </div>
+            <div>
+                <h3 class="text-xl sm:text-2xl font-extrabold text-zinc-900 dark:text-white mb-1.5 sm:mb-2">
+                    PDF Rotated Successfully!
+                </h3>
+                <p id="rotate-summary-text" class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 max-w-md mx-auto leading-relaxed">
+                    Your rotated document is ready for instant download and printing.
+                </p>
+            </div>
+
+            <!-- Rotated Result Preview -->
+            <div class="max-w-md mx-auto bg-zinc-100 dark:bg-zinc-950 p-3 sm:p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 flex items-center justify-center">
+                <canvas id="output-preview-canvas" class="block max-w-full h-auto rounded shadow-md border border-zinc-200 dark:border-zinc-800"></canvas>
+            </div>
+
+            <!-- Download & Print Actions -->
+            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <a id="btn-download-pdf" href="#" download="rotated_document.pdf" class="flex-1 sm:flex-initial px-6 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm rounded-2xl shadow-md transition-all active:scale-95 inline-flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    <span>Download Rotated PDF</span>
+                </a>
+                <button type="button" id="print-doc-btn" class="flex-1 sm:flex-initial px-5 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-2xl shadow-md transition-all inline-flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h10z"/>
+                    </svg>
+                    <span class="print-btn-label">Print PDF</span>
+                </button>
+                <button type="button" id="btn-rotate-again" class="w-full sm:w-auto px-5 py-3.5 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 font-bold text-sm rounded-2xl transition-all cursor-pointer">
+                    Rotate Another File
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Floating Sticky Action Bar -->
+        <div id="mobile-sticky-bar" class="hidden fixed bottom-0 left-0 right-0 p-3 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 z-30 lg:hidden shadow-xl flex items-center justify-between gap-2">
+            <button type="button" id="btn-mobile-rotate-left" class="px-3 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-xl text-xs font-bold active:scale-95 transition-transform shrink-0">
+                ↶ -90° All
+            </button>
+            <button type="button" id="btn-mobile-rotate-right" class="px-3 py-2 bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 rounded-xl text-xs font-bold active:scale-95 transition-transform shrink-0">
+                ↷ +90° All
+            </button>
+            <button type="button" id="btn-mobile-save-pdf" class="flex-1 py-2.5 px-3 bg-blue-600 text-white font-extrabold text-xs rounded-xl shadow-md text-center active:scale-95 transition-transform flex items-center justify-center gap-1">
+                <span>Save PDF</span>
+            </button>
+        </div>
+
+        <!-- Educational FAQ Section -->
+        <section id="faq-section" class="mt-16 sm:mt-20 pt-10 sm:pt-12 border-t border-zinc-200/80 dark:border-zinc-800">
+            <div class="text-center max-w-xl mx-auto mb-8 sm:mb-10">
+                <h2 class="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-white tracking-tight mb-2">
+                    Frequently Asked Questions
+                </h2>
+                <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+                    Learn how PDF page rotation works.
+                </p>
+            </div>
+
+            <div class="max-w-3xl mx-auto space-y-3.5 sm:space-y-4">
+                <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200/80 dark:border-zinc-800 p-4 sm:p-5">
+                    <h3 class="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white mb-1">
+                        Does rotating a PDF document reduce text or image quality?
+                    </h3>
+                    <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                        No. PDFTool4You modifies the page viewport rotation matrix directly inside the PDF metadata specification using vector transformations. Text, fonts, images, and graphics remain 100% loss-free and crisp.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200/80 dark:border-zinc-800 p-4 sm:p-5">
+                    <h3 class="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white mb-1">
+                        Can I rotate single upside-down pages individually?
+                    </h3>
+                    <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                        Yes! Each page thumbnail card in the visual editor has individual ↶ -90°, ↷ +90°, and 180° rotation buttons. You can rotate individual pages or use bulk controls for even, odd, or all pages simultaneously.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200/80 dark:border-zinc-800 p-4 sm:p-5">
+                    <h3 class="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white mb-1">
+                        Are my uploaded PDF files safe and private?
+                    </h3>
+                    <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                        Yes. PDFTool4You processes all documents completely inside your web browser's local memory. Your files are never sent to external servers.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="mt-16 sm:mt-20 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-colors">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-10">
+                
+                <!-- Brand Info -->
+                <div class="md:col-span-1 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-xs">
+                            <svg class="w-3.5 h-3.5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <span class="font-bold text-base text-zinc-900 dark:text-white">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                    </div>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        High-performance in-browser PDF & image suite. Compress, merge, split, rotate, watermark, crop, and convert without uploading files.
+                    </p>
+                    <div class="pt-1 flex items-center gap-2 text-[11px] text-zinc-400 dark:text-zinc-500">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span>100% In-Browser Memory</span>
+                    </div>
+                </div>
+
+                <!-- PDF Tools -->
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5">PDF Tools</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="rotate-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-bold text-blue-600 dark:text-blue-400">Rotate PDF</a></li>
+                        <li><a href="pdf-crop.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Crop PDF</a></li>
+                        <li><a href="pdf-compressor.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Compress PDF</a></li>
+                        <li><a href="merge-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Merge PDF</a></li>
+                        <li><a href="split-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Split PDF</a></li>
+                        <li><a href="pdf-watermarker.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Watermark PDF</a></li>
+                    </ul>
+                </div>
+
+                <!-- Image Tools -->
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5">Image Tools</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="webp-to-jpg.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">WebP to JPG</a></li>
+                        <li><a href="image-to-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Image to PDF</a></li>
+                        <li><a href="png-to-jpg.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PNG to JPG</a></li>
+                        <li><a href="jpg-to-png.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">JPG to PNG</a></li>
+                        <li><a href="pan-card-photo-maker.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PAN Card Photo Maker</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal & Company -->
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5">Company & Legal</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="blog.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-semibold text-blue-600 dark:text-blue-400">Blog & Guides</a></li>
+                        <li><a href="privacy-policy.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy Policy</a></li>
+                        <li><a href="terms-and-conditions.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms & Conditions</a></li>
+                        <li><a href="about-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About Us</a></li>
+                        <li><a href="contact-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Us</a></li>
+                        <li><a href="disclaimer.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Disclaimer</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Disclaimer & Copyright -->
+            <div class="pt-8 border-t border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400 dark:text-zinc-500">
+                <p>© 2026 PDFTool4You. All rights reserved. 100% Client-Side Processing.</p>
+                <div class="flex items-center gap-4">
+                    <a href="privacy-policy.html" class="hover:underline">Privacy</a>
+                    <a href="terms-and-conditions.html" class="hover:underline">Terms</a>
+                    <a href="cookie-policy.html" class="hover:underline">Cookies</a>
+                    <a href="contact-us.html" class="hover:underline">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive PDF Rotate Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.pdfjsLib) {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+            }
+
+            // DOM Elements
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+            const workspaceSection = document.getElementById('workspace-section');
+            const downloadSection = document.getElementById('download-section');
+            const mobileStickyBar = document.getElementById('mobile-sticky-bar');
+            const errorMsg = document.getElementById('error-msg');
+            const errorText = document.getElementById('error-text');
+
+            const pdfFilename = document.getElementById('pdf-filename');
+            const pdfFiledetails = document.getElementById('pdf-filedetails');
+            const btnChangeFile = document.getElementById('btn-change-file');
+
+            const btnRotateAllLeft = document.getElementById('btn-rotate-all-left');
+            const btnRotateAllRight = document.getElementById('btn-rotate-all-right');
+            const btnFlipAll180 = document.getElementById('btn-flip-all-180');
+            const btnResetAllRotations = document.getElementById('btn-reset-all-rotations');
+            const btnRotateEven = document.getElementById('btn-rotate-even');
+            const btnRotateOdd = document.getElementById('btn-rotate-odd');
+
+            const btnMobileRotateLeft = document.getElementById('btn-mobile-rotate-left');
+            const btnMobileRotateRight = document.getElementById('btn-mobile-rotate-right');
+            const btnMobileSavePdf = document.getElementById('btn-mobile-save-pdf');
+
+            const rotationSummaryBadge = document.getElementById('rotation-summary-badge');
+            const pagesGridContainer = document.getElementById('pages-grid-container');
+
+            const btnSavePdf = document.getElementById('btn-save-pdf');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const progressPercent = document.getElementById('progress-percent');
+
+            const btnDownloadPdf = document.getElementById('btn-download-pdf');
+            const printDocBtn = document.getElementById('print-doc-btn');
+            const btnRotateAgain = document.getElementById('btn-rotate-again');
+            const rotateSummaryText = document.getElementById('rotate-summary-text');
+            const outputPreviewCanvas = document.getElementById('output-preview-canvas');
+
+            // Application State
+            let currentFile = null;
+            let arrayBufferData = null;
+            let pdfJsDoc = null;
+            let pdfLibDoc = null;
+            let totalPages = 0;
+
+            // Page Rotations Array: stores additional rotation angle for each page (0, 90, 180, 270)
+            let pageRotations = [];
+            let currentRotatedUrl = null;
+
+            // File selection event handlers
+            fileInput.addEventListener('change', handleFileSelect);
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('border-blue-500', 'bg-blue-50/50', 'dark:bg-blue-950/30');
+            });
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('border-blue-500', 'bg-blue-50/50', 'dark:bg-blue-950/30');
+            });
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-blue-500', 'bg-blue-50/50', 'dark:bg-blue-950/30');
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFileSelect();
+                }
+            });
+
+            btnChangeFile.addEventListener('click', resetAll);
+            btnRotateAgain.addEventListener('click', resetAll);
+
+            function handleFileSelect() {
+                const file = fileInput.files[0];
+                if (!file) return;
+                if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+                    showError('Please select a valid PDF file.');
+                    return;
+                }
+
+                currentFile = file;
+                pdfFilename.textContent = file.name;
+                pdfFiledetails.textContent = `${formatBytes(file.size)} · Loading...`;
+
+                hideError();
+                dropZone.classList.add('hidden');
+                workspaceSection.classList.remove('hidden');
+                mobileStickyBar.classList.remove('hidden');
+
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    arrayBufferData = e.target.result;
+                    try {
+                        const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBufferData.slice(0)) });
+                        pdfJsDoc = await loadingTask.promise;
+                        totalPages = pdfJsDoc.numPages;
+
+                        pdfLibDoc = await PDFLib.PDFDocument.load(arrayBufferData.slice(0), { ignoreEncryption: true });
+
+                        pdfFiledetails.textContent = `${formatBytes(file.size)} · ${totalPages} page${totalPages === 1 ? '' : 's'}`;
+                        pageRotations = new Array(totalPages).fill(0);
+
+                        await renderThumbnailGrid();
+                        updateRotationBadge();
+                    } catch (err) {
+                        console.error('Error loading PDF:', err);
+                        showError('Failed to parse PDF document. It may be encrypted or corrupted.');
+                        resetAll();
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }
+
+            async function renderThumbnailGrid() {
+                pagesGridContainer.innerHTML = '';
+
+                for (let i = 1; i <= totalPages; i++) {
+                    const card = document.createElement('div');
+                    card.className = 'bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-3 flex flex-col justify-between space-y-3 shadow-xs hover:border-blue-400 dark:hover:border-blue-600 transition-all';
+                    card.setAttribute('data-page-index', i - 1);
+
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between text-xs pb-1 border-b border-zinc-100 dark:border-zinc-800">
+                            <span class="font-bold text-zinc-900 dark:text-white">Page ${i}</span>
+                            <span class="page-angle-badge text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300">0°</span>
+                        </div>
+
+                        <!-- Canvas Preview Box -->
+                        <div class="bg-zinc-100 dark:bg-zinc-950/80 rounded-xl p-2 flex items-center justify-center min-h-[140px] max-h-[180px] overflow-hidden relative">
+                            <div class="thumbnail-canvas-container flex items-center justify-center transition-transform duration-300">
+                                <canvas class="thumbnail-canvas block max-w-full max-h-[140px] rounded shadow-xs"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Individual Rotation Control Buttons -->
+                        <div class="grid grid-cols-3 gap-1 pt-1">
+                            <button type="button" class="btn-rotate-left py-1.5 px-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-blue-50 dark:hover:bg-blue-950 hover:text-blue-600 text-zinc-700 dark:text-zinc-300 rounded-lg text-[11px] font-bold transition-colors cursor-pointer active:scale-95 flex items-center justify-center gap-0.5" title="Rotate Left 90°">
+                                ↶ -90°
+                            </button>
+                            <button type="button" class="btn-rotate-right py-1.5 px-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-blue-50 dark:hover:bg-blue-950 hover:text-blue-600 text-zinc-700 dark:text-zinc-300 rounded-lg text-[11px] font-bold transition-colors cursor-pointer active:scale-95 flex items-center justify-center gap-0.5" title="Rotate Right 90°">
+                                ↷ +90°
+                            </button>
+                            <button type="button" class="btn-rotate-180 py-1.5 px-1 bg-zinc-100 dark:bg-zinc-800 hover:bg-blue-50 dark:hover:bg-blue-950 hover:text-blue-600 text-zinc-700 dark:text-zinc-300 rounded-lg text-[11px] font-bold transition-colors cursor-pointer active:scale-95 flex items-center justify-center gap-0.5" title="Flip 180°">
+                                180°
+                            </button>
+                        </div>
+                    `;
+
+                    pagesGridContainer.appendChild(card);
+
+                    // Render Thumbnail Canvas
+                    renderPageThumbnail(i, card.querySelector('.thumbnail-canvas'));
+
+                    // Bind Individual Buttons
+                    const pageIndex = i - 1;
+                    card.querySelector('.btn-rotate-left').addEventListener('click', () => rotatePage(pageIndex, -90));
+                    card.querySelector('.btn-rotate-right').addEventListener('click', () => rotatePage(pageIndex, 90));
+                    card.querySelector('.btn-rotate-180').addEventListener('click', () => rotatePage(pageIndex, 180));
+                }
+            }
+
+            async function renderPageThumbnail(pageNum, canvasEl) {
+                if (!pdfJsDoc || !canvasEl) return;
+                try {
+                    const page = await pdfJsDoc.getPage(pageNum);
+                    const viewport = page.getViewport({ scale: 0.35 });
+
+                    canvasEl.width = viewport.width;
+                    canvasEl.height = viewport.height;
+
+                    const ctx = canvasEl.getContext('2d');
+                    await page.render({ canvasContext: ctx, viewport }).promise;
+                } catch (e) {
+                    console.warn(`Thumbnail render warning page ${pageNum}:`, e);
+                }
+            }
+
+            function rotatePage(pageIndex, deltaAngle) {
+                pageRotations[pageIndex] = (pageRotations[pageIndex] + deltaAngle + 360) % 360;
+                updatePageCardUI(pageIndex);
+                updateRotationBadge();
+            }
+
+            function rotateAllPages(deltaAngle) {
+                for (let i = 0; i < totalPages; i++) {
+                    pageRotations[i] = (pageRotations[i] + deltaAngle + 360) % 360;
+                    updatePageCardUI(i);
+                }
+                updateRotationBadge();
+            }
+
+            function updatePageCardUI(pageIndex) {
+                const card = pagesGridContainer.querySelector(`[data-page-index="${pageIndex}"]`);
+                if (!card) return;
+
+                const angle = pageRotations[pageIndex];
+                const badge = card.querySelector('.page-angle-badge');
+                if (badge) {
+                    badge.textContent = `${angle}°`;
+                    badge.className = `page-angle-badge text-[10px] font-mono font-bold px-1.5 py-0.5 rounded ${
+                        angle === 0 
+                            ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300' 
+                            : 'bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300'
+                    }`;
+                }
+
+                const container = card.querySelector('.thumbnail-canvas-container');
+                if (container) {
+                    container.style.transform = `rotate(${angle}deg)`;
+                }
+            }
+
+            function updateRotationBadge() {
+                const rotatedCount = pageRotations.filter(a => a !== 0).length;
+                if (rotatedCount === 0) {
+                    rotationSummaryBadge.textContent = 'No pages rotated';
+                    rotationSummaryBadge.className = 'text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400';
+                } else if (rotatedCount === totalPages) {
+                    rotationSummaryBadge.textContent = `All ${totalPages} pages rotated`;
+                    rotationSummaryBadge.className = 'text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400';
+                } else {
+                    rotationSummaryBadge.textContent = `${rotatedCount} of ${totalPages} pages rotated`;
+                    rotationSummaryBadge.className = 'text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400';
+                }
+            }
+
+            // Bulk Control Button Listeners
+            btnRotateAllLeft.addEventListener('click', () => rotateAllPages(-90));
+            btnRotateAllRight.addEventListener('click', () => rotateAllPages(90));
+            btnFlipAll180.addEventListener('click', () => rotateAllPages(180));
+
+            btnMobileRotateLeft.addEventListener('click', () => rotateAllPages(-90));
+            btnMobileRotateRight.addEventListener('click', () => rotateAllPages(90));
+
+            btnResetAllRotations.addEventListener('click', () => {
+                pageRotations = new Array(totalPages).fill(0);
+                for (let i = 0; i < totalPages; i++) {
+                    updatePageCardUI(i);
+                }
+                updateRotationBadge();
+            });
+
+            btnRotateEven.addEventListener('click', () => {
+                for (let i = 1; i < totalPages; i += 2) {
+                    pageRotations[i] = (pageRotations[i] + 90) % 360;
+                    updatePageCardUI(i);
+                }
+                updateRotationBadge();
+            });
+
+            btnRotateOdd.addEventListener('click', () => {
+                for (let i = 0; i < totalPages; i += 2) {
+                    pageRotations[i] = (pageRotations[i] + 90) % 360;
+                    updatePageCardUI(i);
+                }
+                updateRotationBadge();
+            });
+
+            // Process Rotation and Save PDF
+            async function executeSaveRotatedPDF() {
+                if (!pdfLibDoc) return;
+                try {
+                    btnSavePdf.disabled = true;
+                    btnMobileSavePdf.disabled = true;
+                    progressContainer.classList.remove('hidden');
+                    progressBar.style.width = '15%';
+                    progressPercent.textContent = '15%';
+                    progressText.textContent = 'Modifying page rotation metadata...';
+
+                    const libPages = pdfLibDoc.getPages();
+
+                    libPages.forEach((page, i) => {
+                        const addedAngle = pageRotations[i] || 0;
+                        if (addedAngle !== 0) {
+                            const existingAngle = page.getRotation().angle || 0;
+                            const finalAngle = (existingAngle + addedAngle) % 360;
+                            page.setRotation(PDFLib.degrees(finalAngle));
+                        }
+                    });
+
+                    progressBar.style.width = '70%';
+                    progressPercent.textContent = '70%';
+                    progressText.textContent = 'Saving rotated document...';
+
+                    const savedBytes = await pdfLibDoc.save();
+                    const blob = new Blob([savedBytes], { type: 'application/pdf' });
+
+                    if (currentRotatedUrl) {
+                        URL.revokeObjectURL(currentRotatedUrl);
+                    }
+                    currentRotatedUrl = URL.createObjectURL(blob);
+
+                    // Set global references for print & download handlers
+                    window.currentRotatedUrl = currentRotatedUrl;
+                    window.currentDownloadUrl = currentRotatedUrl;
+                    window.currentPdfUrl = currentRotatedUrl;
+                    window.currentOutputBlob = blob;
+
+                    btnDownloadPdf.href = currentRotatedUrl;
+                    const baseName = currentFile.name.replace(/\.[^/.]+$/, '');
+                    btnDownloadPdf.download = `${baseName}_rotated.pdf`;
+
+                    // Bind print action
+                    if (window.attachPrintAction && printDocBtn) {
+                        window.attachPrintAction(printDocBtn, () => window.currentRotatedUrl || currentRotatedUrl, 'application/pdf');
+                    }
+
+                    const rotatedCount = pageRotations.filter(a => a !== 0).length;
+                    rotateSummaryText.textContent = `Applied rotations across ${totalPages} page${totalPages === 1 ? '' : 's'} (${rotatedCount} page${rotatedCount === 1 ? '' : 's'} rotated). File size: ${formatBytes(savedBytes.byteLength)}.`;
+
+                    progressBar.style.width = '100%';
+                    progressPercent.textContent = '100%';
+
+                    // Render First Page Preview of Rotated Result
+                    renderRotatedPreview(savedBytes);
+
+                    workspaceSection.classList.add('hidden');
+                    mobileStickyBar.classList.add('hidden');
+                    downloadSection.classList.remove('hidden');
+
+                } catch (err) {
+                    console.error('Rotation error:', err);
+                    showError('Failed to rotate PDF document. Error: ' + err.message);
+                } finally {
+                    btnSavePdf.disabled = false;
+                    btnMobileSavePdf.disabled = false;
+                    progressContainer.classList.add('hidden');
+                }
+            }
+
+            btnSavePdf.addEventListener('click', executeSaveRotatedPDF);
+            btnMobileSavePdf.addEventListener('click', executeSaveRotatedPDF);
+
+            // Direct Print Button Action Handler
+            printDocBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const urlToPrint = window.currentRotatedUrl || currentRotatedUrl || window.currentDownloadUrl;
+                if (!urlToPrint) {
+                    showError('Please rotate a PDF file first before printing.');
+                    return;
+                }
+
+                const labelEl = printDocBtn.querySelector('.print-btn-label') || printDocBtn;
+                const origLabel = labelEl.textContent;
+                printDocBtn.disabled = true;
+                labelEl.textContent = 'Preparing Print...';
+
+                try {
+                    if (window.printProcessedDocument) {
+                        await window.printProcessedDocument(urlToPrint, 'application/pdf', document.title || 'Rotated Document');
+                    } else {
+                        const printWin = window.open(urlToPrint, '_blank');
+                        if (printWin) {
+                            printWin.onload = () => printWin.print();
+                        }
+                    }
+                } catch (err) {
+                    console.error('Print button error:', err);
+                } finally {
+                    setTimeout(() => {
+                        printDocBtn.disabled = false;
+                        labelEl.textContent = origLabel;
+                    }, 800);
+                }
+            });
+
+            async function renderRotatedPreview(pdfBytes) {
+                try {
+                    const task = pdfjsLib.getDocument({ data: new Uint8Array(pdfBytes) });
+                    const doc = await task.promise;
+                    const page = await doc.getPage(1);
+                    const viewport = page.getViewport({ scale: 0.8 });
+
+                    outputPreviewCanvas.width = viewport.width;
+                    outputPreviewCanvas.height = viewport.height;
+
+                    const ctx = outputPreviewCanvas.getContext('2d');
+                    await page.render({ canvasContext: ctx, viewport }).promise;
+                } catch (e) {
+                    console.warn('Rotated preview render failed:', e);
+                }
+            }
+
+            function formatBytes(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+            }
+
+            function showError(msg) {
+                errorText.textContent = msg;
+                errorMsg.classList.remove('hidden');
+            }
+
+            function hideError() {
+                errorMsg.classList.add('hidden');
+            }
+
+            function resetAll() {
+                if (currentRotatedUrl) {
+                    URL.revokeObjectURL(currentRotatedUrl);
+                    currentRotatedUrl = null;
+                }
+                fileInput.value = '';
+                currentFile = null;
+                arrayBufferData = null;
+                pdfJsDoc = null;
+                pdfLibDoc = null;
+                pageRotations = [];
+
+                dropZone.classList.remove('hidden');
+                workspaceSection.classList.add('hidden');
+                mobileStickyBar.classList.add('hidden');
+                downloadSection.classList.add('hidden');
+                hideError();
+            }
+        });
+    </script>
+</body>
+</html>

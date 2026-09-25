@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Crop PDF Online — Free & Mobile-Optimized PDF Crop Tool — PDFTool4You</title>
+    <meta name="description" content="Crop PDF pages online for free with PDFTool4You. Select custom crop areas, adjust margins, set aspect ratios, auto-trim white borders, and print or save locally with 100% browser privacy.">
+    <meta name="keywords" content="pdf crop, crop pdf online, trim pdf margins, pdf crop tool, crop pdf pages, pdf auto trim, free pdf crop, pdftool4you">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://pdftool4you.in/pdf-crop.html">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Crop PDF Online — Free & Mobile-Optimized PDF Crop Tool — PDFTool4You">
+    <meta property="og:description" content="Trim margins, adjust page bounds, or auto-crop white space from PDF documents locally in your browser. 100% private, free, and instant.">
+    <meta property="og:url" content="https://pdftool4you.in/pdf-crop.html">
+    <meta property="og:site_name" content="PDFTool4You">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Crop PDF Online — Free & Instant — PDFTool4You">
+    <meta name="twitter:description" content="Trim margins and crop PDF pages locally in your browser with zero server uploads.">
+    
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PDFTool Crop Tool",
+      "alternateName": ["Crop PDF", "PDF Crop Tool", "Trim PDF Margins"],
+      "url": "https://pdftool4you.in/pdf-crop.html",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "All",
+      "description": "Crop PDF pages visually with aspect ratios, auto white-space trimming, margin controls, and multi-page batch support.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="mobile.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'system';
+            const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <script src="theme.js"></script>
+    <script src="i18n.js"></script>
+    <script src="share.js"></script>
+    <script src="print.js"></script>
+    <script src="mobile-nav.js" defer></script>
+    <script src="pdf-lib.min.js"></script>
+    <script>
+        if (!window.PDFLib) {
+            document.write('<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"><\/script>');
+        }
+    </script>
+    <script src="pdf.min.js"></script>
+    <script>
+        if (!window.pdfjsLib) {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script>');
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: #fafbfc;
+            color: #09090b;
+        }
+        html.dark body {
+            background-color: #09090b;
+            color: #f4f4f5;
+        }
+        .crop-handle {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: #2563eb;
+            border: 2.5px solid #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.45);
+            z-index: 40;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .crop-handle::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            right: -12px;
+            bottom: -12px;
+            background: transparent;
+        }
+        .crop-handle:hover {
+            transform: scale(1.25);
+            background-color: #1d4ed8;
+        }
+        .crop-mask {
+            position: absolute;
+            background-color: rgba(15, 23, 42, 0.58);
+            pointer-events: none;
+            z-index: 10;
+        }
+        .crop-box-border {
+            position: absolute;
+            border: 2px dashed #3b82f6;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9);
+            z-index: 30;
+            cursor: move;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .grid-guide {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+        }
+        .grid-guide > div {
+            border: 0.5px dashed rgba(255, 255, 255, 0.35);
+        }
+        .crop-workspace-container {
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        input[type="range"] {
+            accent-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900 pb-16 lg:pb-0">
+
+    <!-- Minimal Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/80 dark:border-zinc-800 transition-colors">
+        <div class="relative max-w-6xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between">
+            <!-- Left: Mobile Drawer Hamburger -->
+            <div class="flex items-center lg:hidden z-30">
+                <button type="button" data-mobile-drawer-trigger aria-label="Open navigation menu" class="flex items-center justify-center w-9 h-9 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white active:scale-95 transition-all shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Logo -->
+            <a href="index.html" class="header-logo-responsive flex items-center gap-2 sm:gap-2.5 group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:transform-none z-20">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-sm transition-transform group-hover:scale-105 shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div class="flex items-baseline gap-1">
+                    <span class="font-bold text-base sm:text-lg text-zinc-900 dark:text-white tracking-tight">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                </div>
+            </a>
+
+            <!-- Right Header Controls -->
+            <div class="flex items-center gap-2.5">
+                <!-- Share Dropdown -->
+                <div class="hidden lg:block relative" data-share-container>
+                    <button type="button" data-share-trigger aria-label="Share tool or copy link" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                        <svg class="share-icon-default w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+                        </svg>
+                        <svg class="share-icon-copied hidden w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        <span class="share-btn-text hidden sm:inline text-xs font-semibold" data-i18n="nav_share">Share</span>
+                        <svg class="w-3 h-3 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+                    <div data-share-menu class="hidden absolute right-0 mt-2 w-72 sm:w-80 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl p-4 z-50 text-xs">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="font-bold text-zinc-900 dark:text-white text-sm" data-i18n="share_title">Share this Tool</div>
+                            <span class="share-copied-badge hidden text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full" data-i18n="share_copied">Copied!</span>
+                        </div>
+                        <p class="text-[11px] text-zinc-500 dark:text-zinc-400 mb-3" data-i18n="share_desc">Free, private, 100% on-device PDF & image utilities.</p>
+                        <div class="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 mb-3">
+                            <input type="text" readonly data-share-url-input class="w-full bg-transparent border-0 px-2 text-xs text-zinc-700 dark:text-zinc-200 focus:outline-none truncate select-all font-mono" value="">
+                            <button type="button" data-share-action="copy" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-xs transition-colors shrink-0 shadow-sm cursor-pointer">
+                                <span data-i18n="share_copy_btn">Copy</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Theme Menu -->
+                <div class="hidden lg:block relative" data-theme-menu-container>
+                    <button type="button" data-theme-trigger aria-label="Toggle color theme" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors shadow-2xs text-xs font-medium focus:outline-none">
+                        <svg class="theme-icon-system w-4 h-4 text-zinc-600 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        <span class="theme-label hidden md:inline text-xs font-semibold">Theme</span>
+                    </button>
+                    <div data-theme-menu class="hidden absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl py-1.5 z-50 text-xs">
+                        <div class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">Appearance</div>
+                        <button type="button" data-theme-value="system" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"><span>System default</span></button>
+                        <button type="button" data-theme-value="light" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"><span>Light</span></button>
+                        <button type="button" data-theme-value="dark" class="w-full flex items-center justify-between px-3 py-2 text-left hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"><span>Dark</span></button>
+                    </div>
+                </div>
+
+                <!-- Back to Home -->
+                <a href="index.html" aria-label="Back to Tools" class="back-btn-responsive flex items-center justify-center gap-1.5 w-9 h-9 lg:w-auto px-0 lg:px-3 py-0 lg:py-1.5 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white font-semibold text-xs shadow-2xs transition-all active:scale-95 cursor-pointer">
+                    <svg class="w-4 h-4 lg:w-3.5 lg:h-3.5 text-zinc-500 dark:text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="back-btn-text hidden lg:inline font-semibold text-xs whitespace-nowrap">Home</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace Section -->
+    <main class="flex-1 max-w-6xl mx-auto px-3 sm:px-6 py-6 sm:py-12 w-full">
+        
+        <!-- Hero Title -->
+        <div class="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-blue-50 dark:bg-blue-950/50 border border-blue-200/60 dark:border-blue-800/60 text-blue-700 dark:text-blue-300 text-xs font-semibold mb-3">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 0L4 4m5.121 5.121L4 19"/>
+                </svg>
+                <span>Interactive PDF Crop Engine</span>
+            </div>
+            <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-2 sm:mb-3">
+                Crop PDF Online
+            </h1>
+            <p class="text-xs sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed px-2">
+                Visually select custom crop areas, adjust margins, auto-trim white space, or set exact aspect ratios across your document pages with 100% on-device privacy.
+            </p>
+        </div>
+
+        <!-- File Upload Dropzone -->
+        <div id="drop-zone" class="max-w-2xl mx-auto bg-white dark:bg-zinc-900 rounded-3xl border-2 border-dashed border-zinc-300 dark:border-zinc-700 p-6 sm:p-12 text-center hover:border-blue-500 dark:hover:border-blue-400 transition-all cursor-pointer shadow-sm group relative">
+            <input type="file" id="file-input" accept=".pdf,application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 sm:mb-5 rounded-2xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 0L4 4m5.121 5.121L4 19"/>
+                </svg>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold text-zinc-900 dark:text-white mb-1.5 sm:mb-2">
+                Click to select a PDF file or drag & drop here
+            </h3>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-5">
+                Supports all standard PDF documents. Processed 100% inside your browser memory.
+            </p>
+            <div class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-xl shadow-xs transition-colors">
+                <span>Choose PDF File</span>
+            </div>
+        </div>
+
+        <!-- Error Message Banner -->
+        <div id="error-msg" class="hidden max-w-2xl mx-auto mt-6 p-4 rounded-2xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800/80 text-red-700 dark:text-red-300 text-xs font-medium flex items-center gap-3">
+            <svg class="w-5 h-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <span id="error-text">An error occurred while loading the PDF file.</span>
+        </div>
+
+        <!-- Interactive Crop Workspace (Hidden by Default) -->
+        <div id="workspace-section" class="hidden space-y-5 sm:space-y-6">
+            
+            <!-- File Info Header Bar -->
+            <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-3.5 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 font-bold text-xs">
+                        PDF
+                    </div>
+                    <div class="min-w-0">
+                        <h3 id="pdf-filename" class="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white truncate">document.pdf</h3>
+                        <p id="pdf-filedetails" class="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400">0 KB · 0 Pages</p>
+                    </div>
+                </div>
+
+                <!-- Canvas Control Tools -->
+                <div class="flex items-center gap-2 flex-wrap w-full sm:w-auto">
+                    <button type="button" id="btn-auto-trim" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800 text-xs font-semibold hover:bg-amber-100 dark:hover:bg-amber-900/60 transition-colors cursor-pointer active:scale-95">
+                        <span>⚡ Auto-Trim</span>
+                    </button>
+                    <button type="button" id="btn-reset-crop" class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 text-xs font-semibold hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors cursor-pointer active:scale-95">
+                        <span>↺ Reset</span>
+                    </button>
+                    <button type="button" id="btn-change-file" class="px-3 py-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer active:scale-95">
+                        Change
+                    </button>
+                </div>
+            </div>
+
+            <!-- Page Navigation & Canvas Workspace Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
+                
+                <!-- Left/Center: Visual Interactive Canvas Area -->
+                <div class="lg:col-span-8 space-y-3 sm:space-y-4">
+                    
+                    <!-- Page Nav & Zoom Bar -->
+                    <div class="flex items-center justify-between bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-2.5 sm:p-3 text-xs gap-2">
+                        <div class="flex items-center gap-1.5">
+                            <button type="button" id="btn-prev-page" class="px-2.5 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed font-semibold transition-colors cursor-pointer text-xs">
+                                ◀
+                            </button>
+                            <span id="page-nav-text" class="font-bold text-zinc-900 dark:text-white px-1 sm:px-2 text-xs whitespace-nowrap">Page 1 of 1</span>
+                            <button type="button" id="btn-next-page" class="px-2.5 py-1.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-200 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed font-semibold transition-colors cursor-pointer text-xs">
+                                ▶
+                            </button>
+                        </div>
+
+                        <!-- Fit / Zoom Controls -->
+                        <div class="flex items-center gap-1 text-[11px]">
+                            <button type="button" id="btn-fit-width" class="px-2 py-1 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-semibold cursor-pointer">
+                                Fit Width
+                            </button>
+                            <button type="button" id="btn-zoom-out" class="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-bold flex items-center justify-center cursor-pointer">
+                                –
+                            </button>
+                            <span id="zoom-label" class="font-mono text-zinc-500 font-semibold px-1 min-w-[36px] text-center">100%</span>
+                            <button type="button" id="btn-zoom-in" class="w-7 h-7 rounded-lg bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-bold flex items-center justify-center cursor-pointer">
+                                +
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Container Wrapper -->
+                    <div id="canvas-scroll-container" class="bg-zinc-100 dark:bg-zinc-950/90 rounded-3xl border border-zinc-200 dark:border-zinc-800 p-2 sm:p-6 flex items-center justify-center overflow-auto min-h-[360px] sm:min-h-[460px] shadow-inner relative crop-workspace-container">
+                        <div id="crop-workspace-wrapper" class="relative inline-block shadow-2xl rounded-lg overflow-hidden bg-white touch-action-none select-none">
+                            <!-- Rendered PDF Page Canvas -->
+                            <canvas id="pdf-render-canvas" class="block max-w-full h-auto pointer-events-none"></canvas>
+
+                            <!-- Crop Mask Overlays -->
+                            <div id="mask-top" class="crop-mask"></div>
+                            <div id="mask-bottom" class="crop-mask"></div>
+                            <div id="mask-left" class="crop-mask"></div>
+                            <div id="mask-right" class="crop-mask"></div>
+
+                            <!-- Crop Box Selection Area -->
+                            <div id="crop-box" class="crop-box-border">
+                                <div class="grid-guide">
+                                    <div></div><div></div><div></div>
+                                    <div></div><div></div><div></div>
+                                    <div></div><div></div><div></div>
+                                </div>
+                                <!-- 8 Resize Handles -->
+                                <div class="crop-handle" data-handle="nw" style="top: -8px; left: -8px; cursor: nwse-resize;"></div>
+                                <div class="crop-handle" data-handle="n" style="top: -8px; left: calc(50% - 8px); cursor: ns-resize;"></div>
+                                <div class="crop-handle" data-handle="ne" style="top: -8px; right: -8px; cursor: nesw-resize;"></div>
+                                <div class="crop-handle" data-handle="e" style="top: calc(50% - 8px); right: -8px; cursor: ew-resize;"></div>
+                                <div class="crop-handle" data-handle="se" style="bottom: -8px; right: -8px; cursor: nwse-resize;"></div>
+                                <div class="crop-handle" data-handle="s" style="bottom: -8px; left: calc(50% - 8px); cursor: ns-resize;"></div>
+                                <div class="crop-handle" data-handle="sw" style="bottom: -8px; left: -8px; cursor: nesw-resize;"></div>
+                                <div class="crop-handle" data-handle="w" style="top: calc(50% - 8px); left: -8px; cursor: ew-resize;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Options & Parameters Panel -->
+                <div class="lg:col-span-4 space-y-4 sm:space-y-5">
+                    
+                    <!-- Aspect Ratio Presets -->
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-4 sm:p-5 shadow-sm space-y-3 sm:space-y-4">
+                        <h4 class="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white flex items-center justify-between">
+                            <span>Aspect Ratio</span>
+                            <span id="aspect-ratio-badge" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400">Free Form</span>
+                        </h4>
+                        <div class="grid grid-cols-3 gap-1.5 sm:gap-2 text-xs">
+                            <button type="button" data-ratio="free" class="btn-aspect-ratio active px-2 py-2 font-semibold rounded-xl border border-blue-600 bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 transition-all cursor-pointer text-center">
+                                Free
+                            </button>
+                            <button type="button" data-ratio="page" class="btn-aspect-ratio px-2 py-2 font-semibold rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all cursor-pointer text-center">
+                                Original
+                            </button>
+                            <button type="button" data-ratio="a4" class="btn-aspect-ratio px-2 py-2 font-semibold rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all cursor-pointer text-center">
+                                A4 Paper
+                            </button>
+                            <button type="button" data-ratio="1:1" class="btn-aspect-ratio px-2 py-2 font-semibold rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all cursor-pointer text-center">
+                                1 : 1
+                            </button>
+                            <button type="button" data-ratio="16:9" class="btn-aspect-ratio px-2 py-2 font-semibold rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all cursor-pointer text-center">
+                                16 : 9
+                            </button>
+                            <button type="button" data-ratio="4:3" class="btn-aspect-ratio px-2 py-2 font-semibold rounded-xl border border-zinc-200 dark:border-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-all cursor-pointer text-center">
+                                4 : 3
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Margin Trimming Sliders -->
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-4 sm:p-5 shadow-sm space-y-3 sm:space-y-4">
+                        <h4 class="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white">
+                            Margin Sliders (%)
+                        </h4>
+                        <div class="space-y-2.5 sm:space-y-3 text-xs">
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-zinc-600 dark:text-zinc-400 font-medium">Top Margin</span>
+                                    <span id="label-margin-top" class="font-mono text-zinc-900 dark:text-white font-bold">0%</span>
+                                </div>
+                                <input type="range" id="slider-margin-top" min="0" max="45" value="0" class="w-full h-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-zinc-600 dark:text-zinc-400 font-medium">Bottom Margin</span>
+                                    <span id="label-margin-bottom" class="font-mono text-zinc-900 dark:text-white font-bold">0%</span>
+                                </div>
+                                <input type="range" id="slider-margin-bottom" min="0" max="45" value="0" class="w-full h-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-zinc-600 dark:text-zinc-400 font-medium">Left Margin</span>
+                                    <span id="label-margin-left" class="font-mono text-zinc-900 dark:text-white font-bold">0%</span>
+                                </div>
+                                <input type="range" id="slider-margin-left" min="0" max="45" value="0" class="w-full h-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-zinc-600 dark:text-zinc-400 font-medium">Right Margin</span>
+                                    <span id="label-margin-right" class="font-mono text-zinc-900 dark:text-white font-bold">0%</span>
+                                </div>
+                                <input type="range" id="slider-margin-right" min="0" max="45" value="0" class="w-full h-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Target Page Scope -->
+                    <div class="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 p-4 sm:p-5 shadow-sm space-y-2.5 sm:space-y-3">
+                        <h4 class="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white">
+                            Apply Crop To
+                        </h4>
+                        <div class="space-y-2 text-xs">
+                            <label class="flex items-center gap-2 text-zinc-700 dark:text-zinc-300 font-medium cursor-pointer">
+                                <input type="radio" name="page-scope" value="all" checked class="text-blue-600 focus:ring-blue-500">
+                                <span>All Pages in Document</span>
+                            </label>
+                            <label class="flex items-center gap-2 text-zinc-700 dark:text-zinc-300 font-medium cursor-pointer">
+                                <input type="radio" name="page-scope" value="current" class="text-blue-600 focus:ring-blue-500">
+                                <span id="label-scope-current">Current Page Only (Page 1)</span>
+                            </label>
+                            <label class="flex items-center gap-2 text-zinc-700 dark:text-zinc-300 font-medium cursor-pointer">
+                                <input type="radio" name="page-scope" value="custom" class="text-blue-600 focus:ring-blue-500">
+                                <span>Custom Page Range</span>
+                            </label>
+                            <input type="text" id="custom-range-input" placeholder="e.g. 1-3, 5, 8" disabled class="w-full mt-1.5 px-3 py-2 bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs text-zinc-900 dark:text-white placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:opacity-50">
+                        </div>
+                    </div>
+
+                    <!-- Dimension Summary Card -->
+                    <div class="bg-blue-50/60 dark:bg-blue-950/40 rounded-2xl border border-blue-100 dark:border-blue-900/60 p-3.5 sm:p-4 space-y-1.5 text-xs">
+                        <div class="flex items-center justify-between text-zinc-600 dark:text-zinc-400">
+                            <span>Original Dimensions:</span>
+                            <span id="dim-original" class="font-bold text-zinc-900 dark:text-zinc-100">0 × 0 pt</span>
+                        </div>
+                        <div class="flex items-center justify-between text-zinc-600 dark:text-zinc-400">
+                            <span>Cropped Dimensions:</span>
+                            <span id="dim-cropped" class="font-bold text-blue-600 dark:text-blue-400">0 × 0 pt</span>
+                        </div>
+                        <div class="flex items-center justify-between text-zinc-600 dark:text-zinc-400 pt-1 border-t border-blue-200/50 dark:border-blue-800/50">
+                            <span>Area Trimmed:</span>
+                            <span id="dim-reduction" class="font-extrabold text-emerald-600 dark:text-emerald-400">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Desktop Process Button & Progress -->
+                    <div class="space-y-3">
+                        <button type="button" id="btn-crop-pdf" class="w-full py-3.5 px-6 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 0L4 4m5.121 5.121L4 19"/>
+                            </svg>
+                            <span>Crop PDF Document</span>
+                        </button>
+
+                        <div id="progress-container" class="hidden space-y-1.5">
+                            <div class="flex justify-between text-xs text-zinc-500 font-semibold">
+                                <span id="progress-text">Cropping pages...</span>
+                                <span id="progress-percent">0%</span>
+                            </div>
+                            <div class="w-full h-2 bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
+                                <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-200" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Download & Output Result Section (Hidden Initially) -->
+        <div id="download-section" class="hidden max-w-3xl mx-auto bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 p-6 sm:p-8 text-center space-y-5 sm:space-y-6 shadow-xl">
+            <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl shadow-sm">
+                ✓
+            </div>
+            <div>
+                <h3 class="text-xl sm:text-2xl font-extrabold text-zinc-900 dark:text-white mb-1.5 sm:mb-2">
+                    PDF Cropped Successfully!
+                </h3>
+                <p id="crop-summary-text" class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 max-w-md mx-auto leading-relaxed">
+                    Your cropped document is ready for instant download and printing.
+                </p>
+            </div>
+
+            <!-- Cropped Result Preview -->
+            <div class="max-w-md mx-auto bg-zinc-100 dark:bg-zinc-950 p-3 sm:p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 flex items-center justify-center">
+                <canvas id="output-preview-canvas" class="block max-w-full h-auto rounded shadow-md border border-zinc-200 dark:border-zinc-800"></canvas>
+            </div>
+
+            <!-- Download & Print Actions -->
+            <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <a id="btn-download-pdf" href="#" download="cropped_document.pdf" class="flex-1 sm:flex-initial px-6 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-sm rounded-2xl shadow-md transition-all active:scale-95 inline-flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                    </svg>
+                    <span>Download Cropped PDF</span>
+                </a>
+                <button type="button" id="print-doc-btn" class="flex-1 sm:flex-initial px-5 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-2xl shadow-md transition-all inline-flex items-center justify-center gap-2 cursor-pointer active:scale-95">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h10z"/>
+                    </svg>
+                    <span class="print-btn-label">Print PDF</span>
+                </button>
+                <button type="button" id="btn-crop-again" class="w-full sm:w-auto px-5 py-3.5 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 font-bold text-sm rounded-2xl transition-all cursor-pointer">
+                    Crop Another File
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Floating Sticky Action Bar -->
+        <div id="mobile-sticky-bar" class="hidden fixed bottom-0 left-0 right-0 p-3 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border-t border-zinc-200 dark:border-zinc-800 z-30 lg:hidden shadow-xl flex items-center justify-between gap-3">
+            <button type="button" id="btn-mobile-auto-trim" class="px-3.5 py-2.5 bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800 rounded-xl text-xs font-bold active:scale-95 transition-transform shrink-0">
+                ⚡ Auto-Trim
+            </button>
+            <button type="button" id="btn-mobile-crop-pdf" class="flex-1 py-3 px-4 bg-blue-600 text-white font-extrabold text-xs rounded-xl shadow-md text-center active:scale-95 transition-transform flex items-center justify-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 0L4 4m5.121 5.121L4 19"/>
+                </svg>
+                <span>Crop PDF Document</span>
+            </button>
+        </div>
+
+        <!-- Educational FAQ Section -->
+        <section id="faq-section" class="mt-16 sm:mt-20 pt-10 sm:pt-12 border-t border-zinc-200/80 dark:border-zinc-800">
+            <div class="text-center max-w-xl mx-auto mb-8 sm:mb-10">
+                <h2 class="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-white tracking-tight mb-2">
+                    Frequently Asked Questions
+                </h2>
+                <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+                    Learn how browser-side PDF cropping and printing work.
+                </p>
+            </div>
+
+            <div class="max-w-3xl mx-auto space-y-3.5 sm:space-y-4">
+                <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200/80 dark:border-zinc-800 p-4 sm:p-5">
+                    <h3 class="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white mb-1">
+                        How does direct mobile printing work?
+                    </h3>
+                    <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                        When you tap <strong>Print PDF</strong>, PDFTool4You renders your cropped pages in full resolution and opens your phone or computer's native system print dialog. You can print to AirPrint, AirPrint Wi-Fi printers, Android Print Service, or save directly as PDF.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200/80 dark:border-zinc-800 p-4 sm:p-5">
+                    <h3 class="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white mb-1">
+                        Is PDF cropping easy on mobile touchscreens?
+                    </h3>
+                    <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                        Yes! Our crop box features enlarged touch target hitboxes on corner handles. You can drag handles with your thumb, adjust margin sliders, or tap ⚡ <strong>Auto-Trim</strong> to automatically crop blank white margins.
+                    </p>
+                </div>
+
+                <div class="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200/80 dark:border-zinc-800 p-4 sm:p-5">
+                    <h3 class="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white mb-1">
+                        Does cropping a PDF reduce image or text quality?
+                    </h3>
+                    <p class="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                        No. Unlike image editors that rasterize entire documents, PDFTool4You updates vector <code class="bg-zinc-100 dark:bg-zinc-800 px-1 py-0.5 rounded text-[11px] font-mono">CropBox</code> parameters inside the PDF specification. Text and images remain 100% loss-free.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="mt-16 sm:mt-20 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-colors">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-10">
+                
+                <!-- Brand Info -->
+                <div class="md:col-span-1 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-xs">
+                            <svg class="w-3.5 h-3.5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <span class="font-bold text-base text-zinc-900 dark:text-white">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                    </div>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        High-performance in-browser PDF & image suite. Compress, merge, split, watermark, crop, and convert without uploading files.
+                    </p>
+                    <div class="pt-1 flex items-center gap-2 text-[11px] text-zinc-400 dark:text-zinc-500">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span>100% In-Browser Memory</span>
+                    </div>
+                </div>
+
+                <!-- PDF Tools -->
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5">PDF Tools</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="pdf-crop.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-bold text-blue-600 dark:text-blue-400">Crop PDF</a></li>
+                        <li><a href="pdf-compressor.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Compress PDF</a></li>
+                        <li><a href="merge-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Merge PDF</a></li>
+                        <li><a href="split-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Split PDF</a></li>
+                        <li><a href="pdf-watermarker.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Watermark PDF</a></li>
+                        <li><a href="remove-pdf-password.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Remove Password</a></li>
+                    </ul>
+                </div>
+
+                <!-- Image Tools -->
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5">Image Tools</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="webp-to-jpg.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">WebP to JPG</a></li>
+                        <li><a href="image-to-pdf.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Image to PDF</a></li>
+                        <li><a href="png-to-jpg.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PNG to JPG</a></li>
+                        <li><a href="jpg-to-png.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">JPG to PNG</a></li>
+                        <li><a href="pan-card-photo-maker.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">PAN Card Photo Maker</a></li>
+                    </ul>
+                </div>
+
+                <!-- Legal & Company -->
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5">Company & Legal</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="blog.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors font-semibold text-blue-600 dark:text-blue-400">Blog & Guides</a></li>
+                        <li><a href="privacy-policy.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy Policy</a></li>
+                        <li><a href="terms-and-conditions.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms & Conditions</a></li>
+                        <li><a href="about-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About Us</a></li>
+                        <li><a href="contact-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact Us</a></li>
+                        <li><a href="disclaimer.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Disclaimer</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Bottom Disclaimer & Copyright -->
+            <div class="pt-8 border-t border-zinc-100 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-400 dark:text-zinc-500">
+                <p>© 2026 PDFTool4You. All rights reserved. 100% Client-Side Processing.</p>
+                <div class="flex items-center gap-4">
+                    <a href="privacy-policy.html" class="hover:underline">Privacy</a>
+                    <a href="terms-and-conditions.html" class="hover:underline">Terms</a>
+                    <a href="cookie-policy.html" class="hover:underline">Cookies</a>
+                    <a href="contact-us.html" class="hover:underline">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive PDF Crop Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.pdfjsLib) {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdf.worker.min.js';
+            }
+
+            // DOM Elements
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+            const workspaceSection = document.getElementById('workspace-section');
+            const downloadSection = document.getElementById('download-section');
+            const mobileStickyBar = document.getElementById('mobile-sticky-bar');
+            const errorMsg = document.getElementById('error-msg');
+            const errorText = document.getElementById('error-text');
+
+            const pdfFilename = document.getElementById('pdf-filename');
+            const pdfFiledetails = document.getElementById('pdf-filedetails');
+            const btnChangeFile = document.getElementById('btn-change-file');
+
+            const btnPrevPage = document.getElementById('btn-prev-page');
+            const btnNextPage = document.getElementById('btn-next-page');
+            const pageNavText = document.getElementById('page-nav-text');
+
+            const btnFitWidth = document.getElementById('btn-fit-width');
+            const btnZoomIn = document.getElementById('btn-zoom-in');
+            const btnZoomOut = document.getElementById('btn-zoom-out');
+            const zoomLabel = document.getElementById('zoom-label');
+
+            const cropWorkspaceWrapper = document.getElementById('crop-workspace-wrapper');
+            const renderCanvas = document.getElementById('pdf-render-canvas');
+            const renderCtx = renderCanvas.getContext('2d');
+
+            const cropBox = document.getElementById('crop-box');
+            const maskTop = document.getElementById('mask-top');
+            const maskBottom = document.getElementById('mask-bottom');
+            const maskLeft = document.getElementById('mask-left');
+            const maskRight = document.getElementById('mask-right');
+
+            const btnAutoTrim = document.getElementById('btn-auto-trim');
+            const btnMobileAutoTrim = document.getElementById('btn-mobile-auto-trim');
+            const btnResetCrop = document.getElementById('btn-reset-crop');
+
+            const sliderMarginTop = document.getElementById('slider-margin-top');
+            const sliderMarginBottom = document.getElementById('slider-margin-bottom');
+            const sliderMarginLeft = document.getElementById('slider-margin-left');
+            const sliderMarginRight = document.getElementById('slider-margin-right');
+
+            const labelMarginTop = document.getElementById('label-margin-top');
+            const labelMarginBottom = document.getElementById('label-margin-bottom');
+            const labelMarginLeft = document.getElementById('label-margin-left');
+            const labelMarginRight = document.getElementById('label-margin-right');
+
+            const aspectButtons = document.querySelectorAll('.btn-aspect-ratio');
+            const aspectRatioBadge = document.getElementById('aspect-ratio-badge');
+
+            const radioScope = document.getElementsByName('page-scope');
+            const labelScopeCurrent = document.getElementById('label-scope-current');
+            const customRangeInput = document.getElementById('custom-range-input');
+
+            const dimOriginal = document.getElementById('dim-original');
+            const dimCropped = document.getElementById('dim-cropped');
+            const dimReduction = document.getElementById('dim-reduction');
+
+            const btnCropPdf = document.getElementById('btn-crop-pdf');
+            const btnMobileCropPdf = document.getElementById('btn-mobile-crop-pdf');
+            const progressContainer = document.getElementById('progress-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const progressPercent = document.getElementById('progress-percent');
+
+            const btnDownloadPdf = document.getElementById('btn-download-pdf');
+            const printDocBtn = document.getElementById('print-doc-btn');
+            const btnCropAgain = document.getElementById('btn-crop-again');
+            const cropSummaryText = document.getElementById('crop-summary-text');
+            const outputPreviewCanvas = document.getElementById('output-preview-canvas');
+
+            // Application State
+            let currentFile = null;
+            let arrayBufferData = null;
+            let pdfJsDoc = null;
+            let pdfLibDoc = null;
+            let totalPages = 1;
+            let currentPageNum = 1;
+            let currentViewport = null;
+            let currentScaleMultiplier = 1.0;
+
+            // Crop Box Coordinates on Rendered Canvas (Pixels)
+            let cropRect = { x: 0, y: 0, w: 0, h: 0 };
+            let currentAspect = 'free'; // 'free', 'page', 'a4', '1:1', '16:9', '4:3'
+            let isDraggingBox = false;
+            let activeHandle = null;
+            let dragStart = { x: 0, y: 0 };
+            let rectStart = { x: 0, y: 0, w: 0, h: 0 };
+            let currentCroppedUrl = null;
+
+            // Event Listeners for File Selection
+            fileInput.addEventListener('change', handleFileSelect);
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('border-blue-500', 'bg-blue-50/50', 'dark:bg-blue-950/30');
+            });
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('border-blue-500', 'bg-blue-50/50', 'dark:bg-blue-950/30');
+            });
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('border-blue-500', 'bg-blue-50/50', 'dark:bg-blue-950/30');
+                if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                    fileInput.files = e.dataTransfer.files;
+                    handleFileSelect();
+                }
+            });
+
+            btnChangeFile.addEventListener('click', resetAll);
+            btnCropAgain.addEventListener('click', resetAll);
+
+            function handleFileSelect() {
+                const file = fileInput.files[0];
+                if (!file) return;
+                if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+                    showError('Please select a valid PDF file.');
+                    return;
+                }
+
+                currentFile = file;
+                pdfFilename.textContent = file.name;
+                pdfFiledetails.textContent = `${formatBytes(file.size)} · Loading...`;
+
+                hideError();
+                dropZone.classList.add('hidden');
+                workspaceSection.classList.remove('hidden');
+                mobileStickyBar.classList.remove('hidden');
+
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    arrayBufferData = e.target.result;
+                    try {
+                        const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(arrayBufferData.slice(0)) });
+                        pdfJsDoc = await loadingTask.promise;
+                        totalPages = pdfJsDoc.numPages;
+
+                        pdfLibDoc = await PDFLib.PDFDocument.load(arrayBufferData.slice(0), { ignoreEncryption: true });
+
+                        pdfFiledetails.textContent = `${formatBytes(file.size)} · ${totalPages} page${totalPages === 1 ? '' : 's'}`;
+                        labelScopeCurrent.textContent = `Current Page Only (Page 1)`;
+
+                        currentPageNum = 1;
+                        await renderPage(currentPageNum);
+                        resetCropBoxToDefault();
+                    } catch (err) {
+                        console.error('Error loading PDF:', err);
+                        showError('Failed to parse PDF document. It may be encrypted or corrupted.');
+                        resetAll();
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }
+
+            async function renderPage(pageNum) {
+                if (!pdfJsDoc) return;
+                currentPageNum = pageNum;
+                pageNavText.textContent = `Page ${pageNum} of ${totalPages}`;
+                labelScopeCurrent.textContent = `Current Page Only (Page ${pageNum})`;
+
+                btnPrevPage.disabled = (pageNum <= 1);
+                btnNextPage.disabled = (pageNum >= totalPages);
+
+                const page = await pdfJsDoc.getPage(pageNum);
+                
+                // Calculate responsive scale factor for mobile screens
+                const scrollContainer = document.getElementById('canvas-scroll-container');
+                const availableW = scrollContainer ? Math.min(scrollContainer.clientWidth - 24, 680) : Math.min(window.innerWidth - 32, 680);
+                
+                const unscaledViewport = page.getViewport({ scale: 1.0 });
+                let baseScale = (availableW > 0 && unscaledViewport.width > 0) ? (availableW / unscaledViewport.width) : 1.0;
+                baseScale = Math.max(0.5, Math.min(2.0, baseScale * currentScaleMultiplier));
+
+                currentViewport = page.getViewport({ scale: baseScale });
+
+                renderCanvas.width = currentViewport.width;
+                renderCanvas.height = currentViewport.height;
+
+                const renderContext = {
+                    canvasContext: renderCtx,
+                    viewport: currentViewport
+                };
+                await page.render(renderContext).promise;
+
+                // Sync workspace wrapper size
+                cropWorkspaceWrapper.style.width = `${currentViewport.width}px`;
+                cropWorkspaceWrapper.style.height = `${currentViewport.height}px`;
+
+                zoomLabel.textContent = `${Math.round(currentScaleMultiplier * 100)}%`;
+
+                updateUIOverlay();
+            }
+
+            // Window resize handler for responsive orientation
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (pdfJsDoc && !workspaceSection.classList.contains('hidden')) {
+                        renderPage(currentPageNum);
+                    }
+                }, 200);
+            });
+
+            // Zoom Bar Handlers
+            btnFitWidth.addEventListener('click', () => {
+                currentScaleMultiplier = 1.0;
+                renderPage(currentPageNum);
+            });
+            btnZoomIn.addEventListener('click', () => {
+                if (currentScaleMultiplier < 2.5) {
+                    currentScaleMultiplier += 0.25;
+                    renderPage(currentPageNum);
+                }
+            });
+            btnZoomOut.addEventListener('click', () => {
+                if (currentScaleMultiplier > 0.5) {
+                    currentScaleMultiplier -= 0.25;
+                    renderPage(currentPageNum);
+                }
+            });
+
+            btnPrevPage.addEventListener('click', () => {
+                if (currentPageNum > 1) {
+                    renderPage(currentPageNum - 1);
+                }
+            });
+
+            btnNextPage.addEventListener('click', () => {
+                if (currentPageNum < totalPages) {
+                    renderPage(currentPageNum + 1);
+                }
+            });
+
+            function resetCropBoxToDefault() {
+                if (!renderCanvas.width || !renderCanvas.height) return;
+                // Default padding 5% from edges
+                const padX = renderCanvas.width * 0.05;
+                const padY = renderCanvas.height * 0.05;
+
+                cropRect = {
+                    x: padX,
+                    y: padY,
+                    w: renderCanvas.width - padX * 2,
+                    h: renderCanvas.height - padY * 2
+                };
+
+                // Reset Sliders
+                sliderMarginTop.value = 0;
+                sliderMarginBottom.value = 0;
+                sliderMarginLeft.value = 0;
+                sliderMarginRight.value = 0;
+                updateSliderLabels();
+
+                updateUIOverlay();
+            }
+
+            btnResetCrop.addEventListener('click', resetCropBoxToDefault);
+
+            // Auto-Trim White Space Algorithm
+            function executeAutoTrim() {
+                if (!renderCanvas.width || !renderCanvas.height) return;
+                const imgData = renderCtx.getImageData(0, 0, renderCanvas.width, renderCanvas.height);
+                const pixels = imgData.data;
+                const w = renderCanvas.width;
+                const h = renderCanvas.height;
+
+                let minX = w, minY = h, maxX = 0, maxY = 0;
+                let foundContent = false;
+
+                for (let y = 0; y < h; y += 2) {
+                    for (let x = 0; x < w; x += 2) {
+                        const idx = (y * w + x) * 4;
+                        const r = pixels[idx];
+                        const g = pixels[idx + 1];
+                        const b = pixels[idx + 2];
+                        const a = pixels[idx + 3];
+
+                        // Pixel is non-white / non-transparent
+                        if (a > 20 && (r < 242 || g < 242 || b < 242)) {
+                            if (x < minX) minX = x;
+                            if (x > maxX) maxX = x;
+                            if (y < minY) minY = y;
+                            if (y > maxY) maxY = y;
+                            foundContent = true;
+                        }
+                    }
+                }
+
+                if (foundContent) {
+                    // Add safety padding around content
+                    const padding = Math.max(8, Math.round(w * 0.02));
+                    minX = Math.max(0, minX - padding);
+                    minY = Math.max(0, minY - padding);
+                    maxX = Math.min(w, maxX + padding);
+                    maxY = Math.min(h, maxY + padding);
+
+                    cropRect = {
+                        x: minX,
+                        y: minY,
+                        w: Math.max(40, maxX - minX),
+                        h: Math.max(40, maxY - minY)
+                    };
+                    updateUIOverlay();
+                }
+            }
+
+            btnAutoTrim.addEventListener('click', executeAutoTrim);
+            btnMobileAutoTrim.addEventListener('click', executeAutoTrim);
+
+            // Aspect Ratio Handler
+            aspectButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    aspectButtons.forEach(b => {
+                        b.classList.remove('active', 'border-blue-600', 'bg-blue-50', 'dark:bg-blue-950/60', 'text-blue-700', 'dark:text-blue-300');
+                        b.classList.add('border-zinc-200', 'dark:border-zinc-800', 'text-zinc-700', 'dark:text-zinc-300');
+                    });
+                    btn.classList.add('active', 'border-blue-600', 'bg-blue-50', 'dark:bg-blue-950/60', 'text-blue-700', 'dark:text-blue-300');
+                    btn.classList.remove('border-zinc-200', 'dark:border-zinc-800', 'text-zinc-700', 'dark:text-zinc-300');
+
+                    currentAspect = btn.getAttribute('data-ratio');
+                    aspectRatioBadge.textContent = btn.textContent.trim();
+                    applyAspectConstraint();
+                });
+            });
+
+            function applyAspectConstraint() {
+                if (currentAspect === 'free' || !renderCanvas.width) return;
+                let targetRatio = 1;
+                if (currentAspect === 'page') targetRatio = renderCanvas.width / renderCanvas.height;
+                else if (currentAspect === 'a4') targetRatio = 1 / 1.4142;
+                else if (currentAspect === '1:1') targetRatio = 1;
+                else if (currentAspect === '16:9') targetRatio = 16 / 9;
+                else if (currentAspect === '4:3') targetRatio = 4 / 3;
+
+                let newW = cropRect.w;
+                let newH = newW / targetRatio;
+
+                if (newH > renderCanvas.height - cropRect.y) {
+                    newH = renderCanvas.height - cropRect.y;
+                    newW = newH * targetRatio;
+                }
+
+                cropRect.w = Math.max(30, newW);
+                cropRect.h = Math.max(30, newH);
+                updateUIOverlay();
+            }
+
+            // Margin Sliders Events
+            [sliderMarginTop, sliderMarginBottom, sliderMarginLeft, sliderMarginRight].forEach(slider => {
+                slider.addEventListener('input', () => {
+                    updateSliderLabels();
+                    const topPct = parseFloat(sliderMarginTop.value) / 100;
+                    const botPct = parseFloat(sliderMarginBottom.value) / 100;
+                    const leftPct = parseFloat(sliderMarginLeft.value) / 100;
+                    const rightPct = parseFloat(sliderMarginRight.value) / 100;
+
+                    const cw = renderCanvas.width;
+                    const ch = renderCanvas.height;
+
+                    const x = cw * leftPct;
+                    const y = ch * topPct;
+                    const w = Math.max(30, cw * (1 - leftPct - rightPct));
+                    const h = Math.max(30, ch * (1 - topPct - botPct));
+
+                    cropRect = { x, y, w, h };
+                    updateUIOverlay();
+                });
+            });
+
+            function updateSliderLabels() {
+                labelMarginTop.textContent = `${sliderMarginTop.value}%`;
+                labelMarginBottom.textContent = `${sliderMarginBottom.value}%`;
+                labelMarginLeft.textContent = `${sliderMarginLeft.value}%`;
+                labelMarginRight.textContent = `${sliderMarginRight.value}%`;
+            }
+
+            // Target Page Scope Radio Events
+            for (let radio of radioScope) {
+                radio.addEventListener('change', () => {
+                    customRangeInput.disabled = (radio.value !== 'custom');
+                });
+            }
+
+            // Update UI Mask Overlays, Crop Box, and Dimensions Card
+            function updateUIOverlay() {
+                const cw = renderCanvas.width;
+                const ch = renderCanvas.height;
+                if (!cw || !ch) return;
+
+                // Clamp crop rect bounds
+                cropRect.x = Math.max(0, Math.min(cw - 20, cropRect.x));
+                cropRect.y = Math.max(0, Math.min(ch - 20, cropRect.y));
+                cropRect.w = Math.max(20, Math.min(cw - cropRect.x, cropRect.w));
+                cropRect.h = Math.max(20, Math.min(ch - cropRect.y, cropRect.h));
+
+                // Position crop box
+                cropBox.style.left = `${cropRect.x}px`;
+                cropBox.style.top = `${cropRect.y}px`;
+                cropBox.style.width = `${cropRect.w}px`;
+                cropBox.style.height = `${cropRect.h}px`;
+
+                // Position Masks
+                maskTop.style.left = '0px';
+                maskTop.style.top = '0px';
+                maskTop.style.width = `${cw}px`;
+                maskTop.style.height = `${cropRect.y}px`;
+
+                maskBottom.style.left = '0px';
+                maskBottom.style.top = `${cropRect.y + cropRect.h}px`;
+                maskBottom.style.width = `${cw}px`;
+                maskBottom.style.height = `${ch - (cropRect.y + cropRect.h)}px`;
+
+                maskLeft.style.left = '0px';
+                maskLeft.style.top = `${cropRect.y}px`;
+                maskLeft.style.width = `${cropRect.x}px`;
+                maskLeft.style.height = `${cropRect.h}px`;
+
+                maskRight.style.left = `${cropRect.x + cropRect.w}px`;
+                maskRight.style.top = `${cropRect.y}px`;
+                maskRight.style.width = `${cw - (cropRect.x + cropRect.w)}px`;
+                maskRight.style.height = `${ch - (cropRect.y + cropRect.h)}px`;
+
+                // Calculate real PDF Page Points (72 pt = 1 inch = 25.4 mm)
+                if (currentViewport) {
+                    const pdfPageWidthPt = currentViewport.width / currentViewport.scale;
+                    const pdfPageHeightPt = currentViewport.height / currentViewport.scale;
+
+                    const scaleX = pdfPageWidthPt / cw;
+                    const scaleY = pdfPageHeightPt / ch;
+
+                    const croppedWPt = Math.round(cropRect.w * scaleX);
+                    const croppedHPt = Math.round(cropRect.h * scaleY);
+
+                    const origWPt = Math.round(pdfPageWidthPt);
+                    const origHPt = Math.round(pdfPageHeightPt);
+
+                    dimOriginal.textContent = `${origWPt} × ${origHPt} pt (${ptToMm(origWPt)} × ${ptToMm(origHPt)} mm)`;
+                    dimCropped.textContent = `${croppedWPt} × ${croppedHPt} pt (${ptToMm(croppedWPt)} × ${ptToMm(croppedHPt)} mm)`;
+
+                    const areaOrig = origWPt * origHPt;
+                    const areaCropped = croppedWPt * croppedHPt;
+                    const reductionPct = Math.max(0, Math.round((1 - areaCropped / areaOrig) * 100));
+                    dimReduction.textContent = `-${reductionPct}% page area`;
+                }
+            }
+
+            function ptToMm(pt) {
+                return Math.round((pt * 25.4) / 72);
+            }
+
+            // Mouse & Touch Dragging Mechanics
+            function getPointerPos(e) {
+                const rect = cropWorkspaceWrapper.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            }
+
+            cropBox.addEventListener('mousedown', startDrag);
+            cropBox.addEventListener('touchstart', startDrag, { passive: false });
+
+            function startDrag(e) {
+                if (e.cancelable) e.preventDefault();
+                e.stopPropagation();
+
+                const handle = e.target.getAttribute('data-handle');
+                if (handle) {
+                    activeHandle = handle;
+                    isDraggingBox = false;
+                } else {
+                    activeHandle = null;
+                    isDraggingBox = true;
+                }
+
+                dragStart = getPointerPos(e);
+                rectStart = { ...cropRect };
+
+                document.addEventListener('mousemove', onDragMove, { passive: false });
+                document.addEventListener('touchmove', onDragMove, { passive: false });
+                document.addEventListener('mouseup', stopDrag);
+                document.addEventListener('touchend', stopDrag);
+                document.addEventListener('touchcancel', stopDrag);
+            }
+
+            function onDragMove(e) {
+                if (!isDraggingBox && !activeHandle) return;
+                if (e.cancelable) e.preventDefault();
+                e.stopPropagation();
+
+                const pos = getPointerPos(e);
+                const dx = pos.x - dragStart.x;
+                const dy = pos.y - dragStart.y;
+
+                const cw = renderCanvas.width;
+                const ch = renderCanvas.height;
+
+                if (isDraggingBox) {
+                    let newX = rectStart.x + dx;
+                    let newY = rectStart.y + dy;
+
+                    newX = Math.max(0, Math.min(cw - rectStart.w, newX));
+                    newY = Math.max(0, Math.min(ch - rectStart.h, newY));
+
+                    cropRect.x = newX;
+                    cropRect.y = newY;
+                } else if (activeHandle) {
+                    let { x, y, w, h } = rectStart;
+
+                    if (activeHandle.includes('w')) {
+                        const newX = Math.max(0, Math.min(x + w - 20, x + dx));
+                        w = w + (x - newX);
+                        x = newX;
+                    }
+                    if (activeHandle.includes('e')) {
+                        w = Math.max(20, Math.min(cw - x, w + dx));
+                    }
+                    if (activeHandle.includes('n')) {
+                        const newY = Math.max(0, Math.min(y + h - 20, y + dy));
+                        h = h + (y - newY);
+                        y = newY;
+                    }
+                    if (activeHandle.includes('s')) {
+                        h = Math.max(20, Math.min(ch - y, h + dy));
+                    }
+
+                    cropRect = { x, y, w, h };
+                    if (currentAspect !== 'free') {
+                        applyAspectConstraint();
+                    }
+                }
+
+                updateUIOverlay();
+            }
+
+            function stopDrag() {
+                isDraggingBox = false;
+                activeHandle = null;
+                document.removeEventListener('mousemove', onDragMove);
+                document.removeEventListener('touchmove', onDragMove);
+                document.removeEventListener('mouseup', stopDrag);
+                document.removeEventListener('touchend', stopDrag);
+                document.removeEventListener('touchcancel', stopDrag);
+            }
+
+            // PDF Crop Processing Action
+            async function executeCropPDF() {
+                if (!pdfLibDoc) return;
+                try {
+                    btnCropPdf.disabled = true;
+                    btnMobileCropPdf.disabled = true;
+                    progressContainer.classList.remove('hidden');
+                    progressBar.style.width = '10%';
+                    progressPercent.textContent = '10%';
+                    progressText.textContent = 'Analyzing crop coordinates...';
+
+                    // Determine target page indices
+                    let selectedScope = 'all';
+                    for (let r of radioScope) {
+                        if (r.checked) selectedScope = r.value;
+                    }
+
+                    let targetPageIndices = [];
+                    if (selectedScope === 'all') {
+                        for (let i = 0; i < totalPages; i++) targetPageIndices.push(i);
+                    } else if (selectedScope === 'current') {
+                        targetPageIndices.push(currentPageNum - 1);
+                    } else if (selectedScope === 'custom') {
+                        targetPageIndices = parsePageRange(customRangeInput.value, totalPages);
+                        if (targetPageIndices.length === 0) {
+                            showError('Please enter a valid page range (e.g. 1-3, 5).');
+                            btnCropPdf.disabled = false;
+                            btnMobileCropPdf.disabled = false;
+                            progressContainer.classList.add('hidden');
+                            return;
+                        }
+                    }
+
+                    const cw = renderCanvas.width;
+                    const ch = renderCanvas.height;
+
+                    const libPages = pdfLibDoc.getPages();
+
+                    progressText.textContent = 'Updating PDF page bounding boxes...';
+                    progressBar.style.width = '40%';
+                    progressPercent.textContent = '40%';
+
+                    targetPageIndices.forEach((idx) => {
+                        const page = libPages[idx];
+                        if (!page) return;
+
+                        const pdfW = page.getWidth();
+                        const pdfH = page.getHeight();
+
+                        const scaleX = pdfW / cw;
+                        const scaleY = pdfH / ch;
+
+                        // Canvas origin (0,0) is TOP-LEFT.
+                        // PDF coordinate system origin (0,0) is BOTTOM-LEFT!
+                        const pdfCropX = cropRect.x * scaleX;
+                        const pdfCropY = (ch - (cropRect.y + cropRect.h)) * scaleY;
+                        const pdfCropW = cropRect.w * scaleX;
+                        const pdfCropH = cropRect.h * scaleY;
+
+                        // Set CropBox & MediaBox to crop area
+                        page.setCropBox(pdfCropX, pdfCropY, pdfCropW, pdfCropH);
+                        page.setMediaBox(pdfCropX, pdfCropY, pdfCropW, pdfCropH);
+                    });
+
+                    progressBar.style.width = '80%';
+                    progressPercent.textContent = '80%';
+                    progressText.textContent = 'Saving cropped PDF document...';
+
+                    const croppedBytes = await pdfLibDoc.save();
+                    const blob = new Blob([croppedBytes], { type: 'application/pdf' });
+
+                    if (currentCroppedUrl) {
+                        URL.revokeObjectURL(currentCroppedUrl);
+                    }
+                    currentCroppedUrl = URL.createObjectURL(blob);
+
+                    // Set global references for print & download handlers
+                    window.currentCroppedUrl = currentCroppedUrl;
+                    window.currentDownloadUrl = currentCroppedUrl;
+                    window.currentPdfUrl = currentCroppedUrl;
+                    window.currentOutputBlob = blob;
+
+                    btnDownloadPdf.href = currentCroppedUrl;
+                    const baseName = currentFile.name.replace(/\.[^/.]+$/, '');
+                    btnDownloadPdf.download = `${baseName}_cropped.pdf`;
+
+                    // Bind print action
+                    if (window.attachPrintAction && printDocBtn) {
+                        window.attachPrintAction(printDocBtn, () => window.currentCroppedUrl || currentCroppedUrl, 'application/pdf');
+                    }
+
+                    cropSummaryText.textContent = `Cropped ${targetPageIndices.length} page${targetPageIndices.length === 1 ? '' : 's'} successfully. File size: ${formatBytes(croppedBytes.byteLength)}.`;
+
+                    progressBar.style.width = '100%';
+                    progressPercent.textContent = '100%';
+
+                    // Render First Page Preview of Cropped Result
+                    renderCroppedPreview(croppedBytes);
+
+                    workspaceSection.classList.add('hidden');
+                    mobileStickyBar.classList.add('hidden');
+                    downloadSection.classList.remove('hidden');
+
+                } catch (err) {
+                    console.error('Cropping error:', err);
+                    showError('Failed to crop PDF document. Error: ' + err.message);
+                } finally {
+                    btnCropPdf.disabled = false;
+                    btnMobileCropPdf.disabled = false;
+                    progressContainer.classList.add('hidden');
+                }
+            }
+
+            btnCropPdf.addEventListener('click', executeCropPDF);
+            btnMobileCropPdf.addEventListener('click', executeCropPDF);
+
+            // Direct Print Button Action Handler
+            printDocBtn.addEventListener('click', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const urlToPrint = window.currentCroppedUrl || currentCroppedUrl || window.currentDownloadUrl;
+                if (!urlToPrint) {
+                    showError('Please crop a PDF file first before printing.');
+                    return;
+                }
+
+                const labelEl = printDocBtn.querySelector('.print-btn-label') || printDocBtn;
+                const origLabel = labelEl.textContent;
+                printDocBtn.disabled = true;
+                labelEl.textContent = 'Preparing Print...';
+
+                try {
+                    if (window.printProcessedDocument) {
+                        await window.printProcessedDocument(urlToPrint, 'application/pdf', document.title || 'Cropped Document');
+                    } else {
+                        const printWin = window.open(urlToPrint, '_blank');
+                        if (printWin) {
+                            printWin.onload = () => printWin.print();
+                        }
+                    }
+                } catch (err) {
+                    console.error('Print button error:', err);
+                } finally {
+                    setTimeout(() => {
+                        printDocBtn.disabled = false;
+                        labelEl.textContent = origLabel;
+                    }, 800);
+                }
+            });
+
+            async function renderCroppedPreview(pdfBytes) {
+                try {
+                    const task = pdfjsLib.getDocument({ data: new Uint8Array(pdfBytes) });
+                    const doc = await task.promise;
+                    const page = await doc.getPage(1);
+                    const viewport = page.getViewport({ scale: 0.8 });
+
+                    outputPreviewCanvas.width = viewport.width;
+                    outputPreviewCanvas.height = viewport.height;
+
+                    const ctx = outputPreviewCanvas.getContext('2d');
+                    await page.render({ canvasContext: ctx, viewport }).promise;
+                } catch (e) {
+                    console.warn('Cropped preview render failed:', e);
+                }
+            }
+
+            function parsePageRange(str, maxPages) {
+                if (!str) return [];
+                const pages = new Set();
+                const parts = str.split(',');
+                parts.forEach(part => {
+                    part = part.trim();
+                    if (part.includes('-')) {
+                        const [start, end] = part.split('-').map(n => parseInt(n.trim(), 10));
+                        if (!isNaN(start) && !isNaN(end)) {
+                            for (let i = Math.max(1, start); i <= Math.min(maxPages, end); i++) {
+                                pages.add(i - 1);
+                            }
+                        }
+                    } else {
+                        const num = parseInt(part, 10);
+                        if (!isNaN(num) && num >= 1 && num <= maxPages) {
+                            pages.add(num - 1);
+                        }
+                    }
+                });
+                return Array.from(pages).sort((a, b) => a - b);
+            }
+
+            function formatBytes(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+            }
+
+            function showError(msg) {
+                errorText.textContent = msg;
+                errorMsg.classList.remove('hidden');
+            }
+
+            function hideError() {
+                errorMsg.classList.add('hidden');
+            }
+
+            function resetAll() {
+                if (currentCroppedUrl) {
+                    URL.revokeObjectURL(currentCroppedUrl);
+                    currentCroppedUrl = null;
+                }
+                fileInput.value = '';
+                currentFile = null;
+                arrayBufferData = null;
+                pdfJsDoc = null;
+                pdfLibDoc = null;
+
+                dropZone.classList.remove('hidden');
+                workspaceSection.classList.add('hidden');
+                mobileStickyBar.classList.add('hidden');
+                downloadSection.classList.add('hidden');
+                hideError();
+            }
+        });
+    </script>
+</body>
+</html>

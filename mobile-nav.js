@@ -222,6 +222,32 @@
                         </div>
 
                         <div class="space-y-1">
+                            <a href="rotate-pdf.html" class="flex items-center justify-between p-2.5 rounded-xl ${currentPage === 'rotate-pdf.html' ? 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-bold' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200'} transition-all active:scale-[0.98]">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold leading-tight">Rotate PDF</p>
+                                        <p class="text-[10px] text-zinc-400 leading-tight">Turn individual/all pages</p>
+                                    </div>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+
+                            <a href="pdf-crop.html" class="flex items-center justify-between p-2.5 rounded-xl ${currentPage === 'pdf-crop.html' ? 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-bold' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200'} transition-all active:scale-[0.98]">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 0L4 4m5.121 5.121L4 19"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-bold leading-tight">Crop PDF</p>
+                                        <p class="text-[10px] text-zinc-400 leading-tight">Trim margins & bounds</p>
+                                    </div>
+                                </div>
+                                <svg class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                            </a>
+
                             <a href="pdf-compressor.html" class="flex items-center justify-between p-2.5 rounded-xl ${currentPage === 'pdf-compressor.html' ? 'bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 font-bold' : 'hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-700 dark:text-zinc-200'} transition-all active:scale-[0.98]">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-7 h-7 rounded-lg bg-red-100 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0">

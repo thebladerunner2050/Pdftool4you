@@ -82,6 +82,20 @@
             "tool_split_tag": "Visual selector",
             "tool_split_tag2": "ZIP export",
 
+            // Tool 3.5: PDF Crop Tool
+            "tool_crop_title": "Crop PDF Online",
+            "tool_crop_desc": "Trim margins, select custom page bounds, auto-crop white space, or apply aspect ratio presets across your document.",
+            "tool_crop_tag": "Auto-trim margins",
+            "tool_crop_tag2": "Aspect presets",
+            "footer_tool_crop": "Crop PDF",
+
+            // Tool 3.6: PDF Rotate Tool
+            "tool_rotate_title": "Rotate PDF Pages",
+            "tool_rotate_desc": "Rotate individual or all PDF pages by 90°, 180°, or 270°. Visual thumbnail editor with live previews and instant download.",
+            "tool_rotate_tag": "Individual & bulk",
+            "tool_rotate_tag2": "Visual grid",
+            "footer_tool_rotate": "Rotate PDF",
+
             // Tool 4: PDF Watermarker
             "tool_watermark_title": "PDF Watermarker",
             "tool_watermark_desc": "Stamp text or image logos across PDF pages. Full control over opacity, rotation, preset positions, or tiled security patterns with real-time preview.",
@@ -329,6 +343,20 @@
             "tool_split_desc": "विशिष्ट पृष्ठों को अलग करें (उदा. 1-3, 5) या सभी पृष्ठों को अलग-अलग फ़ाइल में निकालें। एक-एक करके या ZIP में डाउनलोड करें।",
             "tool_split_tag": "पेज चयनकर्ता",
             "tool_split_tag2": "ZIP डाउनलोड",
+
+            // Tool 3.5: PDF Crop Tool
+            "tool_crop_title": "पीडीएफ क्रॉप करें (Crop PDF)",
+            "tool_crop_desc": "मार्जिन काटें, पेज का मनचाहा हिस्सा चुनें, सफ़ेद किनारों को ऑटो-ट्रिम करें या पूरे दस्तावेज़ पर पहलू अनुपात लागू करें।",
+            "tool_crop_tag": "ऑटो ट्रिम मार्जिन",
+            "tool_crop_tag2": "आस्पेक्ट प्रीसेट",
+            "footer_tool_crop": "पीडीएफ क्रॉप करें",
+
+            // Tool 3.6: PDF Rotate Tool
+            "tool_rotate_title": "पीडीएफ घुमाएँ (Rotate PDF)",
+            "tool_rotate_desc": "पीडीएफ के किसी भी या सभी पृष्ठों को 90°, 180° या 270° पर घुमाएँ। लाइव थंबनेल पूर्वावलोकन के साथ तुरंत डाउनलोड करें।",
+            "tool_rotate_tag": "व्यक्तिगत व बल्क",
+            "tool_rotate_tag2": "लाइव थंबनेल",
+            "footer_tool_rotate": "पीडीएफ घुमाएँ",
 
             // Tool 4: PDF Watermarker
             "tool_watermark_title": "पीडीएफ वॉटरमार्कर (PDF Watermarker)",
