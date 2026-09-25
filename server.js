@@ -59,6 +59,26 @@ app.get(['/pan-card-photo-maker', '/pan-card-resizer'], (req, res) => {
   res.sendFile(path.join(__dirname, 'pan-card-photo-maker.html'));
 });
 
+app.get(['/pdf-crop', '/crop-pdf'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'pdf-crop.html'));
+});
+
+app.get(['/rotate-pdf', '/pdf-rotate'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'rotate-pdf.html'));
+});
+
+app.get(['/how-to-crop-pdf', '/how-to-crop-pdf-guide'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'how-to-crop-pdf.html'));
+});
+
+app.get(['/how-to-rotate-pdf', '/how-to-rotate-pdf-guide'], (req, res) => {
+  res.sendFile(path.join(__dirname, 'how-to-rotate-pdf.html'));
+});
+
+app.get('/blog', (req, res) => {
+  res.sendFile(path.join(__dirname, 'blog.html'));
+});
+
 // Important pages for Google AdSense compliance & T&C
 app.get(['/privacy-policy', '/privacy'], (req, res) => {
   res.sendFile(path.join(__dirname, 'privacy-policy.html'));

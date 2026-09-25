@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>How to Crop PDF Pages and Trim Margins Online – Step-by-Step Guide</title>
+    <meta name="description" content="Learn how to crop PDF pages, trim white margins, remove scanner edges, and set custom aspect ratios with 100% in-browser privacy and zero file uploads.">
+    <link rel="canonical" href="https://pdftool4you.in/how-to-crop-pdf.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="How to Crop PDF Pages and Trim Margins Online – Complete Guide">
+    <meta property="og:description" content="Step-by-step tutorial on cropping PDF documents, auto-trimming white space, and setting custom page bounds directly in your browser.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="mobile.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'system';
+            const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+    </script>
+    <script src="theme.js"></script>
+    <script src="mobile-nav.js" defer></script>
+    
+    <!-- Schema.org TechArticle & FAQPage JSON-LD Graph -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "TechArticle",
+          "headline": "How to Crop PDF Pages and Trim Margins Online",
+          "description": "Comprehensive tutorial on cropping PDF document pages, trimming whitespace margins, removing scanning borders, and applying aspect ratios in local browser memory.",
+          "url": "https://pdftool4you.in/how-to-crop-pdf.html",
+          "author": {
+            "@type": "Person",
+            "name": "Pratap Ahirwar",
+            "jobTitle": "Lead Document Systems Engineer"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "PDFTool4You",
+            "url": "https://pdftool4you.in"
+          },
+          "datePublished": "2026-09-25",
+          "dateModified": "2026-09-25"
+        },
+        {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Does cropping a PDF reduce its visual clarity or delete searchable text?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. When using PDFTool4You's vector crop engine, cropping updates the PDF CropBox and MediaBox coordinates. All original vector typography, font definitions, and selectable text remain 100% crisp and searchable."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Can I crop all pages in a multi-page PDF document simultaneously?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes! You can configure the crop box on a single reference page and choose 'Apply to All Pages' or specify a page range (e.g., 1-5, 8-10) to trim margins uniformly across the document."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the Auto-Trim White Space feature?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Auto-Trim scans page pixel luminosity to calculate the exact bounding box of text and figures, automatically stripping unnecessary white borders without manual handle adjustments."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Are my confidential PDF documents uploaded to external servers?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "No. All cropping and PDF byte modifications happen locally in your browser RAM using WebAssembly and PDF-Lib. Zero bytes ever leave your device."
+              }
+            }
+          ]
+        }
+      ]
+    }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background-color: #fafbfc;
+            color: #09090b;
+        }
+        html.dark body {
+            background-color: #09090b;
+            color: #f4f4f5;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/80 dark:border-zinc-800 transition-colors">
+        <div class="relative max-w-5xl mx-auto px-3 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center lg:hidden z-30">
+                <button type="button" data-mobile-drawer-trigger aria-label="Open navigation menu" class="flex items-center justify-center w-9 h-9 rounded-xl border border-zinc-200/90 dark:border-zinc-800 bg-white/90 dark:bg-zinc-900 text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white active:scale-95 transition-all shadow-2xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/20">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+
+            <a href="index.html" class="header-logo-responsive flex items-center gap-2 sm:gap-2.5 group absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:transform-none z-20">
+                <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-sm transition-transform group-hover:scale-105 shrink-0">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div class="flex items-baseline gap-1">
+                    <span class="font-bold text-base sm:text-lg text-zinc-900 dark:text-white tracking-tight">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                </div>
+            </a>
+
+            <div class="flex items-center gap-3">
+                <nav class="hidden lg:flex items-center gap-5 text-xs font-semibold text-zinc-600 dark:text-zinc-300 mr-2">
+                    <a href="index.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Tools</a>
+                    <a href="blog.html" class="text-blue-600 dark:text-blue-400 font-bold">Blog & Guides</a>
+                    <a href="about-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About Us</a>
+                    <a href="contact-us.html" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Contact</a>
+                </nav>
+
+                <a href="pdf-crop.html" class="inline-flex items-center justify-center gap-1.5 w-9 h-9 sm:w-auto px-0 sm:px-3 py-0 sm:py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-sm transition-all active:scale-95 shrink-0" title="Open PDF Crop Tool">
+                    <svg class="w-4 h-4 sm:w-3.5 sm:h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    <span class="hidden sm:inline">Open PDF Crop Tool</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Article Container -->
+    <main class="flex-1 max-w-4xl mx-auto px-4 sm:px-6 py-10 w-full">
+        
+        <!-- Breadcrumbs -->
+        <nav class="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 mb-6">
+            <a href="index.html" class="hover:underline">Home</a>
+            <span>/</span>
+            <a href="blog.html" class="hover:underline">Blog</a>
+            <span>/</span>
+            <span class="text-zinc-900 dark:text-white font-medium">How to Crop PDF</span>
+        </nav>
+
+        <article class="space-y-8">
+            <header class="space-y-4 pb-6 border-b border-zinc-200 dark:border-zinc-800">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-xs font-bold">
+                    <span>Document Geometry & Layout</span>
+                </div>
+                <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white leading-tight">
+                    How to Crop PDF Pages and Trim Margins Online (Fast & Private)
+                </h1>
+                <p class="text-sm sm:text-base text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    Tired of wide, wasted blank borders, scanner edge smudges, or documents ill-fitted for mobile reading? Learn how to visually crop PDF pages, auto-detect content bounds, and trim excess margins without sacrificing text quality or security.
+                </p>
+                <div class="flex items-center gap-4 text-xs text-zinc-400 pt-2">
+                    <span>Updated September 2026</span>
+                    <span>•</span>
+                    <span>5 min read</span>
+                    <span>•</span>
+                    <span>100% In-Browser Privacy</span>
+                </div>
+            </header>
+
+            <!-- Quick Action Box -->
+            <div class="p-5 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-2xl border border-blue-500/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="space-y-1 text-center sm:text-left">
+                    <p class="font-bold text-sm text-zinc-900 dark:text-white">Need to crop your PDF right now?</p>
+                    <p class="text-xs text-zinc-600 dark:text-zinc-400">Use our interactive visual crop tool with handles, aspect ratios, and auto-trim.</p>
+                </div>
+                <a href="pdf-crop.html" class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md transition-all shrink-0">
+                    Open PDF Crop Tool →
+                </a>
+            </div>
+
+            <!-- Content Body -->
+            <div class="space-y-6 text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white">Why Crop PDF Documents?</h2>
+                <p>
+                    Portable Document Format (PDF) files are designed to preserve fixed page geometry. However, digital workflows often leave documents with unwanted whitespace or mismatched aspect ratios. The most frequent reasons for cropping include:
+                </p>
+                <ul class="list-disc pl-5 space-y-2 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
+                    <li><strong>E-Reader & Tablet Optimization:</strong> Academic papers (IEEE, arXiv) and double-column articles often have 1.5-inch margins. Removing margins maximizes font size on 6-inch to 10-inch Kindle and iPad screens.</li>
+                    <li><strong>Removing Dark Scanner Edges:</strong> Scanned receipts, IDs, and physical documents frequently exhibit skewed black borders or shadow artifacts along page edges.</li>
+                    <li><strong>Standardizing Presentation Slides:</strong> Trimming headers, footers, or watermarked margins to fit 16:9 widescreen or 4:3 projector layouts.</li>
+                    <li><strong>Extracting Charts & Diagrams:</strong> Cropping a full A4 sheet down to a specific graphic, table, or architectural schematic for re-embedding into presentations.</li>
+                    <li><strong>Reducing Print Toner & Paper Waste:</strong> Narrowing page bounds avoids scaling down content when printing on compact or custom paper stocks.</li>
+                </ul>
+
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white pt-4">Step-by-Step: How to Crop PDF Pages Visually</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-6">
+                    <div class="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-2">
+                        <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 font-extrabold flex items-center justify-center text-sm">1</div>
+                        <h3 class="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white">Load PDF File</h3>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400">Drag and drop your PDF into the tool. It renders instantly in browser memory using PDF.js without server upload.</p>
+                    </div>
+                    <div class="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-2">
+                        <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 font-extrabold flex items-center justify-center text-sm">2</div>
+                        <h3 class="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white">Adjust Crop Box</h3>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400">Drag the corner or side handles. Choose an aspect ratio preset, enter numerical margins, or click "Auto-Trim" to snap to content.</p>
+                    </div>
+                    <div class="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-2">
+                        <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 font-extrabold flex items-center justify-center text-sm">3</div>
+                        <h3 class="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white">Apply & Download</h3>
+                        <p class="text-xs text-zinc-500 dark:text-zinc-400">Choose to apply to current page or all pages, then click "Download Cropped PDF". Your document is saved instantly.</p>
+                    </div>
+                </div>
+
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white pt-4">Technical Deep Dive: How Vector PDF Cropping Works</h2>
+                <p>
+                    Many low-quality online tools convert PDF pages into raster bitmaps (JPGs), crop the picture, and re-encode it back into a PDF. This harmful process inflates file sizes, blurs text edges, and deletes selectable text and hyperlinks.
+                </p>
+                <p>
+                    In contrast, <strong>PDFTool4You</strong> alters the internal PDF page boundaries defined by the official ISO 32000 PDF specification:
+                </p>
+                <div class="overflow-x-auto my-4">
+                    <table class="w-full text-xs text-left border border-zinc-200 dark:border-zinc-800 rounded-xl">
+                        <thead class="bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white font-bold">
+                            <tr>
+                                <th class="p-3 border-b border-zinc-200 dark:border-zinc-800">PDF Box Metric</th>
+                                <th class="p-3 border-b border-zinc-200 dark:border-zinc-800">Function</th>
+                                <th class="p-3 border-b border-zinc-200 dark:border-zinc-800">How It Is Handled</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800 text-zinc-600 dark:text-zinc-400">
+                            <tr>
+                                <td class="p-3 font-mono font-bold text-blue-600 dark:text-blue-400">/CropBox</td>
+                                <td class="p-3">Defines the visible clipping region displayed in Adobe Acrobat and web viewers.</td>
+                                <td class="p-3 font-medium text-emerald-600 dark:text-emerald-400">Updated to new coordinates</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-mono font-bold text-blue-600 dark:text-blue-400">/MediaBox</td>
+                                <td class="p-3">Defines physical medium paper size (e.g. A4, Letter).</td>
+                                <td class="p-3 font-medium text-emerald-600 dark:text-emerald-400">Adjusted to ensure universal viewer support</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-mono font-bold text-blue-600 dark:text-blue-400">/BleedBox & /TrimBox</td>
+                                <td class="p-3">Commercial printing boundaries for cut-lines and binding.</td>
+                                <td class="p-3 font-medium text-emerald-600 dark:text-emerald-400">Synchronized with crop bounds</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>
+                    Because this method simply rewrites vector rectangle coordinates <code>[x, y, width, height]</code>, the actual font glyphs, embedded images, form elements, and annotations remain untouched at 100% original fidelity.
+                </p>
+
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white pt-4">Auto-Trim vs Manual Aspect Ratio Cropping</h2>
+                <p>
+                    PDFTool4You gives you complete freedom across multiple cropping strategies:
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4 text-xs">
+                    <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-1.5">
+                        <span class="font-bold text-zinc-900 dark:text-white block text-sm flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            Auto-Trim White Space
+                        </span>
+                        <p class="text-zinc-500">
+                            Utilizes high-speed pixel luminance sampling to locate the exact bounding rectangle containing text, drawings, or photos. It snips all surrounding white padding with a single click.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-1.5">
+                        <span class="font-bold text-zinc-900 dark:text-white block text-sm flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                            Fixed Aspect Presets
+                        </span>
+                        <p class="text-zinc-500">
+                            Constrain the crop box to standard ratios: <strong>1:1 Square</strong> (social media/avatars), <strong>4:3 Standard</strong>, <strong>16:9 Widescreen</strong> (keynotes), or <strong>1:1.414</strong> (ISO A4 standard).
+                        </p>
+                    </div>
+                </div>
+
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white pt-4">Client-Side Security: Why Privacy Matters</h2>
+                <p>
+                    Legal contracts, financial statements, and medical forms frequently require margin trimming. Using server-side converters transmits unencrypted documents over the internet to third-party servers where they may be cached or logged.
+                </p>
+                <div class="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl text-emerald-900 dark:text-emerald-200 text-xs leading-relaxed space-y-1">
+                    <p class="font-bold">🔒 Guaranteed In-Browser Processing</p>
+                    <p>PDFTool4You processes all operations inside your web browser using WebAssembly. Your files never leave your device, ensuring full compliance with GDPR, HIPAA, and corporate data governance policies.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Section -->
+            <section class="pt-8 border-t border-zinc-200 dark:border-zinc-800 space-y-4">
+                <h2 class="text-xl font-bold text-zinc-900 dark:text-white">Frequently Asked Questions</h2>
+                <div class="space-y-3 text-xs sm:text-sm">
+                    <div class="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-1">
+                        <h3 class="font-bold text-zinc-900 dark:text-white">Can I crop odd and even pages differently?</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400">Yes! In the page selector, you can specify exact page ranges (e.g. <code>1, 3, 5, 7</code>) for odd pages, apply the required margin crop, and then repeat for even pages if gutter margins alternate.</p>
+                    </div>
+                    <div class="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-1">
+                        <h3 class="font-bold text-zinc-900 dark:text-white">Will the cropped PDF have a smaller file size?</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400">Because vector cropping preserves underlying elements without re-compressing them, file size remains approximately the same or slightly smaller. If you also need smaller file sizes, use our companion <a href="pdf-compressor.html" class="text-blue-600 dark:text-blue-400 underline font-semibold">PDF Compressor</a> tool.</p>
+                    </div>
+                    <div class="p-4 bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-1">
+                        <h3 class="font-bold text-zinc-900 dark:text-white">Can I print the cropped PDF directly from the tool?</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400">Yes! You can click "Print Document" to send the cropped PDF straight to your connected home or office printer without downloading it to your disk first.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bottom CTA -->
+            <div class="pt-6 text-center">
+                <a href="pdf-crop.html" class="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-bold text-sm text-white bg-blue-600 hover:bg-blue-700 transition-all shadow-md active:scale-95">
+                    <span>Crop Your PDF Online Now</span>
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+            </div>
+        </article>
+
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="mt-20 border-t border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 transition-colors">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-10">
+                <div class="md:col-span-1 space-y-3">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-xl bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 flex items-center justify-center shadow-xs">
+                            <svg class="w-3.5 h-3.5 text-white dark:text-zinc-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                        </div>
+                        <span class="font-bold text-base text-zinc-900 dark:text-white">PDFTool<span class="text-blue-600 dark:text-blue-400">4You</span></span>
+                    </div>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                        High-performance in-browser PDF & image suite. Crop, compress, merge, split, and convert without uploading files.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5">PDF Tools</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="pdf-crop.html" class="hover:text-blue-600 transition-colors font-semibold text-blue-600 dark:text-blue-400">Crop PDF</a></li>
+                        <li><a href="rotate-pdf.html" class="hover:text-blue-600 transition-colors">Rotate PDF</a></li>
+                        <li><a href="pdf-compressor.html" class="hover:text-blue-600 transition-colors">Compress PDF</a></li>
+                        <li><a href="pdf-to-img.html" class="hover:text-blue-600 transition-colors">PDF to Image</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5">Guides & Utilities</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="how-to-crop-pdf.html" class="hover:text-blue-600 transition-colors font-semibold text-blue-600 dark:text-blue-400">How to Crop PDF</a></li>
+                        <li><a href="pan-card-photo-maker.html" class="hover:text-blue-600 transition-colors">PAN Photo Maker</a></li>
+                        <li><a href="merge-pdf.html" class="hover:text-blue-600 transition-colors">Merge PDF</a></li>
+                        <li><a href="split-pdf.html" class="hover:text-blue-600 transition-colors">Split PDF</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-900 dark:text-white mb-3.5">Company & Legal</h4>
+                    <ul class="space-y-2.5 text-xs text-zinc-600 dark:text-zinc-400">
+                        <li><a href="privacy-policy.html" class="hover:text-blue-600 transition-colors">Privacy Policy</a></li>
+                        <li><a href="terms-and-conditions.html" class="hover:text-blue-600 transition-colors">Terms & Conditions</a></li>
+                        <li><a href="about-us.html" class="hover:text-blue-600 transition-colors">About Us</a></li>
+                        <li><a href="contact-us.html" class="hover:text-blue-600 transition-colors">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-zinc-100 dark:border-zinc-800 text-center text-xs text-zinc-400">
+                <p>© 2026 PDFTool4You. All rights reserved. 100% Client-Side Processing.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

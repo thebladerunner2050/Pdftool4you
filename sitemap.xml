@@ -169,4 +169,16 @@
        <priority>0.8500</priority>
        <changefreq>weekly</changefreq>
   </url>
+  <url>
+       <loc>https://pdftool4you.in/how-to-crop-pdf.html</loc>
+       <lastmod>2026-09-25T04:22:00+00:00</lastmod>
+       <priority>0.8500</priority>
+       <changefreq>weekly</changefreq>
+  </url>
+  <url>
+       <loc>https://pdftool4you.in/how-to-rotate-pdf.html</loc>
+       <lastmod>2026-09-25T04:22:00+00:00</lastmod>
+       <priority>0.8500</priority>
+       <changefreq>weekly</changefreq>
+  </url>
 </urlset>
