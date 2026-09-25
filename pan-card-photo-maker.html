@@ -88,13 +88,248 @@
             background-color: #09090b;
             color: #f4f4f5;
         }
-        /* Custom styling for Cropper container */
-        .cropper-view-box,
-        .cropper-face {
+        /* Custom styling for Cropper container & bulletproof single viewport */
+        .cropper-container {
+            direction: ltr;
+            font-size: 0;
+            line-height: 0;
+            position: relative;
+            -ms-touch-action: none;
+            touch-action: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+        }
+        .cropper-container img {
+            display: block;
+            height: 100%;
+            image-orientation: 0deg;
+            max-height: none !important;
+            max-width: none !important;
+            min-height: 0 !important;
+            min-width: 0 !important;
+            width: 100%;
+        }
+        .cropper-wrap-box,
+        .cropper-canvas,
+        .cropper-drag-box,
+        .cropper-crop-box,
+        .cropper-modal {
+            bottom: 0;
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+        .cropper-wrap-box,
+        .cropper-canvas {
+            overflow: hidden;
+        }
+        .cropper-drag-box {
+            background-color: #fff;
+            opacity: 0;
+        }
+        .cropper-modal {
+            background-color: #000;
+            opacity: 0.55;
+        }
+        .cropper-view-box {
+            display: block;
+            height: 100%;
+            outline: 2px solid #2563eb;
+            outline-color: rgba(37, 99, 235, 0.95);
+            overflow: hidden;
+            width: 100%;
             border-radius: 4px;
         }
-        .cropper-line, .cropper-point {
+        .cropper-dashed {
+            border: 0 dashed rgba(255, 255, 255, 0.65);
+            display: block;
+            opacity: 0.6;
+            position: absolute;
+        }
+        .cropper-dashed.dashed-h {
+            border-bottom-width: 1px;
+            border-top-width: 1px;
+            height: 33.33333%;
+            left: 0;
+            top: 33.33333%;
+            width: 100%;
+        }
+        .cropper-dashed.dashed-v {
+            border-left-width: 1px;
+            border-right-width: 1px;
+            height: 100%;
+            left: 33.33333%;
+            top: 0;
+            width: 33.33333%;
+        }
+        .cropper-center {
+            display: block;
+            height: 0;
+            left: 50%;
+            opacity: 0.75;
+            position: absolute;
+            top: 50%;
+            width: 0;
+        }
+        .cropper-center::before,
+        .cropper-center::after {
+            background-color: #fff;
+            content: ' ';
+            display: block;
+            position: absolute;
+        }
+        .cropper-center::before {
+            height: 1px;
+            left: -4px;
+            top: 0;
+            width: 9px;
+        }
+        .cropper-center::after {
+            height: 9px;
+            left: 0;
+            top: -4px;
+            width: 1px;
+        }
+        .cropper-face,
+        .cropper-line,
+        .cropper-point {
+            display: block;
+            height: 100%;
+            opacity: 0.15;
+            position: absolute;
+            width: 100%;
+        }
+        .cropper-face {
+            background-color: #fff;
+            left: 0;
+            top: 0;
+            border-radius: 4px;
+        }
+        .cropper-line {
             background-color: #2563eb;
+        }
+        .cropper-line.line-e {
+            cursor: ew-resize;
+            right: -3px;
+            top: 0;
+            width: 5px;
+        }
+        .cropper-line.line-n {
+            cursor: ns-resize;
+            height: 5px;
+            left: 0;
+            top: -3px;
+        }
+        .cropper-line.line-w {
+            cursor: ew-resize;
+            left: -3px;
+            top: 0;
+            width: 5px;
+        }
+        .cropper-line.line-s {
+            bottom: -3px;
+            cursor: ns-resize;
+            height: 5px;
+            left: 0;
+        }
+        .cropper-point {
+            background-color: #2563eb;
+            height: 8px;
+            opacity: 0.95;
+            width: 8px;
+            border-radius: 2px;
+        }
+        .cropper-point.point-e {
+            cursor: ew-resize;
+            margin-top: -4px;
+            right: -4px;
+            top: 50%;
+        }
+        .cropper-point.point-n {
+            cursor: ns-resize;
+            left: 50%;
+            margin-left: -4px;
+            top: -4px;
+        }
+        .cropper-point.point-w {
+            cursor: ew-resize;
+            left: -4px;
+            margin-top: -4px;
+            top: 50%;
+        }
+        .cropper-point.point-s {
+            bottom: -4px;
+            cursor: ns-resize;
+            left: 50%;
+            margin-left: -4px;
+        }
+        .cropper-point.point-ne {
+            cursor: nesw-resize;
+            right: -4px;
+            top: -4px;
+        }
+        .cropper-point.point-nw {
+            cursor: nwse-resize;
+            left: -4px;
+            top: -4px;
+        }
+        .cropper-point.point-sw {
+            bottom: -4px;
+            cursor: nesw-resize;
+            left: -4px;
+        }
+        .cropper-point.point-se {
+            bottom: -4px;
+            cursor: nwse-resize;
+            height: 12px;
+            opacity: 1;
+            right: -4px;
+            width: 12px;
+            border-radius: 2px;
+        }
+        .cropper-invisible {
+            opacity: 0;
+        }
+        .cropper-bg {
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAAA3NCSVQICAjb4U/gAAAABlBMVEXMzMz////TjRV2AAAACXBIWXMAAArrAAAK6wGCru13AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAB1JREFUeNpjYMAHDx48+MDAwMDw/8H/h4dhwh0AEIECvg30mNYAAAAASUVORK5CYII=');
+        }
+        .cropper-auto-crop {
+            cursor: crosshair;
+        }
+        .cropper-crop {
+            cursor: crosshair;
+        }
+        .cropper-move {
+            cursor: move;
+        }
+        /* CRITICAL: Never show the uncropped source image beside the cropper */
+        .cropper-hidden,
+        img#cropper-image,
+        img#cropper-image.cropper-hidden {
+            display: none !important;
+            visibility: hidden !important;
+            width: 0 !important;
+            height: 0 !important;
+            max-width: 0 !important;
+            max-height: 0 !important;
+            opacity: 0 !important;
+            position: absolute !important;
+            left: -9999px !important;
+            pointer-events: none !important;
+        }
+        #cropper-viewport-wrapper {
+            position: relative;
+            width: 100%;
+            height: 380px;
+            max-height: 380px;
+            background-color: #09090b;
         }
     </style>
 </head>
@@ -372,44 +607,100 @@
                                 <span class="text-[11px] text-zinc-400">Drag corners or pan image</span>
                             </div>
 
-                            <div class="relative bg-zinc-100 dark:bg-zinc-950 rounded-xl overflow-hidden aspect-4/3 border border-zinc-200 dark:border-zinc-700 max-h-[380px] flex items-center justify-center shadow-inner">
-                                <img id="cropper-image" src="" alt="Source image for cropping" class="max-w-full max-h-full block">
+                            <!-- Single Cropper Viewport Container: No side-by-side flex, strictly single interactive canvas -->
+                            <div id="cropper-viewport-wrapper" class="relative bg-zinc-950 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 h-[380px] max-h-[380px] w-full shadow-inner block">
+                                <img id="cropper-image" src="" alt="Source image for cropping" class="cropper-hidden hidden" style="display:none !important; width:0; height:0;">
                             </div>
                             
                             <!-- Transformation Controls Toolbar -->
-                            <div class="flex flex-wrap items-center justify-center gap-2 p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700">
-                                <button type="button" id="btn-rotate-left" class="px-3 py-1.5 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all text-xs font-semibold inline-flex items-center gap-1.5 shadow-2xs" title="Rotate Left 90°">
-                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12.066 11.2a1 1 0 000 1.6l5.334 4A1 1 0 0019 16V8a1 1 0 00-1.6-.8l-5.334 4z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8m0 0l-3 3m3-3L9 1"/>
-                                    </svg>
-                                    <span>-90°</span>
-                                </button>
-                                <button type="button" id="btn-rotate-right" class="px-3 py-1.5 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all text-xs font-semibold inline-flex items-center gap-1.5 shadow-2xs" title="Rotate Right 90°">
-                                    <span>+90°</span>
-                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.934 12.8a1 1 0 000-1.6l-5.334-4A1 1 0 005 8v8a1 1 0 001.6.8l5.334-4z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12a8 8 0 00-8-8m0 0l3 3m-3-3l3-3"/>
-                                    </svg>
-                                </button>
-                                <button type="button" id="btn-flip-h" class="px-3 py-1.5 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all text-xs font-semibold inline-flex items-center gap-1.5 shadow-2xs" title="Flip Horizontal">
-                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
-                                    </svg>
-                                    <span data-i18n="pan_ctrl_flip_h">Flip H</span>
-                                </button>
-                                <button type="button" id="btn-flip-v" class="px-3 py-1.5 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all text-xs font-semibold inline-flex items-center gap-1.5 shadow-2xs" title="Flip Vertical">
-                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8v12m0 0l-4-4m4 4l4-4m6 0V4m0 0l4 4m-4-4l-4 4"/>
-                                    </svg>
-                                    <span data-i18n="pan_ctrl_flip_v">Flip V</span>
-                                </button>
-                                <button type="button" id="btn-reset" class="px-3 py-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-950 text-red-600 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-900/60 active:scale-95 transition-all text-xs font-semibold inline-flex items-center gap-1.5" title="Reset Image">
-                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"/>
-                                    </svg>
-                                    <span data-i18n="pan_ctrl_reset">Reset</span>
-                                </button>
+                            <div class="space-y-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700">
+                                <!-- Top Bar: Drag Mode Toggle & Quick Action Buttons -->
+                                <div class="flex flex-wrap items-center justify-between gap-2">
+                                    <!-- Drag Mode Toggle -->
+                                    <div class="inline-flex rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-0.5">
+                                        <button type="button" id="btn-mode-crop" class="px-2.5 py-1 rounded-md text-[11px] font-bold transition-all bg-blue-600 text-white shadow-2xs" title="Adjust & resize crop box">
+                                            Crop Box
+                                        </button>
+                                        <button type="button" id="btn-mode-move" class="px-2.5 py-1 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all" title="Drag and move photo">
+                                            Pan Image
+                                        </button>
+                                    </div>
+
+                                    <!-- Quick Tool Buttons -->
+                                    <div class="flex flex-wrap items-center gap-1.5">
+                                        <button type="button" id="btn-zoom-out" class="p-1.5 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all shadow-2xs cursor-pointer" title="Zoom Out (-10%)">
+                                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M20 12H4"/>
+                                            </svg>
+                                        </button>
+                                        <button type="button" id="btn-zoom-in" class="p-1.5 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all shadow-2xs cursor-pointer" title="Zoom In (+10%)">
+                                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"/>
+                                            </svg>
+                                        </button>
+                                        <button type="button" id="btn-rotate-left" class="px-2 py-1.5 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all text-xs font-semibold inline-flex items-center gap-1 shadow-2xs cursor-pointer" title="Rotate Left 90°">
+                                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8m0 0l-3 3m3-3L9 1"/>
+                                            </svg>
+                                            <span>-90°</span>
+                                        </button>
+                                        <button type="button" id="btn-rotate-right" class="px-2 py-1.5 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all text-xs font-semibold inline-flex items-center gap-1 shadow-2xs cursor-pointer" title="Rotate Right 90°">
+                                            <span>+90°</span>
+                                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12a8 8 0 00-8-8m0 0l3 3m-3-3l3-3"/>
+                                            </svg>
+                                        </button>
+                                        <button type="button" id="btn-flip-h" class="px-2 py-1.5 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all text-xs font-semibold inline-flex items-center gap-1 shadow-2xs cursor-pointer" title="Flip Horizontal">
+                                            <span data-i18n="pan_ctrl_flip_h">Flip H</span>
+                                        </button>
+                                        <button type="button" id="btn-flip-v" class="px-2 py-1.5 bg-white dark:bg-zinc-800 hover:bg-zinc-100 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 rounded-lg border border-zinc-200 dark:border-zinc-700 active:scale-95 transition-all text-xs font-semibold inline-flex items-center gap-1 shadow-2xs cursor-pointer" title="Flip Vertical">
+                                            <span data-i18n="pan_ctrl_flip_v">Flip V</span>
+                                        </button>
+                                        <button type="button" id="btn-reset" class="px-2 py-1.5 bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-950 text-red-600 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-900/60 active:scale-95 transition-all text-xs font-semibold inline-flex items-center gap-1 cursor-pointer" title="Reset Image">
+                                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"/>
+                                            </svg>
+                                            <span data-i18n="pan_ctrl_reset">Reset</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Sliders Section: Fine Rotation / Straighten & Zoom -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-zinc-200/70 dark:border-zinc-700/70">
+                                    <!-- Fine Angle Rotation Slider -->
+                                    <div class="space-y-1">
+                                        <div class="flex items-center justify-between text-xs">
+                                            <span class="text-[11px] font-bold text-zinc-600 dark:text-zinc-300 flex items-center gap-1">
+                                                <svg class="w-3 h-3 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17"/>
+                                                </svg>
+                                                <span>Straighten / Rotate</span>
+                                            </span>
+                                            <div class="flex items-center gap-1.5">
+                                                <span id="rotate-value" class="font-mono font-bold text-zinc-900 dark:text-white text-[11px]">0°</span>
+                                                <button type="button" id="btn-reset-rotate" class="text-[10px] text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer">Reset</button>
+                                            </div>
+                                        </div>
+                                        <input type="range" id="rotate-slider" min="-45" max="45" value="0" step="1" class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-600" title="Fine angle rotation (-45° to +45°)">
+                                    </div>
+
+                                    <!-- Zoom Scale Slider -->
+                                    <div class="space-y-1">
+                                        <div class="flex items-center justify-between text-xs">
+                                            <span class="text-[11px] font-bold text-zinc-600 dark:text-zinc-300 flex items-center gap-1">
+                                                <svg class="w-3 h-3 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"/>
+                                                </svg>
+                                                <span>Zoom Scale</span>
+                                            </span>
+                                            <div class="flex items-center gap-1.5">
+                                                <span id="zoom-value" class="font-mono font-bold text-zinc-900 dark:text-white text-[11px]">100%</span>
+                                                <button type="button" id="btn-reset-zoom" class="text-[10px] text-zinc-400 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer">100%</button>
+                                            </div>
+                                        </div>
+                                        <input type="range" id="zoom-slider" min="20" max="300" value="100" step="1" class="w-full h-1.5 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-blue-600" title="Continuous zoom scale">
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -532,11 +823,15 @@
                         <!-- LIVE OUTPUT PREVIEW BOX -->
                         <div class="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700 flex flex-col items-center">
                             <div class="w-full flex items-center justify-between mb-2 pb-1.5 border-b border-zinc-200/60 dark:border-zinc-700/60">
-                                <span class="text-xs font-bold text-zinc-900 dark:text-white">Output Preview</span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <span class="text-xs font-bold text-zinc-900 dark:text-white">Live Output Preview</span>
+                                </div>
                                 <span id="preview-target-meta" class="text-[10px] font-bold text-blue-600 dark:text-blue-400 font-mono">NSDL Photo</span>
                             </div>
-                            <div class="w-full flex items-center justify-center p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg border border-zinc-200/60 dark:border-zinc-700 min-h-[140px]">
-                                <canvas id="live-output-canvas" class="max-h-[130px] max-w-full object-contain shadow-xs rounded border border-zinc-200 dark:border-zinc-700 bg-white"></canvas>
+                            <div class="w-full flex flex-col items-center justify-center p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg border border-zinc-200/60 dark:border-zinc-700 min-h-[160px] relative">
+                                <canvas id="live-output-canvas" class="max-h-[145px] max-w-full object-contain shadow-xs rounded border border-zinc-200 dark:border-zinc-700 bg-white transition-all"></canvas>
+                                <span class="text-[10px] text-zinc-400 dark:text-zinc-500 mt-2 font-medium">Real-time sync to drag, crop, zoom & rotate</span>
                             </div>
                         </div>
 
@@ -764,7 +1059,17 @@
             const liveFileSize = document.getElementById('live-file-size');
             const liveOutputCanvas = document.getElementById('live-output-canvas');
 
-            // Workspace buttons
+            // Workspace controls & sliders
+            const btnModeCrop = document.getElementById('btn-mode-crop');
+            const btnModeMove = document.getElementById('btn-mode-move');
+            const btnZoomIn = document.getElementById('btn-zoom-in');
+            const btnZoomOut = document.getElementById('btn-zoom-out');
+            const btnResetZoom = document.getElementById('btn-reset-zoom');
+            const zoomSlider = document.getElementById('zoom-slider');
+            const zoomValue = document.getElementById('zoom-value');
+            const rotateSlider = document.getElementById('rotate-slider');
+            const rotateValue = document.getElementById('rotate-value');
+            const btnResetRotate = document.getElementById('btn-reset-rotate');
             const btnRotateLeft = document.getElementById('btn-rotate-left');
             const btnRotateRight = document.getElementById('btn-rotate-right');
             const btnFlipH = document.getElementById('btn-flip-h');
@@ -781,6 +1086,9 @@
             let lastGeneratedBlobUrl = null;
             let flipH = 1;
             let flipV = 1;
+            let baseRotation = 0;
+            let fineRotation = 0;
+            let currentDragMode = 'crop';
 
             // Target Specifications State
             let targetSpecs = {
@@ -857,7 +1165,7 @@
                 if (cropperInstance) {
                     const aspect = targetSpecs.widthPx / targetSpecs.heightPx;
                     cropperInstance.setAspectRatio(aspect);
-                    triggerLiveCalculation();
+                    renderLiveOutputFast();
                 }
             }
 
@@ -945,10 +1253,15 @@
                 reader.onload = function(event) {
                     currentImageSource = event.target.result;
                     cropperImage.src = currentImageSource;
+                    cropperImage.classList.add('cropper-hidden');
+                    cropperImage.style.display = 'none';
                     
-                    // Reset flips
+                    // Reset transformations
                     flipH = 1;
                     flipV = 1;
+                    baseRotation = 0;
+                    fineRotation = 0;
+                    currentDragMode = 'crop';
 
                     // Destroy old cropper if any
                     if (cropperInstance) {
@@ -963,75 +1276,232 @@
                     // Set target aspect ratio
                     const initialAspect = targetSpecs.widthPx / targetSpecs.heightPx;
 
-                    // Build fresh cropper instance
+                    // Build fresh cropper instance with continuous live event streaming
                     cropperInstance = new Cropper(cropperImage, {
                         aspectRatio: initialAspect,
                         viewMode: 1,
+                        dragMode: 'crop',
                         background: true,
                         autoCropArea: 0.9,
                         responsive: true,
                         restore: false,
                         checkOrientation: false,
-                        cropend() {
-                            triggerLiveCalculation();
+                        crop(event) {
+                            // DIRECT REAL-TIME RENDERING TO OUTPUT CANVAS ON DRAG, CROP, ROTATE, ZOOM
+                            renderLiveOutputFast();
                         },
-                        zoom() {
-                            triggerLiveCalculation();
+                        zoom(event) {
+                            if (event && event.detail && typeof event.detail.ratio === 'number') {
+                                const zoomPct = Math.round(event.detail.ratio * 100);
+                                if (zoomSlider) {
+                                    zoomSlider.value = Math.min(Math.max(zoomPct, 20), 300);
+                                }
+                                if (zoomValue) {
+                                    zoomValue.textContent = `${zoomPct}%`;
+                                }
+                            }
+                            renderLiveOutputFast();
                         },
                         ready() {
-                            triggerLiveCalculation();
+                            baseRotation = 0;
+                            fineRotation = 0;
+                            if (rotateSlider) rotateSlider.value = 0;
+                            if (rotateValue) rotateValue.textContent = '0°';
+                            if (zoomSlider) zoomSlider.value = 100;
+                            if (zoomValue) zoomValue.textContent = '100%';
+                            applyDragMode('crop');
+                            renderLiveOutputFast();
                         }
                     });
                 };
                 reader.readAsDataURL(file);
             }
 
-            // Crop Action and Real-Time Size Engine
-            let calcTimeout = null;
-            function triggerLiveCalculation() {
-                if (calcTimeout) clearTimeout(calcTimeout);
-                calcTimeout = setTimeout(async () => {
-                    if (!cropperInstance) return;
-                    
-                    const croppedCanvas = cropperInstance.getCroppedCanvas({
-                        width: targetSpecs.widthPx,
-                        height: targetSpecs.heightPx,
-                        imageSmoothingEnabled: true,
-                        imageSmoothingQuality: 'high'
-                    });
+            // Real-Time 60 FPS Render Pipeline for Live Output Canvas
+            let isRendering = false;
+            let pendingRender = false;
+            let debounceSizeTimeout = null;
 
-                    if (!croppedCanvas) return;
+            function renderLiveOutputFast() {
+                if (!cropperInstance) return;
+                pendingRender = true;
+                if (isRendering) return;
 
-                    // Draw to live preview canvas
-                    liveOutputCanvas.width = targetSpecs.widthPx;
-                    liveOutputCanvas.height = targetSpecs.heightPx;
-                    const ctx = liveOutputCanvas.getContext('2d');
-                    ctx.clearRect(0, 0, targetSpecs.widthPx, targetSpecs.heightPx);
-                    ctx.drawImage(croppedCanvas, 0, 0);
+                isRendering = true;
+                requestAnimationFrame(() => {
+                    isRendering = false;
+                    if (!pendingRender || !cropperInstance) return;
+                    pendingRender = false;
 
-                    const sizeBytes = await getResizedBlobSize(croppedCanvas);
-                    if (sizeBytes) {
-                        const sizeKb = (sizeBytes / 1024).toFixed(1);
-                        liveFileSize.textContent = `Estimated: ${sizeKb} KB`;
+                    try {
+                        const croppedCanvas = cropperInstance.getCroppedCanvas({
+                            width: targetSpecs.widthPx,
+                            height: targetSpecs.heightPx,
+                            imageSmoothingEnabled: true,
+                            imageSmoothingQuality: 'high'
+                        });
 
-                        // Add feedback color based on limit satisfaction
-                        if (parseFloat(sizeKb) <= targetSpecs.maxSizeKb) {
-                            liveFileSize.className = "text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full font-mono";
-                        } else {
-                            liveFileSize.className = "text-[10px] font-bold text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/40 px-2 py-0.5 rounded-full font-mono";
-                        }
+                        if (!croppedCanvas) return;
+
+                        // Immediate direct draw to live output preview canvas
+                        liveOutputCanvas.width = targetSpecs.widthPx;
+                        liveOutputCanvas.height = targetSpecs.heightPx;
+                        const ctx = liveOutputCanvas.getContext('2d');
+                        ctx.clearRect(0, 0, targetSpecs.widthPx, targetSpecs.heightPx);
+                        ctx.drawImage(croppedCanvas, 0, 0);
+
+                        // Lightweight debounced size estimator to prevent heavy JPEG re-encoding on every mousemove
+                        if (debounceSizeTimeout) clearTimeout(debounceSizeTimeout);
+                        debounceSizeTimeout = setTimeout(async () => {
+                            const sizeBytes = await getResizedBlobSize(croppedCanvas);
+                            if (sizeBytes) {
+                                const sizeKb = (sizeBytes / 1024).toFixed(1);
+                                liveFileSize.textContent = `Estimated: ${sizeKb} KB`;
+
+                                if (parseFloat(sizeKb) <= targetSpecs.maxSizeKb) {
+                                    liveFileSize.className = "text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full font-mono";
+                                } else {
+                                    liveFileSize.className = "text-[10px] font-bold text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-950/40 px-2 py-0.5 rounded-full font-mono";
+                                }
+                            }
+                        }, 75);
+                    } catch (err) {
+                        console.error('Error drawing to live output canvas:', err);
                     }
-                }, 100);
+                });
             }
+
+            // Rotation state manager (Base 90° steps + fine angle slider)
+            function applyRotation() {
+                if (!cropperInstance) return;
+                const total = baseRotation + fineRotation;
+                cropperInstance.rotateTo(total);
+                if (rotateValue) {
+                    const sign = total > 0 ? '+' : '';
+                    rotateValue.textContent = `${sign}${total}°`;
+                }
+                renderLiveOutputFast();
+            }
+
+            // Drag mode switcher (Crop box adjust vs Pan photo)
+            function applyDragMode(mode) {
+                currentDragMode = mode;
+                if (cropperInstance) {
+                    cropperInstance.setDragMode(mode);
+                }
+                if (mode === 'crop') {
+                    btnModeCrop.className = "px-2.5 py-1 rounded-md text-[11px] font-bold transition-all bg-blue-600 text-white shadow-2xs";
+                    btnModeMove.className = "px-2.5 py-1 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all";
+                } else {
+                    btnModeCrop.className = "px-2.5 py-1 rounded-md text-[11px] font-semibold text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-all";
+                    btnModeMove.className = "px-2.5 py-1 rounded-md text-[11px] font-bold transition-all bg-blue-600 text-white shadow-2xs";
+                }
+            }
+
+            btnModeCrop.addEventListener('click', () => applyDragMode('crop'));
+            btnModeMove.addEventListener('click', () => applyDragMode('move'));
+
+            // Zoom controls
+            btnZoomIn.addEventListener('click', () => {
+                if (cropperInstance) {
+                    cropperInstance.zoom(0.1);
+                    renderLiveOutputFast();
+                }
+            });
+
+            btnZoomOut.addEventListener('click', () => {
+                if (cropperInstance) {
+                    cropperInstance.zoom(-0.1);
+                    renderLiveOutputFast();
+                }
+            });
+
+            btnResetZoom.addEventListener('click', () => {
+                if (cropperInstance) {
+                    cropperInstance.zoomTo(1);
+                    if (zoomSlider) zoomSlider.value = 100;
+                    if (zoomValue) zoomValue.textContent = '100%';
+                    renderLiveOutputFast();
+                }
+            });
+
+            zoomSlider.addEventListener('input', (e) => {
+                if (cropperInstance) {
+                    const ratio = parseInt(e.target.value, 10) / 100;
+                    if (zoomValue) zoomValue.textContent = `${e.target.value}%`;
+                    cropperInstance.zoomTo(ratio);
+                    renderLiveOutputFast();
+                }
+            });
+
+            // Rotation controls
+            btnRotateLeft.addEventListener('click', () => {
+                baseRotation -= 90;
+                applyRotation();
+            });
+
+            btnRotateRight.addEventListener('click', () => {
+                baseRotation += 90;
+                applyRotation();
+            });
+
+            rotateSlider.addEventListener('input', (e) => {
+                fineRotation = parseInt(e.target.value, 10);
+                applyRotation();
+            });
+
+            btnResetRotate.addEventListener('click', () => {
+                fineRotation = 0;
+                rotateSlider.value = 0;
+                applyRotation();
+            });
+
+            // Flips
+            btnFlipH.addEventListener('click', () => {
+                if (cropperInstance) {
+                    flipH = -flipH;
+                    cropperInstance.scaleX(flipH);
+                    renderLiveOutputFast();
+                }
+            });
+
+            btnFlipV.addEventListener('click', () => {
+                if (cropperInstance) {
+                    flipV = -flipV;
+                    cropperInstance.scaleY(flipV);
+                    renderLiveOutputFast();
+                }
+            });
+
+            // Reset
+            btnReset.addEventListener('click', () => {
+                if (cropperInstance) {
+                    cropperInstance.reset();
+                    flipH = 1;
+                    flipV = 1;
+                    baseRotation = 0;
+                    fineRotation = 0;
+                    if (rotateSlider) rotateSlider.value = 0;
+                    if (rotateValue) rotateValue.textContent = '0°';
+                    if (zoomSlider) zoomSlider.value = 100;
+                    if (zoomValue) zoomValue.textContent = '100%';
+                    cropperInstance.scale(1, 1);
+                    cropperInstance.rotateTo(0);
+                    qualitySlider.value = 85;
+                    qualityValue.textContent = '85%';
+                    applyDragMode('crop');
+                    renderLiveOutputFast();
+                }
+            });
 
             // Quality slider events
             qualitySlider.addEventListener('input', (e) => {
                 qualityValue.textContent = `${e.target.value}%`;
-                triggerLiveCalculation();
+                renderLiveOutputFast();
             });
 
             autoCompress.addEventListener('change', () => {
-                triggerLiveCalculation();
+                renderLiveOutputFast();
             });
 
             // Get target size blob matching dimensions
@@ -1039,7 +1509,7 @@
                 return new Promise((resolve) => {
                     if (!croppedCanvas) return resolve(0);
 
-                    const initialQ = parseInt(qualitySlider.value) / 100;
+                    const initialQ = parseInt(qualitySlider.value, 10) / 100;
                     croppedCanvas.toBlob((blob) => {
                         if (!blob) return resolve(0);
                         
@@ -1075,48 +1545,56 @@
                 });
             }
 
-            // Button actions inside the workspace
-            btnRotateLeft.addEventListener('click', () => {
-                if (cropperInstance) {
-                    cropperInstance.rotate(-90);
-                    triggerLiveCalculation();
+            // Binary JFIF DPI Metadata Injector to guarantee 100% portal acceptance
+            async function injectJpegDpi(blob, dpi) {
+                try {
+                    const arrayBuffer = await blob.arrayBuffer();
+                    const bytes = new Uint8Array(arrayBuffer);
+                    
+                    // Validate JPEG SOI (FF D8)
+                    if (bytes.length < 4 || bytes[0] !== 0xFF || bytes[1] !== 0xD8) {
+                        return blob;
+                    }
+                    
+                    // Check if APP0 marker exists at byte 2 (FF E0)
+                    if (bytes[2] === 0xFF && bytes[3] === 0xE0) {
+                        // Check for 'JFIF\0' signature at offset 6..10
+                        if (bytes[6] === 0x4A && bytes[7] === 0x46 && bytes[8] === 0x49 && bytes[9] === 0x46 && bytes[10] === 0x00) {
+                            // Set units to 1 (dots per inch)
+                            bytes[13] = 1;
+                            // Set X and Y density big-endian
+                            bytes[14] = (dpi >> 8) & 0xFF;
+                            bytes[15] = dpi & 0xFF;
+                            bytes[16] = (dpi >> 8) & 0xFF;
+                            bytes[17] = dpi & 0xFF;
+                            return new Blob([bytes], { type: 'image/jpeg' });
+                        }
+                    }
+                    
+                    // If no APP0 header, construct standard 18-byte JFIF APP0 segment
+                    const jfifSegment = new Uint8Array([
+                        0xFF, 0xE0, // APP0 marker
+                        0x00, 0x10, // Segment length: 16 bytes
+                        0x4A, 0x46, 0x49, 0x46, 0x00, // "JFIF\0"
+                        0x01, 0x02, // Version 1.2
+                        0x01,       // Units: 1 = dots per inch (DPI)
+                        (dpi >> 8) & 0xFF, dpi & 0xFF, // Xdensity
+                        (dpi >> 8) & 0xFF, dpi & 0xFF, // Ydensity
+                        0x00, 0x00  // Thumbnail width, height (0)
+                    ]);
+                    
+                    // Insert immediately after SOI
+                    const newBytes = new Uint8Array(bytes.length + jfifSegment.length);
+                    newBytes.set(bytes.subarray(0, 2), 0);
+                    newBytes.set(jfifSegment, 2);
+                    newBytes.set(bytes.subarray(2), 2 + jfifSegment.length);
+                    
+                    return new Blob([newBytes], { type: 'image/jpeg' });
+                } catch (e) {
+                    console.warn('Could not inject JFIF DPI tag:', e);
+                    return blob;
                 }
-            });
-
-            btnRotateRight.addEventListener('click', () => {
-                if (cropperInstance) {
-                    cropperInstance.rotate(90);
-                    triggerLiveCalculation();
-                }
-            });
-
-            btnFlipH.addEventListener('click', () => {
-                if (cropperInstance) {
-                    flipH = -flipH;
-                    cropperInstance.scaleX(flipH);
-                    triggerLiveCalculation();
-                }
-            });
-
-            btnFlipV.addEventListener('click', () => {
-                if (cropperInstance) {
-                    flipV = -flipV;
-                    cropperInstance.scaleY(flipV);
-                    triggerLiveCalculation();
-                }
-            });
-
-            btnReset.addEventListener('click', () => {
-                if (cropperInstance) {
-                    cropperInstance.reset();
-                    flipH = 1;
-                    flipV = 1;
-                    cropperInstance.scale(1, 1);
-                    qualitySlider.value = 85;
-                    qualityValue.textContent = '85%';
-                    triggerLiveCalculation();
-                }
-            });
+            }
 
             // DOWNLOAD EVENT HANDLER
             btnDownloadJpg.addEventListener('click', () => {
@@ -1131,18 +1609,19 @@
 
                 if (!croppedCanvas) return;
 
-                const initialQ = parseInt(qualitySlider.value) / 100;
+                const initialQ = parseInt(qualitySlider.value, 10) / 100;
 
-                croppedCanvas.toBlob((blob) => {
+                croppedCanvas.toBlob(async (blob) => {
                     if (!blob) return;
 
+                    let finalBlob = blob;
                     if (autoCompress.checked && (blob.size / 1024) > targetSpecs.maxSizeKb) {
-                        adaptiveCompress(croppedCanvas, targetSpecs.maxSizeKb, initialQ).then(finalBlob => {
-                            saveBlobToDisk(finalBlob);
-                        });
-                    } else {
-                        saveBlobToDisk(blob);
+                        finalBlob = await adaptiveCompress(croppedCanvas, targetSpecs.maxSizeKb, initialQ);
                     }
+                    
+                    // Inject official DPI resolution tag
+                    const compliantBlob = await injectJpegDpi(finalBlob, targetSpecs.dpi);
+                    saveBlobToDisk(compliantBlob);
                 }, 'image/jpeg', initialQ);
             });
 
