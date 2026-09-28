@@ -84,9 +84,9 @@
             }
         })();
     </script>
-    <script src="theme.js"></script>
-    <script src="i18n.js"></script>
-    <script src="share.js"></script>
+    <script src="theme.js" defer></script>
+    <script src="i18n.js" defer></script>
+    <script src="share.js" defer></script>
     <script src="mobile-nav.js" defer></script>
     <style>
         body {
@@ -402,14 +402,14 @@
                 </div>
 
                 <!-- Category Segmented Buttons -->
-                <div class="flex items-center gap-1.5 p-1 bg-zinc-100 dark:bg-zinc-800/80 rounded-xl overflow-x-auto touch-scroll no-scrollbar" role="tablist">
-                    <button class="filter-tab active px-3.5 py-2 sm:py-1.5 text-xs font-semibold rounded-lg transition-all bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-2xs whitespace-nowrap active:scale-95" data-category="all" data-i18n="filter_all">
+                <div class="flex items-center gap-1.5 p-1 bg-zinc-100 dark:bg-zinc-800/80 rounded-xl overflow-x-auto touch-scroll no-scrollbar" role="tablist" aria-label="Tool Categories">
+                    <button role="tab" id="tab-all" aria-selected="true" aria-controls="tools-container" class="filter-tab active px-3.5 py-2 sm:py-1.5 text-xs font-semibold rounded-lg transition-all bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-2xs whitespace-nowrap active:scale-95" data-category="all" data-i18n="filter_all">
                         All Tools
                     </button>
-                    <button class="filter-tab px-3.5 py-2 sm:py-1.5 text-xs font-medium rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all whitespace-nowrap active:scale-95" data-category="pdf" data-i18n="filter_pdf">
+                    <button role="tab" id="tab-pdf" aria-selected="false" aria-controls="tools-container" class="filter-tab px-3.5 py-2 sm:py-1.5 text-xs font-medium rounded-lg text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all whitespace-nowrap active:scale-95" data-category="pdf" data-i18n="filter_pdf">
                         PDF Tools
                     </button>
-                    <button class="filter-tab px-3.5 py-2 sm:py-1.5 text-xs font-medium rounded-lg text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all whitespace-nowrap active:scale-95" data-category="image" data-i18n="filter_image">
+                    <button role="tab" id="tab-image" aria-selected="false" aria-controls="tools-container" class="filter-tab px-3.5 py-2 sm:py-1.5 text-xs font-medium rounded-lg text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all whitespace-nowrap active:scale-95" data-category="image" data-i18n="filter_image">
                         Image Tools
                     </button>
                 </div>
@@ -1189,14 +1189,15 @@
                 activeCategory = 'all';
                 filterTabs.forEach(tab => {
                     const isActive = tab.dataset.category === 'all';
+                    tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
                     tab.classList.toggle('active', isActive);
                     tab.classList.toggle('bg-white', isActive);
                     tab.classList.toggle('dark:bg-zinc-700', isActive);
                     tab.classList.toggle('text-zinc-900', isActive);
                     tab.classList.toggle('dark:text-white', isActive);
                     tab.classList.toggle('shadow-2xs', isActive);
-                    tab.classList.toggle('text-zinc-600', !isActive);
-                    tab.classList.toggle('dark:text-zinc-400', !isActive);
+                    tab.classList.toggle('text-zinc-700', !isActive);
+                    tab.classList.toggle('dark:text-zinc-300', !isActive);
                 });
                 searchInput.focus();
                 filterTools();
@@ -1205,11 +1206,13 @@
             filterTabs.forEach(tab => {
                 tab.addEventListener('click', () => {
                     filterTabs.forEach(t => {
+                        t.setAttribute('aria-selected', 'false');
                         t.classList.remove('active', 'bg-white', 'dark:bg-zinc-700', 'text-zinc-900', 'dark:text-white', 'shadow-2xs');
-                        t.classList.add('text-zinc-600', 'dark:text-zinc-400');
+                        t.classList.add('text-zinc-700', 'dark:text-zinc-300');
                     });
+                    tab.setAttribute('aria-selected', 'true');
                     tab.classList.add('active', 'bg-white', 'dark:bg-zinc-700', 'text-zinc-900', 'dark:text-white', 'shadow-2xs');
-                    tab.classList.remove('text-zinc-600', 'dark:text-zinc-400');
+                    tab.classList.remove('text-zinc-700', 'dark:text-zinc-300');
                     activeCategory = tab.dataset.category;
                     filterTools();
                 });
