@@ -685,7 +685,7 @@
                 try {
                     const baseName = activeFile.name.replace(/\.[^/.]+$/, '');
 
-                    for (let index = 0; i < pagesToProcess.length; index++) {
+                    for (let index = 0; index < pagesToProcess.length; index++) {
                         const pageNum = pagesToProcess[index];
                         const percent = Math.round(5 + ((index + 1) / pagesToProcess.length) * 90);
                         
@@ -819,8 +819,18 @@
                 }
 
                 if (!window.JSZip) {
-                    alert('ZIP compressor engine is loading, please try again in a moment.');
-                    return;
+                    try {
+                        await new Promise((res, rej) => {
+                            const s = document.createElement('script');
+                            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+                            s.onload = res;
+                            s.onerror = rej;
+                            document.head.appendChild(s);
+                        });
+                    } catch (_) {
+                        alert('Could not initialize ZIP compression. You can still download each image individually.');
+                        return;
+                    }
                 }
 
                 const origHtml = btnDownloadAllZip.innerHTML;
